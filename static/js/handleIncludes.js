@@ -175,6 +175,7 @@ function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) {
 
 // Process includes of the form:
 // <div class="js_include" url="index.md"/>
+// can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
 $( document ).ready(function() {
     $.when.apply($, $('.js_include').each(function() {
         console.debug("Inserting include for " + $(this).html());
