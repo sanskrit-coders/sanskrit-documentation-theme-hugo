@@ -3,13 +3,13 @@
 
 name = "Sanskrit Documentation Theme"
 license = "MIT"
-licenselink = "https://github.com/vvasuki/sanskrit-documentation-theme-hugo/blob/master/LICENSE"
+licenselink = "https://github.com/sanskrit-coders/sanskrit-documentation-theme-hugo/blob/master/LICENSE"
 description = ""
-homepage = "http://example.com/"
-tags = []
-features = []
+homepage = ""
+tags = ["documentation", "sanskrit"]
+features = ["search", "Table of contents", "navigation sidebar", "mobile friendly", "directory listing", "page inclusion with js", "inline annotation"]
 min_version = "0.41"
 
 [author]
   name = "Sanskrit Coders"
-  homepage = ""
+  homepage = "https://github.com/sanskrit-coders"
