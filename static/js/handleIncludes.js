@@ -1,6 +1,6 @@
 
 /*
-Example: absoluteUrl("../subfolder1/divaspari.md", "images/forest-fire.jpg") == "../subfolder1/images/forest-fire.jpg"
+Example: absoluteUrl("../subfolder1/divaspari/", "../images/forest-fire.jpg") == "../subfolder1/images/forest-fire.jpg"
  */
 function absoluteUrl(base, relative) {
     // console.debug(base, relative);
@@ -105,7 +105,7 @@ function fixIncludedHtml(url, html, newLevelForH1) {
         }
     });
 
-    return jqueryElement;
+    return jqueryElement.html();
 }
 
 // An async function returns results wrapped in Promise objects.
@@ -130,7 +130,6 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
       throw Error(message);
   } else {
       // We don't want multiple post-content divs, hence we replace with an included-post-content div.
-      var elementToInclude = $("<div class='included-post-content border'/>")
       var editLinkElements = $(responseHtml, virtualDocument).find("#editLink");
       var editLinkHtml = "";
       if (editLinkElements.length > 0) {
@@ -146,9 +145,9 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
           "</div>";
       }
       var contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
-      elementToInclude.html(titleHtml + contentHtml);
-      var contentElement = fixIncludedHtml(includedPageUrl, elementToInclude.html(), includedPageNewLevelForH1);
-      return contentElement;
+      var elementToInclude = $("<div class='included-post-content border'/>")
+      elementToInclude.html(fixIncludedHtml(includedPageUrl, titleHtml, includedPageNewLevelForH1) + fixIncludedHtml(includedPageUrl, contentHtml, includedPageNewLevelForH1));
+      return elementToInclude;
   }
 }
 
