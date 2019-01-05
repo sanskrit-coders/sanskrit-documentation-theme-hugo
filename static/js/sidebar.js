@@ -1,14 +1,10 @@
 function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     var parentListId = parentListIdIn || "sb";
-    var itemUrlStripped = sidebarItem.url || "#";
+    var itemUrlStripped = urljoin(baseURL, sidebarItem.url) || "#";
     itemUrlStripped = itemUrlStripped.replace("index.html", "").replace("index.md", "").replace(".md", "/");
-    if (itemUrlStripped.startsWith("/")) {
-      itemUrlStripped = itemUrlStripped.toLowerCase();
-    }
-
-    var urlTarget = "";
-    if (itemUrlStripped.startsWith("http://") || itemUrlStripped.startsWith("https://") || itemUrlStripped.startsWith("ftp://")) {
-        urlTarget = "_newTab";
+    
+    if (itemUrlStripped.startsWith("/") && !itemUrlStripped.startsWith("/..")) {
+        itemUrlStripped = itemUrlStripped.toLowerCase();
     }
     // console.debug(itemUrlStripped);
     let anchorClasses = "";
@@ -28,17 +24,17 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
         // console.debug(title, itemUrlStripped);
         var itemTitleHtml;
         if (itemUrlStripped != "#") {
-          itemTitleHtml  = `<a href="${itemUrlStripped}" class="${anchorClasses}"> ${title}</a>`;
+            itemTitleHtml  = `<a href="${itemUrlStripped}" class="${anchorClasses}"> ${title}</a>`;
         } else {
-          itemTitleHtml  = `<a data-toggle="collapse" href="#${listId}" role="button" aria-expanded="false" aria-controls="${listId}"  class="${anchorClasses}"> ${title}</a>`;
+            itemTitleHtml  = `<a data-toggle="collapse" href="#${listId}" role="button" aria-expanded="false" aria-controls="${listId}"  class="${anchorClasses}"> ${title}</a>`;
         }
         var itemHtml =
-        `<li class="${liClass}"><span class="d-flex justify-content-between">` +
-        itemTitleHtml + "\n" +
-        `<a data-toggle="collapse" href="#${listId}" role="button" aria-expanded="false" aria-controls="${listId}"> <i class="fas fa-caret-down"></i></a>` +
-        "</span>\n" +
-        `<ul id='${listId}' class='${ulClass} collapse'>${contentHtml}\n</ul>\n` +
-        `</li>\n`;
+            `<li class="${liClass}"><span class="d-flex justify-content-between">` +
+            itemTitleHtml + "\n" +
+            `<a data-toggle="collapse" href="#${listId}" role="button" aria-expanded="false" aria-controls="${listId}"> <i class="fas fa-caret-down"></i></a>` +
+            "</span>\n" +
+            `<ul id='${listId}' class='${ulClass} collapse'>${contentHtml}\n</ul>\n` +
+            `</li>\n`;
     } else if (sidebarItem.url.startsWith("dir://")) {
         var dirUrl = sidebarItem.url.replace("dir://", "/").toLowerCase();
         if (dirUrl.endsWith("/")) {
@@ -57,8 +53,9 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
         }
     }
     else {
+        // console.debug(baseURL +itemUrlStripped);
         var title = sidebarItem.title || pageUrlToTitle[itemUrlStripped];
-        var itemHtml = `<li class="${liClass}"><a href="${baseURL + itemUrlStripped }"  class="${anchorClasses}" target="">${title}</a></li>`;
+        var itemHtml = `<li class="${liClass}"><a href="${itemUrlStripped }"  class="${anchorClasses}" target="">${title}</a></li>`;
     }
     return itemHtml;
 }
