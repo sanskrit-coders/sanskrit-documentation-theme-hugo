@@ -65,7 +65,7 @@ function fixIncludedHtml(url, html, newLevelForH1) {
      */
     var headers = jqueryElement.find(":header");
     if (headers.length > 0) {
-        var id_prefix = headers[0].id;
+        var id_prefix = url.replace("/", "_");
         headers.replaceWith(function() {
             var headerElement = $(this);
             // console.debug(headerElement);
