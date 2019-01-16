@@ -38,8 +38,8 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
             `</li>\n`;
     } else if (sidebarItem.url.startsWith("dir://")) {
         var dirUrl = sidebarItem.url.replace("dir://", "/").toLowerCase();
-        if (dirUrl.endsWith("/")) {
-            dirUrl = dirUrl.slice(0,-1);
+        if (!dirUrl.endsWith("/")) {
+            dirUrl = dirUrl + "/";
         }
         if (dirUrl in pageDirectoryToUrl) {
             var itemHtml = "";
