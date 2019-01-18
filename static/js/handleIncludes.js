@@ -155,6 +155,10 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
 
 async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) {
     var includedPageUrl = "../" + jsIncludeJqueryElement.attr("url").replace(".md", "/").toLowerCase();
+    if (includedPageUrl.endsWith("/")) {
+        // In case one loads file://x/y/z/ , the following is needed. 
+        includedPageUrl = includedPageUrl + "index.html";
+    }
     if (includedPageNewLevelForH1 == undefined) {
         includedPageNewLevelForH1 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
     }
