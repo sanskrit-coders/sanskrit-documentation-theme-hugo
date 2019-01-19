@@ -101,5 +101,6 @@
     //  - Android webview faced handleInclude invocation problems.
     //  - Somehow $(document).ready() and $(window).on(load, ..) did not seem to get all the headers in case of updateToc!
     onDocumentReadyTasks();
+    $(document).ready(onDocumentReadyTasks);
   </script>
 </html>

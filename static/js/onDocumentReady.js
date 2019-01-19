@@ -13,11 +13,12 @@ function setInlineCommentsInPostContent() {
 function onDocumentReadyTasks() {
   insertSidebarItems();
   // insertTopnavDropdownItems();
-  handleIncludes();
   // Update table of contents (To be called whenever page contents are updated).
   updateToc();
   setInlineCommentsInPostContent();
   fillAudioEmbeds();
   fillVideoEmbeds();
+  // For unknown reasons, handleIncludes() called first does not work as well 201901 desktop.
+  handleIncludes();
   setupDisqus();
 }

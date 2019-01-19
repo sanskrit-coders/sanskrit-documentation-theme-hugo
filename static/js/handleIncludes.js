@@ -156,8 +156,9 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
 async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) {
     if (jsIncludeJqueryElement.html().trim() != "") {
         console.warn("Refusing to refill element with non-empty html - ", jsIncludeJqueryElement);
-        return;
+        return "Already loaded";
     }
+    console.debug("Inserting include for " + $(this).html());
     var includedPageUrl = "../" + jsIncludeJqueryElement.attr("url").replace(".md", "/").toLowerCase();
     if (includedPageUrl.endsWith("/")) {
         // In case one loads file://x/y/z/ , the following is needed. 
@@ -200,7 +201,6 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
 function handleIncludes() {
     if ($('.js_include').length == 0) { return; }
     Promise.all($('.js_include').map(function() {
-        console.debug("Inserting include for " + $(this).html());
         var jsIncludeJqueryElement = $(this);
         // The actual filling happens in a separate thread!
         fillJsInclude(jsIncludeJqueryElement);
