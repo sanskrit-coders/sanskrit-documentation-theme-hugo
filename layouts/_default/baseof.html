@@ -69,6 +69,7 @@
     <script src="{{ relURL "js/sidebar.js" }}"></script>
     <script src="{{ relURL "js/toc.js" }}"></script>
     <script src="{{ relURL "js/onDocumentReady.js" }}"></script>
+    <script src="{{ relURL "js/disqus.js" }}"></script>
   </head>
 
   <body class="ma0 {{ $.Param "body_classes"  | default "bg-near-white"}}{{ with getenv "HUGO_ENV" }} {{ . }}{{ end }}">
@@ -101,5 +102,4 @@
     //  - Somehow $(document).ready() and $(window).on(load, ..) did not seem to get all the headers in case of updateToc!
     onDocumentReadyTasks();
   </script>
-  <script src="{{ relURL "js/disqus.js" }}"></script>
 </html>
