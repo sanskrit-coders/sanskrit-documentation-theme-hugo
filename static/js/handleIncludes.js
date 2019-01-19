@@ -158,7 +158,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         console.warn("Refusing to refill element with non-empty html - ", jsIncludeJqueryElement);
         return "Already loaded";
     }
-    console.debug("Inserting include for " + $(this).html());
+    console.info("Inserting include for ", jsIncludeJqueryElement);
     var includedPageUrl = "../" + jsIncludeJqueryElement.attr("url").replace(".md", "/").toLowerCase();
     if (includedPageUrl.endsWith("/")) {
         // In case one loads file://x/y/z/ , the following is needed. 
