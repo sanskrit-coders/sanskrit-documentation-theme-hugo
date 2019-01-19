@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="{{ relURL "node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css" }}">
     <link rel="stylesheet" href="{{ relURL "css/fonts.css" }}">
     {{ $style := resources.Get "css/class_styles.scss" | toCSS | minify }}
-    <link rel="stylesheet" href="{{ $style.Permalink  | safeURL}}">
+    <link rel="stylesheet" href="{{ $style.RelPermalink | safeURL}}">
     <script src="{{ relURL "node_modules/url-join/lib/url-join.js" }}"></script>
     <script src="{{ relURL "node_modules/jquery/dist/jquery.min.js" }}"></script>
     <script src="{{ relURL "node_modules/jquery-csv/src/jquery.csv.min.js" }}"></script>
