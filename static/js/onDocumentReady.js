@@ -17,7 +17,7 @@ function onDocumentReadyTasks() {
   // Update table of contents (To be called whenever page contents are updated).
   updateToc();
   setInlineCommentsInPostContent();
-  fillAudeoEmbeds();
+  fillAudioEmbeds();
   fillVideoEmbeds();
   setupDisqus();
 }
