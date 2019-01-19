@@ -104,5 +104,3 @@ function setUpNavigationLinks(headers) {
 
 }
 
-// Update table of contents (To be called whenever page contents are updated).
-$( window ).on( "load", updateToc());

@@ -41,5 +41,3 @@ function fillAudioEmbeds() {
         }
     }, true);
 }
-
-$(document).ready(fillAudioEmbeds);

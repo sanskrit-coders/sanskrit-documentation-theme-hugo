@@ -96,8 +96,10 @@
     {{ block "footer" . }}{{ partialCached "site-footer.html" . }}{{ end }}
   </body>
   <script type='text/javascript'>
-    // Somehow $(document).ready() and $(window).on(load, ..) did not seem to get all the headers!
-    updateToc();
+    // Reasons for not invoking the below using $(document).ready():
+    //  - Android webview faced handleInclude invocation problems.
+    //  - Somehow $(document).ready() and $(window).on(load, ..) did not seem to get all the headers in case of updateToc!
+    onDocumentReadyTasks();
   </script>
   <script src="{{ relURL "js/disqus.js" }}"></script>
 </html>

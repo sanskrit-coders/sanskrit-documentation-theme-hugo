@@ -9,4 +9,15 @@ function setInlineCommentsInPostContent() {
     $("#post_content").html(setInlineComments($("#post_content").html()));
   }
 }
-$(document).ready(setInlineCommentsInPostContent);
+
+function onDocumentReadyTasks() {
+  insertSidebarItems();
+  // insertTopnavDropdownItems();
+  handleIncludes();
+  // Update table of contents (To be called whenever page contents are updated).
+  updateToc();
+  setInlineCommentsInPostContent();
+  fillAudeoEmbeds();
+  fillVideoEmbeds();
+  setupDisqus();
+}

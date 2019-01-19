@@ -65,6 +65,10 @@ function insertSidebarItems() {
     var sidebar = sidebarsData[sidebarId];
     // $("#sidebarTitle a").html(sidebar.title);
     // console.debug(sidebar);
+    if ($("#displayed_sidebar li").length > 0) {
+        console.warn("Exiting without reinserting items.");
+        return;
+    }
     for (let sidebarItem of sidebar.contents) {
         $("#displayed_sidebar").append(getSidebarItemHtml(sidebarItem));
     }
@@ -86,12 +90,6 @@ function insertTopnavDropdownItems() {
     $("li.active").parents('li').removeClass("inactive");
 }
 
-$(document).ready(function() {
-    insertSidebarItems();
-    // insertTopnavDropdownItems();
-
-});
-
 // Code to make the "Nav" button, which toggles the sidebar.
 var toggleSidebar = function() {
     $("#sidebar").toggle();
@@ -100,8 +98,5 @@ var toggleSidebar = function() {
     $("#tg-sb-icon-content-pane").toggleClass('fa-toggle-on');
     $("#tg-sb-icon-content-pane").toggleClass('fa-toggle-off');
 };
-
-$(document).ready(function() {
-    $("#tg-sb-link").click(toggleSidebar);
-    // $("#hide-sb-link").click(toggleSidebar);
-});
+$("#tg-sb-link").click(toggleSidebar);
+// $("#hide-sb-link").click(toggleSidebar);

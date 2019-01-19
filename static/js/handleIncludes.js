@@ -154,6 +154,10 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
 }
 
 async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) {
+    if (jsIncludeJqueryElement.html().trim() != "") {
+        console.warn("Refusing to refill element with non-empty html - ", jsIncludeJqueryElement);
+        return;
+    }
     var includedPageUrl = "../" + jsIncludeJqueryElement.attr("url").replace(".md", "/").toLowerCase();
     if (includedPageUrl.endsWith("/")) {
         // In case one loads file://x/y/z/ , the following is needed. 
@@ -193,7 +197,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
 // Process includes of the form:
 // <div class="js_include" url="index.md"/>
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
-$( window ).on( "load", function() {
+function handleIncludes() {
     if ($('.js_include').length == 0) { return; }
     Promise.all($('.js_include').map(function() {
         console.debug("Inserting include for " + $(this).html());
@@ -214,4 +218,4 @@ $( window ).on( "load", function() {
                 updateToc();
             }, 5000);
         });
-});
+}

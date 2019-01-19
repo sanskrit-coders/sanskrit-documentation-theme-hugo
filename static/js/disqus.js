@@ -17,5 +17,3 @@ function setupDisqus() { // DON'T EDIT BELOW THIS LINE
     s.setAttribute('data-timestamp', +new Date());
     (d.head || d.body).appendChild(s);
 }
-
-$(document).ready(setupDisqus);

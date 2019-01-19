@@ -48,5 +48,3 @@ function fillVideoEmbeds() {
         videoEmbed(videoEmbedTag);
     });
 }
-
-$(document).ready(fillVideoEmbeds);
