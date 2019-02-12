@@ -50,7 +50,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
                 itemHtml = `${itemHtml}\n ${getSidebarItemHtml(subitem)}`;
             }
         } else {
-            console.error(`No such directory ${dirUrl}`)
+            console.error(`No such directory ${dirUrl}`);
         }
     }
     else {

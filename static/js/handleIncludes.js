@@ -185,7 +185,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
             titleHtml = "<h1 id='" + title + "'>" + title + "</h1>";
         }
         var elementToInclude = titleHtml + "Could not get: " + includedPageUrl + " See debug messages in console for details.";
-        fixIncludedHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1)
+        fixIncludedHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
         jsIncludeJqueryElement.html(elementToInclude);
         console.debug(error);
     }).then(function(v) {
