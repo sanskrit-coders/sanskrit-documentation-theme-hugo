@@ -184,7 +184,9 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
             return Promise.all(secondLevelIncludes.map(function () {
                 console.debug("Secondary include: ", $(this));
                 return fillJsInclude($(this));
-            }));
+            })).then(function () {
+                return jsIncludeJqueryElement;
+            });
         } else {
             return jsIncludeJqueryElement;
         }
