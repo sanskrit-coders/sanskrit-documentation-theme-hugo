@@ -179,7 +179,15 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         // console.log(contentElement);
         jsIncludeJqueryElement.html(contentElement);
         // The below did not work - second level includes did not resolve.
-        // return Promise.all(jsIncludeJqueryElement.find('.js_include').map(function () {fillJsInclude($(this));}));
+        let secondLevelIncludes = jsIncludeJqueryElement.find('.js_include');
+        if (secondLevelIncludes.length > 0) {
+            return Promise.all(secondLevelIncludes.map(function () {
+                console.debug("Secondary include: ", $(this));
+                return fillJsInclude($(this));
+            }));
+        } else {
+            return jsIncludeJqueryElement;
+        }
     }).catch(function(error){
         var titleHtml = "";
         var title = "Missing page.";
@@ -190,10 +198,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         fixIncludedHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
         jsIncludeJqueryElement.html(elementToInclude);
         console.warn("An error!", error);
-    }).then(function(v) {
-        // fillAudioEmbeds();
-        // fillVideoEmbeds();
-        // updateToc();
+        return jsIncludeJqueryElement;
     });
 }
 
@@ -206,7 +211,7 @@ function handleIncludes() {
     return Promise.all($('.js_include').map(function() {
         var jsIncludeJqueryElement = $(this);
         // The actual filling happens in a separate thread!
-        fillJsInclude(jsIncludeJqueryElement);
+        return fillJsInclude(jsIncludeJqueryElement);
     }))
         .then(function(values) {
             console.log("Done including.", values);
