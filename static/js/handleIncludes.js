@@ -178,7 +178,8 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     return getAjaxResponsePromise.then(processingFn).then(function(contentElement) {
         // console.log(contentElement);
         jsIncludeJqueryElement.html(contentElement);
-        // TODO: The following calls lead to major UI delays and problems on pages such as saMskAra/mantra/sangrahah/paravastu-saama/udakashanti/#. Must use worker instead.
+        // The below did not work - second level includes did not resolve.
+        // return Promise.all(jsIncludeJqueryElement.find('.js_include').map(function () {fillJsInclude($(this));}));
     }).catch(function(error){
         var titleHtml = "";
         var title = "Missing page.";
@@ -207,9 +208,6 @@ function handleIncludes() {
         // The actual filling happens in a separate thread!
         fillJsInclude(jsIncludeJqueryElement);
     }))
-    // The below did not help.
-        .then(function() { console.debug("Waiting")
-            new Promise(res => setTimeout(res, 5000));})
         .then(function(values) {
             console.log("Done including.", values);
             // The below lines do not having any effect if not called without the timeout.
@@ -219,5 +217,6 @@ function handleIncludes() {
                 fillVideoEmbeds();
                 updateToc();
             }, 5000);
+            return values;
         });
 }
