@@ -25,6 +25,26 @@ function absoluteUrl(base, relative) {
     return stack.join("/");
 }
 
+async function fixSubIncludes(url, jqueryElement, newLevelForH1) {
+    // Deal with includes within includes. Do this before fixing images urls etc.. because there may be images within the newly included html.
+    return Promise.all(jqueryElement.find('.js_include').map(function() {
+        if (newLevelForH1 < 1) {
+            console.error("Ignoring invalid newLevelForH1: %d, using 6", newLevelForH1);
+            newLevelForH1 = 6;
+        }
+        var jsIncludeJqueryElement = $(this);
+        console.debug(url, url.replace(/^\.\.\//, "").replace("/index.html$", ".md"), $(this).attr("url"));
+        // The url which we get here is warped by the calling function, which includes an extra ../ in the beginning. Further, xyz.md files get the terminal "xyz/index.html". Both of these must be undone to make the include element url attribute sane. 
+        $(this).attr("url", absoluteUrl(url.replace(/^\.\.\//, "").replace("/index.html", ".md"), $(this).attr("url")));
+        var includedPageNewLevelForH2 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
+        if (includedPageNewLevelForH2 == undefined) {
+            includedPageNewLevelForH2 = 6;
+        }
+        includedPageNewLevelForH2 = Math.min(6, ((includedPageNewLevelForH2 - 2) + newLevelForH1));
+        fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH2);
+    })).then(function () {return jqueryElement});
+}
+
 // WHen you include html from one page within another, you need to fix image urls, anchor urls etc..
 function fixIncludedHtml(url, html, newLevelForH1) {
     // We want to use jquery to parse html, but without loading images. Hence this.
@@ -42,22 +62,7 @@ function fixIncludedHtml(url, html, newLevelForH1) {
     jqueryElement.find("#toc").remove();
     jqueryElement.find("#toc_header").remove();
     jqueryElement.find(".back-to-top").remove();
-
-    // Deal with includes within includes. Do this before fixing images urls etc.. because there may be images within the newly included html.
-    jqueryElement.find('.js_include').each(function() {
-        if (newLevelForH1 < 1) {
-            console.error("Ignoring invalid newLevelForH1: %d, using 6", newLevelForH1);
-            newLevelForH1 = 6;
-        }
-        var jsIncludeElement = $(this);
-        var includedPageNewLevelForH2 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
-        if (includedPageNewLevelForH2 == undefined) {
-            includedPageNewLevelForH2 = 6;
-        }
-        includedPageNewLevelForH2 = Math.min(6, ((includedPageNewLevelForH2 - 2) + newLevelForH1));
-        fillJsInclude($(this), includedPageNewLevelForH2);
-    });
-
+    
     /*
     Fix headers in the included html so as to not mess up the table of contents
     of the including page.
@@ -149,7 +154,7 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
         var contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
         var elementToInclude = $("<div class='included-post-content border'/>")
         elementToInclude.html(fixIncludedHtml(includedPageUrl, titleHtml, includedPageNewLevelForH1) + fixIncludedHtml(includedPageUrl, contentHtml, includedPageNewLevelForH1));
-        return elementToInclude;
+        return fixSubIncludes(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
     }
 }
 
@@ -187,7 +192,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         var elementToInclude = titleHtml + "Could not get: " + includedPageUrl + " See debug messages in console for details.";
         fixIncludedHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
         jsIncludeJqueryElement.html(elementToInclude);
-        console.debug(error);
+        console.warn("An error!", error);
     }).then(function(v) {
         // fillAudioEmbeds();
         // fillVideoEmbeds();
