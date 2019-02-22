@@ -23,7 +23,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     if(sidebarItem.hasOwnProperty("contents")) {
         var contentHtml = "";
         var title = sidebarItem.title || pageUrlToTitle[itemUrlStripped];
-        var listId = `${parentListId}_${title.replace(/\w/g, "_")}`;
+        var listId = `${parentListId}_${Math.floor(Math.random()*10000)}`;
         for(let subitem of sidebarItem.contents) {
             contentHtml = `${contentHtml}\n ${getSidebarItemHtml(subitem, listId)}`;
         }
