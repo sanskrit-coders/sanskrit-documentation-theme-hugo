@@ -1,7 +1,13 @@
 function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     var parentListId = parentListIdIn || "sb";
-    var itemUrlStripped = sidebarItem.url || "#";
-    itemUrlStripped = itemUrlStripped.replace("index.html", "").replace("index.md", "").replace(".md", "/");
+    let finalUrl = sidebarItem.url || "#";
+    var itemUrlStripped = finalUrl;
+    let isExternalLink = finalUrl.startsWith("http") || finalUrl.startsWith("ftp");
+        
+    if (!isExternalLink) {
+        itemUrlStripped = itemUrlStripped.replace("index.html", "").replace("index.md", "").replace(".md", "/");
+        finalUrl = urljoin(baseURL, itemUrlStripped);
+    }
 
     if (itemUrlStripped.startsWith("/") && !itemUrlStripped.startsWith("/..")) {
         itemUrlStripped = itemUrlStripped.toLowerCase();
@@ -10,7 +16,6 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     let anchorClasses = "";
     let ulClass = "list pl2";
     var liClass = "inactive";  // list-group-item-* is a bootstrap class.
-    let urlToLink = urljoin(baseURL, itemUrlStripped);
     if (pageUrl.replace(basePath, "/") == itemUrlStripped) {
         liClass = "active underline";
     }
@@ -25,7 +30,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
         // console.debug(title, itemUrlStripped);
         var itemTitleHtml;
         if (itemUrlStripped != "#") {
-            itemTitleHtml  = `<a href="${urlToLink}" class="${anchorClasses}"> ${title}</a>`;
+            itemTitleHtml  = `<a href="${finalUrl}" class="${anchorClasses}"> ${title}</a>`;
         } else {
             itemTitleHtml  = `<a data-toggle="collapse" href="#${listId}" role="button" aria-expanded="false" aria-controls="${listId}"  class="${anchorClasses}"> ${title}</a>`;
         }
@@ -56,7 +61,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     else {
         // console.debug(baseURL +itemUrlStripped);
         var title = sidebarItem.title || pageUrlToTitle[itemUrlStripped];
-        var itemHtml = `<li class="${liClass}"><a href="${urlToLink }"  class="${anchorClasses}" target="">${title}</a></li>`;
+        var itemHtml = `<li class="${liClass}"><a href="${finalUrl }"  class="${anchorClasses}" target="">${title}</a></li>`;
     }
     return itemHtml;
 }
