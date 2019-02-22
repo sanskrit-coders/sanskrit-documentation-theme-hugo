@@ -23,6 +23,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     if(sidebarItem.hasOwnProperty("contents")) {
         var contentHtml = "";
         var title = sidebarItem.title || pageUrlToTitle[itemUrlStripped];
+        // If the listId included devanAgarI characters, collapsing and uncollapsing would not work for some unknown reason. So, we use random numbers as ids.
         var listId = `${parentListId}_${Math.floor(Math.random()*10000)}`;
         for(let subitem of sidebarItem.contents) {
             contentHtml = `${contentHtml}\n ${getSidebarItemHtml(subitem, listId)}`;
