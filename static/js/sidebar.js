@@ -22,7 +22,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     // console.debug(sidebarItem);
     if(sidebarItem.hasOwnProperty("contents")) {
         var contentHtml = "";
-        var title = sidebarItem.title || pageUrlToTitle[itemUrlStripped];
+        var title = sidebarItem.title || pageUrlToParams[itemUrlStripped].title;
         // If the listId included devanAgarI characters, collapsing and uncollapsing would not work for some unknown reason. So, we use random numbers as ids.
         var listId = `${parentListId}_${Math.floor(Math.random()*10000)}`;
         for(let subitem of sidebarItem.contents) {
@@ -61,7 +61,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     }
     else {
         // console.debug(baseURL +itemUrlStripped);
-        var title = sidebarItem.title || pageUrlToTitle[itemUrlStripped];
+        var title = sidebarItem.title || pageUrlToParams[itemUrlStripped].title;
         var itemHtml = `<li class="${liClass}"><a href="${finalUrl }"  class="${anchorClasses}" target="">${title}</a></li>`;
     }
     return itemHtml;
