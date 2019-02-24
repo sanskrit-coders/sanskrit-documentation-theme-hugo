@@ -13,7 +13,6 @@
     "jquery-ui-dist": "^1.12.1",
     "mark.js": "^8.11.1",
     "tachyons": "^4.11.1",
-    "url-join": "^4.0.0",
-    "weighted-random": "^0.1.0"
+    "url-join": "^4.0.0"
   }
 }
