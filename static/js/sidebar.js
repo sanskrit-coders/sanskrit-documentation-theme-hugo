@@ -90,15 +90,14 @@ function insertSidebarItems() {
     $("li.active").parents('ul').removeClass("collapse");
 }
 
-function insertTopnavDropdownItems() {
-    var topnavDropdown = sidebarsData[topnavId];
-    // console.debug(topnavDropdown);
-    for (let item of topnavDropdown.contents) {
-        $("#topnav_dropdown").append(getSidebarItemHtml(item));
+function insertNavItems(navbarId, items) {
+    if (topnavId && !$(navbarId).attr("addedCustomItems")) {
+        // console.debug(topnavDropdown);
+        for (let item of items) {
+            $(navbarId).append(getSidebarItemHtml(item));
+        }
+        $(navbarId).attr("addedCustomItems", "true");
     }
-    // this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page.
-    $("li.active").parents('li').addClass("active");
-    $("li.active").parents('li').removeClass("inactive");
 }
 
 // Code to make the "Nav" button, which toggles the sidebar.

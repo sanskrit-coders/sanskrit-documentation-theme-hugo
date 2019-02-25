@@ -12,7 +12,12 @@ function setInlineCommentsInPostContent() {
 
 function onDocumentReadyTasks() {
   insertSidebarItems();
-  // insertTopnavDropdownItems();
+  if (topnavId) {
+    insertNavItems("#div_top_bar", sidebarsData[topnavId]);
+  }
+  if (footernavId) {
+    insertNavItems("#div_footer_bar", sidebarsData[footernavId]);
+  }
   // Update table of contents (To be called whenever page contents are updated).
   updateToc();
   setInlineCommentsInPostContent();
