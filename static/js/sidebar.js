@@ -19,7 +19,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     // console.debug(sidebarItem);
     if(sidebarItem.hasOwnProperty("contents")) {
         var contentHtml = "";
-        var title = sidebarItem.title || pageUrlToParams[itemUrlStripped].title;
+        var title = sidebarItem.title || pageUrlToParams.get(itemUrlStripped).title;
         // If the listId included devanAgarI characters, collapsing and uncollapsing would not work for some unknown reason. So, we use random numbers as ids.
         var listId = `${parentListId}_${Math.floor(Math.random()*10000)}`;
         for(let subitem of sidebarItem.contents) {
@@ -60,8 +60,8 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
         // console.debug(baseURL +itemUrlStripped);
         var title = sidebarItem.title;
         if (!title) {
-            if (pageUrlToParams.hasOwnProperty(itemUrlStripped)) {
-                var title = sidebarItem.title || pageUrlToParams[itemUrlStripped].title;
+            if (pageUrlToParams.has(itemUrlStripped)) {
+                var title = sidebarItem.title || pageUrlToParams.get(itemUrlStripped).title;
             } else {
                 console.error(`${itemUrlStripped} not present in pageUrlToParams. Something is wrong with the sidebar definition. So can't figure out title.`);
             }
