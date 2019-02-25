@@ -9,9 +9,6 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
         finalUrl = urljoin(baseURL, itemUrlStripped);
     }
 
-    if (itemUrlStripped.startsWith("/") && !itemUrlStripped.startsWith("/..")) {
-        itemUrlStripped = itemUrlStripped.toLowerCase();
-    }
     // console.debug(itemUrlStripped);
     let anchorClasses = "";
     let ulClass = "list pl2";
@@ -43,7 +40,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
             `<ul id='${listId}' class='${ulClass} collapse'>${contentHtml}\n</ul>\n` +
             `</li>\n`;
     } else if (sidebarItem.url.startsWith("dir://")) {
-        var dirUrl = sidebarItem.url.replace("dir://", "/").toLowerCase();
+        var dirUrl = sidebarItem.url.replace("dir://", "/");
         if (!dirUrl.endsWith("/")) {
             dirUrl = dirUrl + "/";
         }
@@ -61,7 +58,14 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     }
     else {
         // console.debug(baseURL +itemUrlStripped);
-        var title = sidebarItem.title || pageUrlToParams[itemUrlStripped].title;
+        var title = sidebarItem.title;
+        if (!title) {
+            if (pageUrlToParams.hasOwnProperty(itemUrlStripped)) {
+                var title = sidebarItem.title || pageUrlToParams[itemUrlStripped].title;
+            } else {
+                console.error(`${itemUrlStripped} not present in pageUrlToParams. Something is wrong with the sidebar definition. So can't figure out title.`);
+            }
+        }
         var itemHtml = `<li class="${liClass}"><a href="${finalUrl }"  class="${anchorClasses}" target="">${title}</a></li>`;
     }
     return itemHtml;
