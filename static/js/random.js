@@ -1,3 +1,6 @@
+// Replacing the not-very-random default with https://github.com/davidbau/seedrandom .
+Math.seedrandom()
+
 function weightedRandom(weights) {
     var totalWeight = 0,
         i, random;
