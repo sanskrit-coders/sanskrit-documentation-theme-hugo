@@ -20,12 +20,15 @@ function weightedRandom(weights) {
 };
 
 
-function redirectToRandomPage(weightingFn) {
+function redirectToRandomPage(weightingFn, manualRedirectionDiv) {
     var urls = Array.from(pageUrlToParams.keys());
     var weights = urls.map(weightingFn);
     var randomUrl = baseURL + urls[weightedRandom(weights)];
     console.log(randomUrl);
 // alert(randomUrl);
+    if (manualRedirectionDiv) {
+        manualRedirectionDiv.innerHTML = `Redirecting <a href='${randomUrl}'>here</a>`;
+    }
     if (randomUrl) {
         window.location.replace(randomUrl);
     }
