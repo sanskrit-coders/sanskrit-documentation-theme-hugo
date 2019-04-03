@@ -18,6 +18,9 @@ function onDocumentReadyTasks() {
   if (footernavId) {
     insertNavItems("#div_footer_bar", sidebarsData[footernavId]);
   }
+  if (unicodeScript) {
+    $("#post_content").attr("unicode_script", unicodeScript);
+  }
   // Update table of contents (To be called whenever page contents are updated).
   updateToc();
   setInlineCommentsInPostContent();

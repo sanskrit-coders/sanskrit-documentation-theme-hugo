@@ -5,7 +5,7 @@
     <div class="css-treeview box">
         {{ range .Pages.ByDate.Reverse }}
         <li>
-            <a href="{{.Permalink}}">{{ if not .Date.IsZero }}{{.Date.Format "2006-01-02"}} | {{ end }}{{.Title}}</a>
+            <a href="{{.Permalink}}">{{.Title}} {{ if not .Date.IsZero }} | {{.Date.Format "2006-01-02"}}{{ end }}</a>
         </li>
         {{ end }}
     </div>
