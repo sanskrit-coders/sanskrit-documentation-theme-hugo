@@ -12,6 +12,7 @@
     "jquery-csv": "^0.8.9",
     "jquery-ui-dist": "^1.12.1",
     "mark.js": "^8.11.1",
+    "seedrandom": "^3.0.1",
     "tachyons": "^4.11.1",
     "url-join": "^4.0.0"
   }
