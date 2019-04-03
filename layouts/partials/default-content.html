@@ -3,8 +3,7 @@
     <h1 id="{{.Params.title}}">{{.Params.title}}</h1>
     {{ if not .Date.IsZero }}{{.Date.Format "2006-01-02"}} {{ end }}
   </header>
-  <aside>
-  <div id="toc_card" class="card border ">
+  <aside id="toc_card" class="card border ">
     <div id="toc_header" class="card-title border d-flex justify-content-between">
         <a data-toggle="collapse" href="#toc_body" role="button" aria-expanded="true" aria-controls="toc_body">
           What's in this page? <i class="fas fa-caret-down"></i> </a>
@@ -15,9 +14,6 @@
       <ul id="toc_ul" class="list p-0">
       </ul>
     </div>
-  </div>
-  <div  id="toc">
-  </div>
   </aside>
   <div id="post_content">
   {{ .Content }}

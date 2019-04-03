@@ -106,6 +106,3 @@ function insertNavItems(navbarId, items) {
         $(navbarId).attr("addedCustomItems", "true");
     }
 }
-
-$("#tg-sb-link").click(toggleSidebar);
-// $("#hide-sb-link").click(toggleSidebar);

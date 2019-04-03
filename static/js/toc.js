@@ -18,6 +18,7 @@ function updateToc(options) {
     // console.debug(headers.length);
     if (headers.length < settings.minimumHeaders) {
       console.log(`Too few headers ${headers.length} < ${settings.minimumHeaders}. Returning.`);
+      $("#toc_card").hide();
       return;
     }
 
