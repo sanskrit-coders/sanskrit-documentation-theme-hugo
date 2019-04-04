@@ -1,4 +1,4 @@
-{{ $cleaned_title := replace .File.LogicalName " " "_"}}
+{{ $cleaned_title := replace .File.Path " " "_"}}
 {{ $cleaned_title := replace $cleaned_title "." "_"}}
 {{ $cleaned_title := replace $cleaned_title "/" "_"}}
 <aside class="card border" id="section-tree-item-{{$cleaned_title}}">
