@@ -1,7 +1,6 @@
 {{ define "main" }}
 <main>
     {{partial "default-content" .}}
-    {{ $home := .Site.Home }}
     <div class="css-treeview box">
         {{ range .Pages.ByDate.Reverse }}
         <li>
