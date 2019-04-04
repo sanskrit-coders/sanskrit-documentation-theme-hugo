@@ -1,3 +1,7 @@
 {{ define "main" }}
+<header>
+    <h1 id="{{.Params.title}}">{{.Params.title}}</h1>
+    {{ if not .Date.IsZero }}{{.Date.Format "2006-01-02"}} {{ end }}
+</header>
 {{partial "default-content" .}}
 {{ end }}
