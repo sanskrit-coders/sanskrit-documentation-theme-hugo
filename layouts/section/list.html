@@ -13,10 +13,14 @@
 <ul>
     <li><input type="checkbox" id="section-tree-item-{{.Title}}" checked="checked" /><label for="section-tree-item-{{.Title}}">{{.Title}}</label>
         <ul>
-            {{ range .Pages.ByDate.Reverse }}
+            {{$pages := .Pages.ByTitle}}
+            {{if eq .Params.order "reverseDate"}}
+            {{ $pages := .Pages.ByDate.Reverse }}
+            {{ end }}
+            {{ range $pages}}
             {{partial "article-params-card" .}}
             {{ end }}
-            {{ range .Sections.Reverse}}
+            {{ range .Sections.ByTitle}}
             <li>
                 {{ template "section-tree-nav" . }}
             </li>
