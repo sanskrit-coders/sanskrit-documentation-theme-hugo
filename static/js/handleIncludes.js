@@ -159,8 +159,10 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         console.warn("Refusing to refill element with non-empty html - ", jsIncludeJqueryElement);
         return "Already loaded";
     }
+    console.debug(fileParams.baseFileName);
     console.info("Inserting include for ", jsIncludeJqueryElement);
-    var includedPageUrl = "../" + jsIncludeJqueryElement.attr("url").replace(".md", "/");
+    let sameLevelRelativePath = (fileParams.baseFileName == "_index")? "./": "../";
+    var includedPageUrl = sameLevelRelativePath + jsIncludeJqueryElement.attr("url").replace(".md", "/");
     if (includedPageUrl.endsWith("/")) {
         // In case one loads file://x/y/z/ , the following is needed. 
         includedPageUrl = includedPageUrl + "index.html";

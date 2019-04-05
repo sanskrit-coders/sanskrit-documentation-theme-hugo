@@ -2,7 +2,13 @@
     let baseURL = "{{.Site.BaseURL}}";
     let basePath = "/" + baseURL.split("/").slice(3).join("/");
     let siteParams = JSON.parse("{{.Site.Params | jsonify}}");
-    let pageDefaultsList = JSON.parse({{.Site.Data.page_defaults | jsonify}});
+    let fileParams = JSON.parse(`{
+      "path": "{{.File.Path}}",
+      "logicalName": "{{.File.LogicalName}}",
+      "baseFileName": "{{.File.BaseFileName}}",
+      "dir": "{{.File.Dir}}"
+    }`);
+    let pageDefaultsList = JSON.parse("{{.Site.Data.page_defaults | jsonify}}");
     let sidebarsData = JSON.parse("{{$.Site.Data.sidebars | jsonify}}");
     let autocompletePageUrl = "{{ "data/pages.tsv" | relURL }}";
 
