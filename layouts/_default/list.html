@@ -2,7 +2,7 @@
 <main>
     {{partial "default-content" .}}
     <div class="css-treeview box">
-        {{ range .Pages.ByDate.Reverse }}
+        {{ range .Pages}}
         <li>
             {{partial "article-params-card" .}}
         </li>

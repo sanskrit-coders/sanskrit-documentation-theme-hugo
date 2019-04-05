@@ -13,13 +13,19 @@
 <ul>
     <li><input type="checkbox" id="section-tree-item-{{.Title}}" checked="checked" /><label for="section-tree-item-{{.Title}}">{{.Title}}</label>
         <ul>
-            {{$pages := .Pages.ByTitle}}
+            <!--This conditional ordering must be done more elegantly. Conditionally (re)assigning $pages within the if condition does not work.-->
             {{if eq .Params.order "reverseDate"}}
             {{ $pages := .Pages.ByDate.Reverse }}
-            {{ end }}
             {{ range $pages}}
             {{partial "article-params-card" .}}
             {{ end }}
+            {{ else }}
+            {{$pages := .Pages.ByTitle}}
+            {{ range $pages}}
+            {{partial "article-params-card" .}}
+            {{ end }}
+            {{ end }}
+            
             {{ range .Sections.ByTitle}}
             <li>
                 {{ template "section-tree-nav" . }}
