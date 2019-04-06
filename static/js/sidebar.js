@@ -13,7 +13,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     let anchorClasses = "";
     let ulClass = "list pl2";
     var liClass = "inactive";  // list-group-item-* is a bootstrap class.
-    if (pageUrl.replace(basePath, "/") == itemUrlStripped) {
+    if (pageUrlMinusBasePath == itemUrlStripped) {
         liClass = "active underline";
     }
     // console.debug(sidebarItem);
