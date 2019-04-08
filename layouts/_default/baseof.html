@@ -50,10 +50,13 @@
     <script src="{{ relURL "node_modules/@sanskrit-coders/sanscript/sanscript.js" }}"></script>
     <script src="{{ relURL "node_modules/seedrandom/seedrandom.min.js" }}"></script>
 
-    {{ partialCached "hugo-vars-to-js-general.html" .}}
+    {{ partialCached "hugo-site-vars-to-js-general.html" .}}
     <script>
-    let pageParams = JSON.parse("{{.Page.Params | jsonify }}") || {};
-    let pageUrl = "{{.URL}}";
+    // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds this partial just once and includes it everywhere.
+    let pageUrlRelative = "{{.URL}}";
+    let pageUrlMinusBasePath = pageUrlRelative.replace(basePath, "/")
+    let pageParams = pageUrlToParams.get(pageUrlMinusBasePath) || {};
+    let pageFileParams = pageUrlToFileParams.get(pageUrlMinusBasePath) || {};
     let pageSource = "{{.File.Path}}";
     console.log(pageSource);
     var pageDefaults;

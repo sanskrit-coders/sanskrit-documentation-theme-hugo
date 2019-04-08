@@ -160,7 +160,8 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         return "Already loaded";
     }
     console.info("Inserting include for ", jsIncludeJqueryElement);
-    var includedPageUrl = "../" + jsIncludeJqueryElement.attr("url").replace(".md", "/");
+    let sameLevelRelativePath = (pageFileParams.baseFileName == "_index")? "./": "../";
+    var includedPageUrl = sameLevelRelativePath + jsIncludeJqueryElement.attr("url").replace(".md", "/");
     if (includedPageUrl.endsWith("/")) {
         // In case one loads file://x/y/z/ , the following is needed. 
         includedPageUrl = includedPageUrl + "index.html";
