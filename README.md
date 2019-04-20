@@ -31,3 +31,8 @@ disablePathToLower = true Since we assume mixed case to have special meaning.
 
 ### canonifyURLs
 canonifyURLs = True won't work well as of 20190304. .URL variable does will then not include the subdirectory portion of the basepath (ie kAvya/ bit in http://localhost:1313/kAvya/), leading to urls like http://localhost:1313/TIkA/padya/kAlidAsa/raghuvaMsha/01/ instead of  http://localhost:1313/kAvya/TIkA/padya/kAlidAsa/raghuvaMsha/01/.
+
+
+## Code Contributions
+Javascript and css dependencies are mostly managed with npm and webpack.
+If you modify javascript (src folder) or add some bundled css, you must rerun webpack.  

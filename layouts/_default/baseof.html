@@ -54,10 +54,10 @@
     // console.debug(pageParams);
     </script>
     <script src="{{ relURL "dist/main-bundle.js" }}"></script>
-    <script src="{{ relURL "src/disqus.js" }}"></script>
+    <script src="{{ relURL "dist/disqus.js" }}"></script>
     
-    <link rel="stylesheet" href="{{ relURL "node_modules/@fortawesome/fontawesome-free/css/solid.min.css" }}">
-    <link rel="stylesheet" href="{{ relURL "node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css" }}">
+    <link rel="stylesheet" href="{{ relURL "css/@fortawesome/fontawesome-free/css/solid.min.css" }}">
+    <link rel="stylesheet" href="{{ relURL "css/@fortawesome/fontawesome-free/css/fontawesome.min.css" }}">
     <link rel="stylesheet" href="{{ relURL "css/fonts.css" }}">
     <link rel="stylesheet" href="{{ relURL "css/treeview.css" }}">
     {{ $style := resources.Get "css/class_styles.scss" | toCSS | minify }}
