@@ -2,8 +2,8 @@ var webpack = require("webpack");
 const path = require('path');
 module.exports = {
     entry: {
-        main: "./js/onDocumentReady.js",
-        search: "./js/search.js"
+        main: "./src/main.js",
+        search: "./src/search.js"
     },
     output: {
         filename: "[name]-bundle.js",
@@ -17,5 +17,14 @@ module.exports = {
             $: "jquery",
             jQuery: "jquery"
         })
-    ]
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            },
+        ]
+    },
+    
 };

@@ -7,11 +7,11 @@
     "build": "webpack"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.6.3",
+    "@fortawesome/fontawesome-free": "^5.8.1",
     "@sanskrit-coders/sanscript": "^1.0.2",
     "bootstrap": "^4.3.1",
-    "fuse.js": "^3.3.0",
-    "jquery": "^3.3.1",
+    "fuse.js": "^3.4.4",
+    "jquery": "^3.4.0",
     "jquery-ui-dist": "^1.12.1",
     "mark.js": "^8.11.1",
     "popper": "^1.0.1",
@@ -21,7 +21,12 @@
     "url-join": "^4.0.0"
   },
   "devDependencies": {
+    "autoprefixer": "^9.5.1",
     "css-loader": "^2.1.1",
+    "font-awesome-loader": "^1.0.2",
+    "node-sass": "^4.11.0",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.0",

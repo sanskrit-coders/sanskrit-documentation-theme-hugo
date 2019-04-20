@@ -31,15 +31,6 @@
     {{ if eq (getenv "HUGO_ENV") "production" | or (eq .Site.Params.env "production")  }}
       {{ template "_internal/google_analytics_async.html" . }}
     {{ end }}
-
-    <link rel="stylesheet" href="{{ relURL "node_modules/bootstrap/dist/css/bootstrap.min.css" }}">
-    <link rel="stylesheet" href="{{ relURL "node_modules/tachyons/css/tachyons.min.css" }}">
-    <link rel="stylesheet" href="{{ relURL "node_modules/@fortawesome/fontawesome-free/css/solid.min.css" }}">
-    <link rel="stylesheet" href="{{ relURL "node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css" }}">
-    <link rel="stylesheet" href="{{ relURL "css/fonts.css" }}">
-    <link rel="stylesheet" href="{{ relURL "css/treeview.css" }}">
-    {{ $style := resources.Get "css/class_styles.scss" | toCSS | minify }}
-    <link rel="stylesheet" href="{{ $style.RelPermalink | safeURL}}">
     
     {{ partialCached "hugo-site-vars-to-js-general.html" .}}
     <script>
@@ -63,7 +54,14 @@
     // console.debug(pageParams);
     </script>
     <script src="{{ relURL "dist/main-bundle.js" }}"></script>
-    <script src="{{ relURL "js/disqus.js" }}"></script>
+    <script src="{{ relURL "src/disqus.js" }}"></script>
+    
+    <link rel="stylesheet" href="{{ relURL "node_modules/@fortawesome/fontawesome-free/css/solid.min.css" }}">
+    <link rel="stylesheet" href="{{ relURL "node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css" }}">
+    <link rel="stylesheet" href="{{ relURL "css/fonts.css" }}">
+    <link rel="stylesheet" href="{{ relURL "css/treeview.css" }}">
+    {{ $style := resources.Get "css/class_styles.scss" | toCSS | minify }}
+    <link rel="stylesheet" href="{{ $style.RelPermalink | safeURL}}">
   </head>
 
   <body class="ma0 {{ $.Param "body_classes"  | default "bg-near-white"}}{{ with getenv "HUGO_ENV" }} {{ . }}{{ end }}">
