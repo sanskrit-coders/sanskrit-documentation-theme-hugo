@@ -1,3 +1,4 @@
+
 function setInlineComments(htmlIn) {
   return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\">$1</span>");
 }
@@ -9,6 +10,14 @@ function setInlineCommentsInPostContent() {
     $("#post_content").html(setInlineComments($("#post_content").html()));
   }
 }
+
+import * as videoEmbed from "./videoEmbed";
+import * as audioEmbed from "./audioEmbed";
+import handleIncludes from "./handleIncludes";
+import {updateToc} from "./toc";
+import insertSidebarItems from "./sidebar";
+// noinspection ES6UnusedImports
+import redirectToRandomPage from "./random";
 
 function onDocumentReadyTasks() {
   insertSidebarItems();
@@ -24,9 +33,13 @@ function onDocumentReadyTasks() {
   // Update table of contents (To be called whenever page contents are updated).
   updateToc();
   setInlineCommentsInPostContent();
-  fillAudioEmbeds();
-  fillVideoEmbeds();
+  audioEmbed.fillAudioEmbeds();
+  videoEmbed.fillVideoEmbeds();
   // For unknown reasons, handleIncludes() called first does not work as well 201901 desktop.
   handleIncludes();
   setupDisqus();
+}
+
+export default {
+  onDocumentReadyTasks: onDocumentReadyTasks
 }

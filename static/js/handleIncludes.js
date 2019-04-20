@@ -208,7 +208,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
 // Process includes of the form:
 // <div class="js_include" url="index.md"/>
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
-function handleIncludes() {
+export default function handleIncludes() {
     if ($('.js_include').length == 0 ) { return; }
     return Promise.all($('.js_include').map(function() {
         var jsIncludeJqueryElement = $(this);

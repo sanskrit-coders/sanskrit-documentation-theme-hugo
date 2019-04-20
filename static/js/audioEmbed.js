@@ -1,4 +1,4 @@
-function mp3Embed(audioEmbedTag) {
+export function mp3Embed(audioEmbedTag) {
     var src = audioEmbedTag.getAttribute( "src" );
     var caption = audioEmbedTag.getAttribute( "caption" );
     if(src.indexOf('.mp3') !== -1) {
@@ -27,7 +27,7 @@ function mp3Embed(audioEmbedTag) {
     }
 }
 
-function fillAudioEmbeds() {
+export function fillAudioEmbeds() {
     var audioEmbedTags = document.querySelectorAll('.audioEmbed');
     audioEmbedTags.forEach(function (audioEmbedTag) {
         mp3Embed(audioEmbedTag);

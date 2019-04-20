@@ -1,5 +1,7 @@
 // Replacing the not-very-random default with https://github.com/davidbau/seedrandom .
-Math.seedrandom()
+import seedrandom from "seedrandom";
+let randomGenerator = seedrandom();
+
 
 function weightedRandom(weights) {
     var totalWeight = 0,
@@ -9,7 +11,7 @@ function weightedRandom(weights) {
         totalWeight += weights[i];
     }
 
-    random = Math.random() * totalWeight;
+    random = randomGenerator() * totalWeight;
 
     for (i = 0; i < weights.length; i++) {
         if (random < weights[i]) {
@@ -23,7 +25,7 @@ function weightedRandom(weights) {
 };
 
 
-function redirectToRandomPage(weightingFn, manualRedirectionDiv) {
+export default function redirectToRandomPage(weightingFn, manualRedirectionDiv) {
     var urls = Array.from(pageUrlToParams.keys());
     var weights = urls.map(weightingFn);
     var randomUrl = baseURL + urls[weightedRandom(weights)];

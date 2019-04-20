@@ -1,5 +1,9 @@
-summaryInclude=60;
-var fuseOptions = {
+import Fuse from 'fuse.js';
+import mark from 'mark.js';
+
+
+let summaryInclude=60;
+let fuseOptions = {
   shouldSort: true,
   includeMatches: true,
   threshold: 0.0,
@@ -15,16 +19,6 @@ var fuseOptions = {
     {name:"categories",weight:0.3}
   ]
 };
-
-
-var searchQuery = param("s");
-if(searchQuery){
-  $("#titleSearchInputBox").val(searchQuery);
-  executeSearch(searchQuery);
-}else {
-  $('#search-results').append("<p>Please enter a word or phrase above</p>");
-}
-
 
 
 function executeSearch(searchQuery){
@@ -54,8 +48,8 @@ function populateResults(result){
         if(mvalue.key == "tags" || mvalue.key == "categories" ){
           snippetHighlights.push(mvalue.value);
         }else if(mvalue.key == "contents"){
-          start = mvalue.indices[0][0]-summaryInclude>0?mvalue.indices[0][0]-summaryInclude:0;
-          end = mvalue.indices[0][1]+summaryInclude<contents.length?mvalue.indices[0][1]+summaryInclude:contents.length;
+          let start = mvalue.indices[0][0]-summaryInclude>0?mvalue.indices[0][0]-summaryInclude:0;
+          let end = mvalue.indices[0][1]+summaryInclude<contents.length?mvalue.indices[0][1]+summaryInclude:contents.length;
           snippet += contents.substring(start,end);
           snippetHighlights.push(mvalue.value.substring(mvalue.indices[0][0],mvalue.indices[0][1]-mvalue.indices[0][0]+1));
         }
@@ -105,4 +99,12 @@ function render(templateString, data) {
     templateString = templateString.replace(re, data[key]);
   }
   return templateString;
+}
+
+var searchQuery = param("s");
+if(searchQuery){
+  $("#titleSearchInputBox").val(searchQuery);
+  executeSearch(searchQuery);
+}else {
+  $('#search-results').append("<p>Please enter a word or phrase above</p>");
 }

@@ -1,3 +1,5 @@
+import urljoin from 'url-join';
+
 function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     var parentListId = parentListIdIn || "sb";
     let finalUrl = sidebarItem.url || "#";
@@ -78,7 +80,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     return itemHtml;
 }
 
-function insertSidebarItems() {
+export default function insertSidebarItems() {
     var sidebar = sidebarsData[sidebarId];
     // $("#sidebarTitle a").html(sidebar.title);
     // console.debug(sidebar);

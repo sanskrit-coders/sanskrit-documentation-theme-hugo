@@ -1,8 +1,9 @@
+
 function get_toc_item_id(header_id) {
     return "toc_item_" + header_id;
 }
 
-function updateToc(options) {
+export function updateToc(options) {
     console.info("Setting up TOC for " + document.location);
     var defaults = {
       noBackToTopLinks: false,
@@ -44,13 +45,13 @@ function updateToc(options) {
       if (this_level === level) // same level as before; same indenting
         html += `<li id='${toc_item_id}' class="${liClass}"><a href='#${header.id}'>${header.innerText}</a>`;
       else if (this_level <= level){ // higher level than before; end parent ol
-        for(i = this_level; i < level; i++) {
+        for(let i = this_level; i < level; i++) {
           html += `</li></ul>`
         }
         html += `<li id='${toc_item_id}' class="${liClass}"><a href='#${header.id}'>${header.innerText}</a>`;
       }
       else if (this_level > level) { // lower level than before; expand the previous to contain a ol
-        for(i = this_level; i > level; i--) {
+        for(let i = this_level; i > level; i--) {
           html += `<ul class='${ulClass}'>`;
           if(i == level + 1) {
               html +=  `<li id='${toc_item_id}' class="${liClass}">`;

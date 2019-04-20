@@ -42,14 +42,7 @@
     <link rel="stylesheet" href="{{ relURL "css/treeview.css" }}">
     {{ $style := resources.Get "css/class_styles.scss" | toCSS | minify }}
     <link rel="stylesheet" href="{{ $style.RelPermalink | safeURL}}">
-    <script src="{{ relURL "node_modules/url-join/lib/url-join.js" }}"></script>
-    <script src="{{ relURL "node_modules/jquery/dist/jquery.min.js" }}"></script>
-    <script src="{{ relURL "node_modules/jquery-csv/src/jquery.csv.min.js" }}"></script>
-    <script src="{{ relURL "node_modules/jquery-ui-dist/jquery-ui.min.js" }}"></script>
-    <script src="{{ relURL "node_modules/bootstrap/dist/js/bootstrap.min.js" }}"></script>
-    <script src="{{ relURL "node_modules/@sanskrit-coders/sanscript/sanscript.js" }}"></script>
-    <script src="{{ relURL "node_modules/seedrandom/seedrandom.min.js" }}"></script>
-
+    
     {{ partialCached "hugo-site-vars-to-js-general.html" .}}
     <script>
     // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds this partial just once and includes it everywhere.
@@ -71,13 +64,12 @@
     var unicodeScript = pageParams.unicode_script || pageDefaults.unicode_script;
     // console.debug(pageParams);
     </script>
-    <script src="{{ relURL "js/handleIncludes.js" }}"></script>
-    <script src="{{ relURL "js/audio_embed.js" }}"></script>
-    <script src="{{ relURL "js/video_embed.js" }}"></script>
-    <script src="{{ relURL "js/sidebar.js" }}"></script>
-    <script src="{{ relURL "js/toc.js" }}"></script>
-    <script src="{{ relURL "js/onDocumentReady.js" }}"></script>
-    <script src="{{ relURL "js/random.js" }}"></script>
+    <script src="{{ relURL "dist/main-bundle.js" }}"></script>
+
+    <script src="{{ relURL "node_modules/jquery/dist/jquery.min.js" }}"></script>
+    <script src="{{ relURL "node_modules/jquery-ui-dist/jquery-ui.min.js" }}"></script>
+    <script src="{{ relURL "node_modules/bootstrap/dist/js/bootstrap.min.js" }}"></script>
+
     <script src="{{ relURL "js/disqus.js" }}"></script>
   </head>
 
@@ -109,7 +101,6 @@
     // Reasons for not invoking the below using $(document).ready():
     //  - Android webview faced handleInclude invocation problems.
     //  - Somehow $(document).ready() and $(window).on(load, ..) did not seem to get all the headers in case of updateToc!
-    onDocumentReadyTasks();
-    $(document).ready(onDocumentReadyTasks);
+    module_main.default.onDocumentReadyTasks();
   </script>
 </html>

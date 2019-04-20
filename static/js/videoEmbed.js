@@ -1,8 +1,8 @@
-function get_youtube_id(url) {
+export function get_youtube_id(url) {
     var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
     return (url.match(p)) ? RegExp.$1 : false;
 }
-function vimeoEmbed(url, el) {
+export function vimeoEmbed(url, el) {
     var id = false;
     $.ajax({
         url: 'https://vimeo.com/api/oembed.json?url='+url,
@@ -21,7 +21,7 @@ function vimeoEmbed(url, el) {
         }
     });
 }
-function videoEmbed(videoEmbedTag) {
+export function videoEmbed(videoEmbedTag) {
     //check if this is an external url (that starts with https:// or http://
     if (videoEmbedTag.getAttribute("src").indexOf("http://") == 0 ||
         videoEmbedTag.getAttribute("src").indexOf("https://") == 0) {
@@ -42,7 +42,7 @@ function videoEmbed(videoEmbedTag) {
     }
 }
 
-function fillVideoEmbeds() {
+export function fillVideoEmbeds() {
     var videoEmbedTags = document.querySelectorAll('.videoEmbed');
     videoEmbedTags.forEach(function (videoEmbedTag) {
         videoEmbed(videoEmbedTag);
