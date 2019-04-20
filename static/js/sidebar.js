@@ -80,7 +80,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     return itemHtml;
 }
 
-export default function insertSidebarItems() {
+export function insertSidebarItems() {
     var sidebar = sidebarsData[sidebarId];
     // $("#sidebarTitle a").html(sidebar.title);
     // console.debug(sidebar);
@@ -99,7 +99,7 @@ export default function insertSidebarItems() {
     $("li.active").parents('ul').removeClass("collapse");
 }
 
-function insertNavItems(navbarId, items) {
+export function insertNavItems(navbarId, items) {
     if (topnavId && !$(navbarId).attr("addedCustomItems")) {
         // console.debug(topnavDropdown);
         for (let item of items) {

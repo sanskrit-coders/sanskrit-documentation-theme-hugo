@@ -15,7 +15,7 @@ import * as videoEmbed from "./videoEmbed";
 import * as audioEmbed from "./audioEmbed";
 import handleIncludes from "./handleIncludes";
 import {updateToc} from "./toc";
-import insertSidebarItems from "./sidebar";
+import {insertSidebarItems, insertNavItems} from "./sidebar";
 
 function onDocumentReadyTasks() {
   insertSidebarItems();
