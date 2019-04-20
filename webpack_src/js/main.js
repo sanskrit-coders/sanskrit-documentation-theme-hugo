@@ -46,6 +46,3 @@ export default {
   redirectToPage: redirectToPage
 }
 
-import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'tachyons/css/tachyons.min.css';
