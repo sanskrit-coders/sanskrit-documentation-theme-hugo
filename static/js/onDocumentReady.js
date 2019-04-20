@@ -45,3 +45,5 @@ export default {
   redirectToRandomPage: redirectToRandomPage,
   redirectToPage: redirectToPage
 }
+
+import 'bootstrap';
