@@ -16,8 +16,6 @@ import * as audioEmbed from "./audioEmbed";
 import handleIncludes from "./handleIncludes";
 import {updateToc} from "./toc";
 import insertSidebarItems from "./sidebar";
-// noinspection ES6UnusedImports
-import redirectToRandomPage from "./random";
 
 function onDocumentReadyTasks() {
   insertSidebarItems();
@@ -40,6 +38,10 @@ function onDocumentReadyTasks() {
   setupDisqus();
 }
 
+import redirectToRandomPage from "./random";
+import redirectToPage from "./random";
 export default {
-  onDocumentReadyTasks: onDocumentReadyTasks
+  onDocumentReadyTasks: onDocumentReadyTasks,
+  redirectToRandomPage: redirectToRandomPage,
+  redirectToPage: redirectToPage
 }

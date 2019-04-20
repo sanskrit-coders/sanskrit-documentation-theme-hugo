@@ -1,4 +1,4 @@
-function redirectToPage(url, manualRedirectionDiv) {
+export default function redirectToPage(url, manualRedirectionDiv) {
     if (manualRedirectionDiv) {
         manualRedirectionDiv.innerHTML = `Redirecting <a href='${url}'>here</a>`;
     }
