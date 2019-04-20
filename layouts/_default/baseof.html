@@ -58,8 +58,6 @@
     <script src="{{ relURL "dist/ui_lib-bundle.js" }}"></script>
     <link rel="stylesheet" href="{{ relURL "css/@fortawesome/fontawesome-free/css/solid.min.css" }}">
     <link rel="stylesheet" href="{{ relURL "css/@fortawesome/fontawesome-free/css/fontawesome.min.css" }}">    
-    {{ $style := resources.Get "css/class_styles.scss" | toCSS | minify }}
-    <link rel="stylesheet" href="{{ $style.RelPermalink | safeURL}}">
   </head>
 
   <body class="ma0 {{ $.Param "body_classes"  | default "bg-near-white"}}{{ with getenv "HUGO_ENV" }} {{ . }}{{ end }}">
