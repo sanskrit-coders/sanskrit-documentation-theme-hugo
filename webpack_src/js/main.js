@@ -38,8 +38,8 @@ function onDocumentReadyTasks() {
   setupDisqus();
 }
 
-import redirectToRandomPage from "./random";
-import redirectToPage from "./random";
+import {redirectToRandomPage, redirectToPage} from "./redirect";
+// So that these can be used like module_main.default.redirectToPage(..).
 export default {
   onDocumentReadyTasks: onDocumentReadyTasks,
   redirectToRandomPage: redirectToRandomPage,
