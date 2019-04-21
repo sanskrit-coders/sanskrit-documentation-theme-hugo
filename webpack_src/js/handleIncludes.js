@@ -1,4 +1,5 @@
-
+import * as main from "./main";
+import {prepareContentWithoutIncludes} from "./main";
 /*
 Example: absoluteUrl("../subfolder1/divaspari/", "../images/forest-fire.jpg") == "../subfolder1/images/forest-fire.jpg"
  */
@@ -32,7 +33,7 @@ function fixIncludedHtml(url, html, newLevelForH1) {
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
 
     // The surrounding divs are eliminated when the jqueryElement is created.
-    var jqueryElement = $(setInlineComments(`<div>${html}</div>`), virtualDocument);
+    var jqueryElement = $(main.setInlineComments(`<div>${html}</div>`), virtualDocument);
 
     // console.debug(jqueryElement.html());
     // Remove some tags.
@@ -205,6 +206,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     });
 }
 
+import {updateToc} from "./toc";
 // Process includes of the form:
 // <div class="js_include" url="index.md"/>
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
@@ -219,9 +221,7 @@ export default function handleIncludes() {
             console.log("Done including.", values);
             // The below lines do not having any effect if not called without the timeout.
             setTimeout(function(){
-                setInlineCommentsInPostContent();
-                fillAudioEmbeds();
-                fillVideoEmbeds();
+                main.prepareContentWithoutIncludes();
                 updateToc();
             }, 5000);
             return values;

@@ -1,5 +1,5 @@
 
-function setInlineComments(htmlIn) {
+export function setInlineComments(htmlIn) {
   return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\">$1</span>");
 }
 
@@ -17,6 +17,13 @@ import handleIncludes from "./handleIncludes";
 import {updateToc} from "./toc";
 import {insertSidebarItems, insertNavItems} from "./sidebar";
 
+// No includes processing - or adding navigation bars.
+export function prepareContentWithoutIncludes() {
+  setInlineCommentsInPostContent();
+  audioEmbed.fillAudioEmbeds();
+  videoEmbed.fillVideoEmbeds();
+}
+
 function onDocumentReadyTasks() {
   insertSidebarItems();
   if (topnavId) {
@@ -28,13 +35,11 @@ function onDocumentReadyTasks() {
   if (unicodeScript) {
     $("#post_content").attr("unicode_script", unicodeScript);
   }
-  // Update table of contents (To be called whenever page contents are updated).
-  updateToc();
-  setInlineCommentsInPostContent();
-  audioEmbed.fillAudioEmbeds();
-  videoEmbed.fillVideoEmbeds();
+  prepareContentWithoutIncludes();
   // For unknown reasons, handleIncludes() called first does not work as well 201901 desktop.
   handleIncludes();
+  // Update table of contents (To be called whenever page contents are updated).
+  updateToc();
   setupDisqus();
 }
 
