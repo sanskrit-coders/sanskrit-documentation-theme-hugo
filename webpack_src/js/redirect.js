@@ -26,7 +26,7 @@ function weightedRandom(weights) {
 
 
 export function redirectToRandomPage(weightingFn, manualRedirectionDiv) {
-    var urls = Array.from(pageUrlToParams.keys());
+    var urls = Array.from(getSelectionWeight);
     var weights = urls.map(weightingFn);
     var randomUrl = baseURL + urls[weightedRandom(weights)];
     console.log(randomUrl);
