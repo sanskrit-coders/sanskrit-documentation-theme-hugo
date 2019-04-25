@@ -1,4 +1,7 @@
 {{ define "main" }}
+<header>
+    <h1 id="{{.Params.title}}">{{.Params.title}}</h1>
+</header>
 <main>
     {{partial "default-content" .}}
     {{ $home := .Site.Home }}

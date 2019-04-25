@@ -5,7 +5,7 @@ function getTitle(sidebarItem) {
     let itemUrlStripped = sidebarItem.url || "#";
     if (!title) {
         if (pageUrlToParams.get(itemUrlStripped)) {
-            title = pageUrlToParams.get(itemUrlStripped);
+            title = pageUrlToParams.get(itemUrlStripped).title;
         } else {
             console.error(itemUrlStripped, `${itemUrlStripped} not present in pageUrlToParams. Something is wrong with the sidebar definition. So can't figure out title.`, sidebarItem);
             title = "UNK";
