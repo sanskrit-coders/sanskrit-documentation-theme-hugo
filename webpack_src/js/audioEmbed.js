@@ -1,6 +1,10 @@
 export function mp3Embed(audioEmbedTag) {
     var src = audioEmbedTag.getAttribute( "src" );
     var caption = audioEmbedTag.getAttribute( "caption" );
+    if (!src) {
+        console.error("No src parameter", audioEmbedTag);
+        return;
+    }
     if(src.indexOf('.mp3') !== -1) {
         var srcParts = src.split('?');
         if(srcParts.length == 1) srcParts[1] = '';
