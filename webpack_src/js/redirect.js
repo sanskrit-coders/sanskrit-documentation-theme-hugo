@@ -36,9 +36,9 @@ export function redirectToPage(url, manualRedirectionDiv) {
 
 
 export function redirectToRandomPage(weightingFn, manualRedirectionDiv) {
-    var urls = Array.from(pageUrlToParams.keys());
-    var weights = urls.map(weightingFn);
-    var randomUrl = baseURL + urls[weightedRandom(weights)];
+    const urls = Array.from(pageUrlToParams.keys());
+    const weights = urls.map(weightingFn);
+    let randomUrl = baseURL + urls[weightedRandom(weights)];
     console.log(randomUrl);
     redirectToPage(randomUrl, manualRedirectionDiv);
 }
