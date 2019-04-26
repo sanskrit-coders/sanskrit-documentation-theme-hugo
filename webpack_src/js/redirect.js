@@ -22,21 +22,6 @@ function weightedRandom(weights) {
     }
 
     return -1;
-};
-
-
-export function redirectToRandomPage(weightingFn, manualRedirectionDiv) {
-    var urls = Array.from(getSelectionWeight);
-    var weights = urls.map(weightingFn);
-    var randomUrl = baseURL + urls[weightedRandom(weights)];
-    console.log(randomUrl);
-// alert(randomUrl);
-    if (manualRedirectionDiv) {
-        manualRedirectionDiv.innerHTML = `Redirecting <a href='${randomUrl}'>here</a>`;
-    }
-    if (randomUrl) {
-        window.location.replace(randomUrl);
-    }
 }
 
 
@@ -47,4 +32,13 @@ export function redirectToPage(url, manualRedirectionDiv) {
     if (url) {
         window.location.replace(url);
     }
+}
+
+
+export function redirectToRandomPage(weightingFn, manualRedirectionDiv) {
+    var urls = Array.from(pageUrlToParams.keys());
+    var weights = urls.map(weightingFn);
+    var randomUrl = baseURL + urls[weightedRandom(weights)];
+    console.log(randomUrl);
+    redirectToPage(randomUrl, manualRedirectionDiv);
 }
