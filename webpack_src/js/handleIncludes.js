@@ -11,19 +11,24 @@ function absoluteUrl(base, relative) {
     if (relative.startsWith("/") && !base.startsWith("http") && !base.startsWith("file")) {
         return relative;
     }
-    var stack = base.toString().split("#")[0].split("/"),
+    let baseWithoutIntraPageLink = base.toString().split("#")[0]
+    var baseDirStack = baseWithoutIntraPageLink.toString().split("/"),
         parts = relative.split("/");
-    stack.pop(); // remove current file name (or empty string)
+    baseDirStack.pop(); // remove current file name (or empty string)
                  // (omit if "base" is the current folder without trailing slash)
+    if (baseDirStack.length == 0) {
+        return relative;
+    }
+    console.debug(baseDirStack);
     for (var i=0; i<parts.length; i++) {
         if (parts[i] == ".")
             continue;
         if (parts[i] == "..")
-            stack.pop();
+            baseDirStack.pop();
         else
-            stack.push(parts[i]);
+            baseDirStack.push(parts[i]);
     }
-    return stack.join("/");
+    return baseDirStack.join("/");
 }
 
 // WHen you include html from one page within another, you need to fix image urls, anchor urls etc..
@@ -45,8 +50,11 @@ function fixIncludedHtml(url, html, newLevelForH1) {
     jqueryElement.find(".back-to-top").remove();
 
     jqueryElement.find('.js_include').each(function() {
-        // The url which we get here is warped by the calling function, which includes an extra ../ in the beginning. Further, xyz.md files get the terminal "xyz/index.html". Both of these must be undone to make the include element url attribute sane. 
-        $(this).attr("url", absoluteUrl(url.replace(/^\.\.\//, "").replace("/index.html", ".md"), $(this).attr("url")));
+        // The url (not $(this).attr("url")) which we get here is warped by the calling function, which includes an extra ../ in the beginning. Further, xyz.md files get the terminal "xyz/index.html". Both of these must be undone to make the include element url attribute sane. 
+        let includerUrl = url.replace(/^\.\.\//, "").replace("/index.html", ".md");
+        console.debug(includerUrl, $(this).attr("url"), absoluteUrl(includerUrl, $(this).attr("url")));
+        $(this).attr("url", absoluteUrl(includerUrl, $(this).attr("url")));
+        console.debug($(this));
         if (newLevelForH1 < 1) {
             console.error("Ignoring invalid newLevelForH1: %d, using 6", newLevelForH1);
             newLevelForH1 = 6;
@@ -161,10 +169,12 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         return "Already loaded";
     }
     console.info("Inserting include for ", jsIncludeJqueryElement);
+
+    // Special logic for files which produce index.html.
     let sameLevelRelativePath = (pageFileParams.baseFileName == "_index")? "./": "../";
     var includedPageUrl = sameLevelRelativePath + jsIncludeJqueryElement.attr("url").replace(".md", "/");
     if (includedPageUrl.endsWith("/")) {
-        // In case one loads file://x/y/z/ , the following is needed. 
+        // In case one loads file://x/y/z/ rather than http://x/y/z/, the following is needed. 
         includedPageUrl = includedPageUrl + "index.html";
     }
     if (includedPageNewLevelForH1 == undefined) {
@@ -215,7 +225,7 @@ export default function handleIncludes() {
     return Promise.all($('.js_include').map(function() {
         var jsIncludeJqueryElement = $(this);
         // The actual filling happens in a separate thread!
-        return fillJsInclude(jsIncludeJqueryElement);
+        return fillJsInclude(jsIncludeJqueryElement, 2);
     }))
         .then(function(values) {
             console.log("Done including.", values);
