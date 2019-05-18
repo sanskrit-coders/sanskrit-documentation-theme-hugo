@@ -1,9 +1,11 @@
 import * as main from "./main";
-import {prepareContentWithoutIncludes} from "./main";
+
+import urljoin from 'url-join';
 /*
 Example: absoluteUrl("../subfolder1/divaspari/", "../images/forest-fire.jpg") == "../subfolder1/images/forest-fire.jpg"
  */
 function absoluteUrl(base, relative) {
+    // console.debug(base.toString(), relative.toString());
     // console.debug(base, relative);
     if (relative.startsWith("http") || relative.startsWith("file")) {
         return relative;
@@ -15,20 +17,12 @@ function absoluteUrl(base, relative) {
     var baseDirStack = baseWithoutIntraPageLink.toString().split("/"),
         parts = relative.split("/");
     baseDirStack.pop(); // remove current file name (or empty string)
-                 // (omit if "base" is the current folder without trailing slash)
+    // (omit if "base" is the current folder without trailing slash)
     if (baseDirStack.length == 0) {
         return relative;
     }
-    console.debug(baseDirStack);
-    for (var i=0; i<parts.length; i++) {
-        if (parts[i] == ".")
-            continue;
-        if (parts[i] == "..")
-            baseDirStack.pop();
-        else
-            baseDirStack.push(parts[i]);
-    }
-    return baseDirStack.join("/");
+    // console.debug(baseDirStack);
+    return urljoin(baseDirStack.join("/"), relative.toString());
 }
 
 // WHen you include html from one page within another, you need to fix image urls, anchor urls etc..
@@ -36,8 +30,6 @@ function fixIncludedHtml(url, html, newLevelForH1) {
     // We want to use jquery to parse html, but without loading images. Hence this.
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
-    let includerUrl = url.replace(/^\.\.\//, "").replace("/index.html", ".md");
-
     // The surrounding divs are eliminated when the jqueryElement is created.
     var jqueryElement = $(main.setInlineComments(`<div>${html}</div>`), virtualDocument);
 
@@ -51,7 +43,9 @@ function fixIncludedHtml(url, html, newLevelForH1) {
     jqueryElement.find(".back-to-top").remove();
 
     jqueryElement.find('.js_include').each(function() {
-        // The url (not $(this).attr("url")) which we get here is warped by the calling function, which includes an extra ../ in the beginning. Further, xyz.md files get the terminal "xyz/index.html". Both of these must be undone to make the include element url attribute sane. 
+        // The url (not $(this).attr("url")) which we get here is warped by the calling function, which includes an extra ../ in the beginning. Further, xyz.md files get the terminal "xyz/index.html". Both of these must be undone to make the include element url attribute sane. Note that this correction only applies to js_include elements because they accept urls of the type xyz.md rather than xyz/index.html.
+        let includerUrl = url.replace(/^\.\.\//, "").replace("/index.html", ".md");
+
         $(this).attr("url", absoluteUrl(includerUrl, $(this).attr("url")));
         if (newLevelForH1 < 1) {
             console.error("Ignoring invalid newLevelForH1: %d, using 6", newLevelForH1);
@@ -88,9 +82,9 @@ function fixIncludedHtml(url, html, newLevelForH1) {
 
     // Fix image urls.
     jqueryElement.find("img").each(function() {
-        // console.log(absoluteUrl(url, $(this).attr("src")));
+        console.log(url, $(this).attr("src"), absoluteUrl(url, $(this).attr("src")));
         // console.log($(this).attr("src"))
-        $(this).attr("src", absoluteUrl(includerUrl, $(this).attr("src")));
+        $(this).attr("src", absoluteUrl(url, $(this).attr("src")));
         // console.log($(this).attr("src"))
     });
 
