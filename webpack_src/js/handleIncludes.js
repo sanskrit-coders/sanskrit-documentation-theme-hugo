@@ -3,6 +3,7 @@ import * as main from "./main";
 import urljoin from 'url-join';
 /*
 Example: absoluteUrl("../subfolder1/divaspari/", "../images/forest-fire.jpg") == "../subfolder1/images/forest-fire.jpg"
+WARNING NOTE: won't work with say base = "http://google.com" since it does not end with /. 
  */
 function absoluteUrl(base, relative) {
     // console.debug(base.toString(), relative.toString());
