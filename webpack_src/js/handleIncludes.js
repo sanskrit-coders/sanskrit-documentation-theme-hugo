@@ -36,6 +36,7 @@ function fixIncludedHtml(url, html, newLevelForH1) {
     // We want to use jquery to parse html, but without loading images. Hence this.
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
+    let includerUrl = url.replace(/^\.\.\//, "").replace("/index.html", ".md");
 
     // The surrounding divs are eliminated when the jqueryElement is created.
     var jqueryElement = $(main.setInlineComments(`<div>${html}</div>`), virtualDocument);
@@ -51,10 +52,7 @@ function fixIncludedHtml(url, html, newLevelForH1) {
 
     jqueryElement.find('.js_include').each(function() {
         // The url (not $(this).attr("url")) which we get here is warped by the calling function, which includes an extra ../ in the beginning. Further, xyz.md files get the terminal "xyz/index.html". Both of these must be undone to make the include element url attribute sane. 
-        let includerUrl = url.replace(/^\.\.\//, "").replace("/index.html", ".md");
-        console.debug(includerUrl, $(this).attr("url"), absoluteUrl(includerUrl, $(this).attr("url")));
         $(this).attr("url", absoluteUrl(includerUrl, $(this).attr("url")));
-        console.debug($(this));
         if (newLevelForH1 < 1) {
             console.error("Ignoring invalid newLevelForH1: %d, using 6", newLevelForH1);
             newLevelForH1 = 6;
@@ -92,7 +90,7 @@ function fixIncludedHtml(url, html, newLevelForH1) {
     jqueryElement.find("img").each(function() {
         // console.log(absoluteUrl(url, $(this).attr("src")));
         // console.log($(this).attr("src"))
-        $(this).attr("src", absoluteUrl(url, $(this).attr("src")));
+        $(this).attr("src", absoluteUrl(includerUrl, $(this).attr("src")));
         // console.log($(this).attr("src"))
     });
 
