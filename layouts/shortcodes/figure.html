@@ -1,6 +1,6 @@
 <!-- image -->
 <figure {{ with .Get "class" }}class="{{.}}"{{ end }}>
-    <a href="{{ if .Get "link"}}{{ .Get "link" }} {{else}} {{ .Get "src" }} {{ end }}">
+    <a href="{{ if .Get "link"}}{{ .Get "link" }}{{else}}{{ .Get "src" }}{{ end }}">
         <img src="{{ .Get "src" }}" {{ if or (.Get "alt") (.Get "caption") }}alt="{{ with .Get "alt"}}{{.}}{{else}}{{ .Get "caption" }}{{ end }}"{{ end }} />
     </a>
     {{ if or (or (.Get "title") (.Get "caption")) (.Get "attr")}}
