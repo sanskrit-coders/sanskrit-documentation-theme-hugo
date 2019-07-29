@@ -14,12 +14,11 @@ function absoluteUrl(base, relative) {
     if (relative.startsWith("/") && !base.startsWith("http") && !base.startsWith("file")) {
         return relative;
     }
-    let baseWithoutIntraPageLink = base.toString().split("#")[0]
-    var baseDirStack = baseWithoutIntraPageLink.toString().split("/"),
-        parts = relative.split("/");
+    let baseWithoutIntraPageLink = base.toString().split("#")[0];
+    var baseDirStack = baseWithoutIntraPageLink.toString().split("/");
     baseDirStack.pop(); // remove current file name (or empty string)
     // (omit if "base" is the current folder without trailing slash)
-    if (baseDirStack.length == 0) {
+    if (baseDirStack.length === 0) {
         return relative;
     }
     // console.debug(baseDirStack);
@@ -53,7 +52,7 @@ function fixIncludedHtml(url, html, newLevelForH1) {
             newLevelForH1 = 6;
         }
         var includedPageNewLevelForH2 = parseInt($(this).attr("newLevelForH1"));
-        if (includedPageNewLevelForH2 == undefined) {
+        if (includedPageNewLevelForH2 === undefined) {
             includedPageNewLevelForH2 = 6;
         }
         includedPageNewLevelForH2 = Math.min(6, ((includedPageNewLevelForH2 - 2) + newLevelForH1));
@@ -128,7 +127,7 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
 
     var contentElements = $(responseHtml, virtualDocument).find("#post_content");
     // console.log(contentElements);
-    if (contentElements.length == 0) {
+    if (contentElements.length === 0) {
         let message = "Could not get \"post-content\" class element.";
         console.warn(message);
         console.log(responseHtml);
@@ -150,30 +149,30 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
                 "</div>";
         }
         var contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
-        var elementToInclude = $("<div class='included-post-content border'/>")
+        var elementToInclude = $("<div class='included-post-content border'/>");
         elementToInclude.html(fixIncludedHtml(includedPageUrl, titleHtml, includedPageNewLevelForH1) + fixIncludedHtml(includedPageUrl, contentHtml, includedPageNewLevelForH1));
         return elementToInclude;
     }
 }
 
 async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) {
-    if (jsIncludeJqueryElement.html().trim() != "") {
+    if (jsIncludeJqueryElement.html().trim() !== "") {
         console.warn("Refusing to refill element with non-empty html - ", jsIncludeJqueryElement);
         return "Already loaded";
     }
     console.info("Inserting include for ", jsIncludeJqueryElement);
 
     // Special logic for files which produce index.html.
-    let sameLevelRelativePath = (pageFileParams.baseFileName == "_index")? "./": "../";
+    let sameLevelRelativePath = (pageFileParams.baseFileName === "_index")? "./": "../";
     var includedPageUrl = sameLevelRelativePath + jsIncludeJqueryElement.attr("url").replace(".md", "/");
     if (includedPageUrl.endsWith("/")) {
         // In case one loads file://x/y/z/ rather than http://x/y/z/, the following is needed. 
-        includedPageUrl = includedPageUrl + "index.html";
+        includedPageUrl = includedPageUrl + "_index.md.html";
     }
-    if (includedPageNewLevelForH1 == undefined) {
+    if (includedPageNewLevelForH1 === undefined) {
         includedPageNewLevelForH1 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
     }
-    if (includedPageNewLevelForH1 == undefined) {
+    if (includedPageNewLevelForH1 === undefined) {
         includedPageNewLevelForH1 = 6;
     }
     let getAjaxResponsePromise = $.ajax(includedPageUrl);
@@ -214,7 +213,7 @@ import {updateToc} from "./toc";
 // <div class="js_include" url="index.md"/>
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
 export default function handleIncludes() {
-    if ($('.js_include').length == 0 ) { return; }
+    if ($('.js_include').length === 0 ) { return; }
     return Promise.all($('.js_include').map(function() {
         var jsIncludeJqueryElement = $(this);
         // The actual filling happens in a separate thread!

@@ -69,7 +69,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     let isExternalLink = finalUrl.startsWith("http") || finalUrl.startsWith("ftp");
         
     if (!isExternalLink) {
-        itemUrlStripped = itemUrlStripped.replace("index.html", "").replace("index.md", "").replace(".md", "/");
+        itemUrlStripped = itemUrlStripped.replace("_index.md.html", "").replace("_index.md.md", "").replace(".md", "/");
         finalUrl = urljoin(baseURL, itemUrlStripped);
     }
 
