@@ -167,7 +167,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     var includedPageUrl = sameLevelRelativePath + jsIncludeJqueryElement.attr("url").replace(".md", "/");
     if (includedPageUrl.endsWith("/")) {
         // In case one loads file://x/y/z/ rather than http://x/y/z/, the following is needed. 
-        includedPageUrl = includedPageUrl + "_index.md.html";
+        includedPageUrl = includedPageUrl + "index.html";
     }
     if (includedPageNewLevelForH1 === undefined) {
         includedPageNewLevelForH1 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
