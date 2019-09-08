@@ -1,5 +1,9 @@
 {{ define "main" }}
 <!--Note that this template is used for sections as well as taxonomies - unless overridden.-->
+<header class='border d-flex justify-content-between'>
+    <h1 id="{{.Params.title}}">{{.Params.title}}</h1>
+    <a id="editLink" class="btn btn-primary"  href="{{print .Site.Params.githubEditMePathBase .File.Path }}"><i class="fas fa-edit"></i></a>
+</header>
 <main>
     {{partial "default-content" .}}
     <div class="css-treeview box">
