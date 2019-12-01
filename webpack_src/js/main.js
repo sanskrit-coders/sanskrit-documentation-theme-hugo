@@ -27,13 +27,6 @@ export function prepareContentWithoutIncludes() {
   videoEmbed.fillVideoEmbeds();
 }
 
-export function storeLipiChoice() {
-  var translitrationTargetDropdown = document.getElementsByName("transliterationDropdown")[0];
-  var translitrationTarget = translitrationTargetDropdown.options[translitrationTargetDropdown.selectedIndex].value;
-  transliteration.saveLipi(translitrationTarget);
-  query.insertQueryParam("translitration_target", translitrationTarget);
-}
-
 function onDocumentReadyTasks() {
   insertSidebarItems();
   if (topnavId) {

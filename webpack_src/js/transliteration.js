@@ -44,3 +44,10 @@ export function transliterateDevanagariBody() {
     })
 }
 
+export function updateTransliteration() {
+    var translitrationTargetDropdown = document.getElementsByName("transliterationDropdown")[0];
+    var translitrationTarget = translitrationTargetDropdown.options[translitrationTargetDropdown.selectedIndex].value;
+    saveLipi(translitrationTarget);
+    query.insertQueryParam("translitration_target", translitrationTarget);
+}
+

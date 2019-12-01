@@ -4,7 +4,8 @@ module.exports = {
     entry: {
         main: "./js/main.js",
         search: "./js/search.js",
-        ui_lib: "./js/ui-lib.js"
+        ui_lib: "./js/ui-lib.js",
+        transliteration: "./js/transliteration.js"
     },
     output: {
         filename: "[name]-bundle.js",

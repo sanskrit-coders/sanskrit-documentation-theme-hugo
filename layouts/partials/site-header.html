@@ -12,7 +12,7 @@
             <input id="titleSearchInputBox" placeholder="शीर्षिकान्विष्यताम्" name="s"><i class="btn fas fa-search "></i>
           </form>
           <a href="{{ "custom_site_search/" | relURL }}"  class="btn btn-default">Full search</a>
-          <select name="transliterationDropdown" size="1" onchange="module_main.storeLipiChoice()">
+          <select name="transliterationDropdown" size="1" onchange="module_transliteration.updateTransliteration()">
             <option value="devanagari" selected="">स</option>
             <option value="iast">ā</option>
             <option value="kannada">ಅ</option>
