@@ -6,12 +6,11 @@
     src: url(https://raw.githubusercontent.com/sanskrit-coders/sanskrit-fonts/master/fonts/ttf-devanagari-fonts/siddhanta-variations/siddhanta-cakravat1.ttf) format('truetype');
 }
 
-/* Directly linking to the latest version of the font in the Github repo. */
 @font-face {
-    font-family: 'Noto Sans Devanagari From Github Hinted';
+    font-family: 'Noto Sans Devanagari From Github';
     font-style: normal;
     font-weight: normal;
-    src: url(https://raw.githubusercontent.com/googlei18n/noto-fonts/master/hinted/NotoSansDevanagari-Regular.ttf) format('truetype');
+    src: url(https://raw.githubusercontent.com/sanskrit-coders/sanskrit-fonts/master/fonts/ttf-devanagari-fonts/NotoSansDevanagari-Regular.ttf) format('truetype');
 }
 /************************************************************/
 

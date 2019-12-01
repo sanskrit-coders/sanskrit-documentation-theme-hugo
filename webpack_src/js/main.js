@@ -10,6 +10,28 @@ function setInlineCommentsInPostContent() {
     $("#post_content").html(setInlineComments($("#post_content").html()));
   }
 }
+import Sanscript from "@sanskrit-coders/sanscript";
+
+function transliterateDevanagariBody() {
+  var transliterationTarget = getQueryVariable("translitration_target");
+  if (!transliterationTarget) {
+    return;
+  }
+  var textNodes = textNodesUnder(document.getElementsByTagName("body")[0]);
+  // console.debug(textNodes);
+  textNodes.forEach(function (textNode) {
+    textNode.textContent = Sanscript.t(textNode.textContent, "devanagari", transliterationTarget);
+  })
+}
+
+function textNodesUnder(node){
+  var all = [];
+  for (node=node.firstChild;node;node=node.nextSibling){
+    if (node.nodeType==3) all.push(node);
+    else all = all.concat(textNodesUnder(node));
+  }
+  return all;
+}
 
 import * as videoEmbed from "./videoEmbed";
 import * as audioEmbed from "./audioEmbed";
@@ -17,9 +39,23 @@ import handleIncludes from "./handleIncludes";
 import {updateToc} from "./toc";
 import {insertSidebarItems, insertNavItems} from "./sidebar";
 
+
+export function getQueryVariable(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split('&');
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split('=');
+    if (decodeURIComponent(pair[0]) === variable) {
+      return decodeURIComponent(pair[1]);
+    }
+  }
+  console.log('Query variable %s not found', variable);
+}
+
 // No includes processing - or adding navigation bars.
 export function prepareContentWithoutIncludes() {
   setInlineCommentsInPostContent();
+  transliterateDevanagariBody();
   audioEmbed.fillAudioEmbeds();
   videoEmbed.fillVideoEmbeds();
 }
