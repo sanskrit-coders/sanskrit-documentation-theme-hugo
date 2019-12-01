@@ -29,8 +29,9 @@ export function prepareContentWithoutIncludes() {
 
 export function storeLipiChoice() {
   var translitrationTargetDropdown = document.getElementsByName("transliterationDropdown")[0];
-  var translitration_target = translitrationTargetDropdown.options[translitrationTargetDropdown.selectedIndex].value;
-  query.insertQueryParam("translitration_target", translitration_target);
+  var translitrationTarget = translitrationTargetDropdown.options[translitrationTargetDropdown.selectedIndex].value;
+  transliteration.saveLipi(translitrationTarget);
+  query.insertQueryParam("translitration_target", translitrationTarget);
 }
 
 function onDocumentReadyTasks() {
