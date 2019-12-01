@@ -3,12 +3,14 @@ import * as utils from "./utils";
 import * as query from "./query";
 
 let transliterationTarget = "devanagari";
+let previousTransliterationTarget = transliterationTarget;
 /* ---- Cookies ---- */
 let LIPI_DEFAULT = "devanagari";
 let LIPI_COOKIE = "translitration_target";
 let LIPI_EXPIRY = 30 * 24 * 3600 * 1000;  // 30 days
 
 function loadLipi() {
+    let previousTransliterationTarget = transliterationTarget;
     transliterationTarget = query.getQueryVariable("translitration_target");
     if (!transliterationTarget) {
         transliterationTarget = utils.getCookie(LIPI_COOKIE) || LIPI_DEFAULT;
@@ -29,7 +31,7 @@ export function saveLipi(lipi) {
 
 export function transliterateDevanagariBody() {
     loadLipi();
-    if (!transliterationTarget) {
+    if (!transliterationTarget || previousTransliterationTarget == transliterationTarget) {
         return;
     }
     
