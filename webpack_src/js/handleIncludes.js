@@ -217,12 +217,8 @@ export default function handleIncludes() {
     if ($('.js_include').length === 0 ) { return; }
     return Promise.allSettled($('.js_include').map(function() {
         var jsIncludeJqueryElement = $(this);
-        var includedPageNewLevelForH1 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
-        if (typeof attr === typeof undefined || attr === false) {
-            includedPageNewLevelForH1 = 2;
-        }
-            // The actual filling happens in a separate thread!
-        return fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1);
+        // The actual filling happens in a separate thread!
+        return fillJsInclude(jsIncludeJqueryElement, undefined);
     }))
         .then(function(values) {
             console.log("Done including.", values);
