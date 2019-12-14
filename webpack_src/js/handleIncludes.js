@@ -213,11 +213,16 @@ import {updateToc} from "./toc";
 // <div class="js_include" url="index.md"/>
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
 export default function handleIncludes() {
+    console.log("Entering handleIncludes.");
     if ($('.js_include').length === 0 ) { return; }
-    return Promise.all($('.js_include').map(function() {
+    return Promise.allSettled($('.js_include').map(function() {
         var jsIncludeJqueryElement = $(this);
-        // The actual filling happens in a separate thread!
-        return fillJsInclude(jsIncludeJqueryElement, 2);
+        var includedPageNewLevelForH1 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
+        if (typeof attr === typeof undefined || attr === false) {
+            includedPageNewLevelForH1 = 2;
+        }
+            // The actual filling happens in a separate thread!
+        return fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1);
     }))
         .then(function(values) {
             console.log("Done including.", values);
@@ -227,5 +232,6 @@ export default function handleIncludes() {
                 updateToc();
             }, 5000);
             return values;
-        });
+        })
+        .catch(reason => console.error(reason));
 }
