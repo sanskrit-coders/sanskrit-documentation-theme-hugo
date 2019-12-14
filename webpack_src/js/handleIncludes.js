@@ -141,7 +141,8 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
             editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
         }
         var titleHtml = "";
-        if (addTitle) {
+        // console.debug(addTitle);
+        if (addTitle && addTitle != "false") {
             titleHtml = "<div class='border d-flex justify-content-between'>" +
                 "<h1 id='" + title + "'>" + title + "</h1>" +
                 "<div><a class='btn btn-secondary' href='" + absoluteUrl(document.location, includedPageUrl) + "'><i class=\"fas fa-external-link-square-alt\"></i></a>" +
@@ -175,6 +176,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     if (includedPageNewLevelForH1 === undefined) {
         includedPageNewLevelForH1 = 6;
     }
+    // console.debug(includedPageNewLevelForH1);
     let getAjaxResponsePromise = $.ajax(includedPageUrl);
     function processingFn(responseHtml) {
         return processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement.attr("includeTitle"), includedPageNewLevelForH1, includedPageUrl);
