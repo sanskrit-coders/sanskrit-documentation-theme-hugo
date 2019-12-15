@@ -140,18 +140,17 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
             // console.debug(editLinkElements);
             editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
         }
-        var titleHtml = "";
         // console.debug(addTitle);
+        var titleHtml = "<div />";
         if (addTitle && addTitle != "false") {
-            titleHtml = "<div class='border d-flex justify-content-between'>" +
-                "<h1 id='" + title + "'>" + title + "</h1>" +
-                "<div><a class='btn btn-secondary' href='" + absoluteUrl(document.location, includedPageUrl) + "'><i class=\"fas fa-external-link-square-alt\"></i></a>" +
-                editLinkHtml + "</div>" +
-                "</div>";
+            titleHtml = "<h1 id='" + title + "'>" + title + "</h1>";
         }
+        var popoutHtml = "<div class='border d-flex justify-content-between'>" + titleHtml + "<div><a class='btn btn-secondary' href='" + absoluteUrl(document.location, includedPageUrl) + "'><i class=\"fas fa-external-link-square-alt\"></i></a>" +
+            editLinkHtml + "</div>"
+        "</div>";
         var contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
         var elementToInclude = $("<div class='included-post-content border'/>");
-        elementToInclude.html(fixIncludedHtml(includedPageUrl, titleHtml, includedPageNewLevelForH1) + fixIncludedHtml(includedPageUrl, contentHtml, includedPageNewLevelForH1));
+        elementToInclude.html(fixIncludedHtml(includedPageUrl, popoutHtml, includedPageNewLevelForH1) + fixIncludedHtml(includedPageUrl, contentHtml, includedPageNewLevelForH1));
         return elementToInclude;
     }
 }
