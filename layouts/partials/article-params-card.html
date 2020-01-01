@@ -1,6 +1,9 @@
-{{ $cleaned_title := replace .File.Path " " "_"}}
+{{ $cleaned_title := ""}}
+{{ with .File }}
+{{ $cleaned_title := replace .Path " " "_"}}
 {{ $cleaned_title := replace $cleaned_title "." "_"}}
 {{ $cleaned_title := replace $cleaned_title "/" "_"}}
+{{ end }}
 <aside class="card border" id="section-tree-item-{{$cleaned_title}}">
     <div class="card-title bg-light-gray border d-flex justify-content-between">
         <a href="{{.Permalink}}">{{ if not .Date.IsZero }}{{.Date.Format "2006-01-02"}}  | {{ end }}{{.Title}} </a>
