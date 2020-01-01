@@ -140,17 +140,17 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
             // console.debug(editLinkElements);
             editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
         }
-        var titleHtml = "";
-        if (addTitle) {
-            titleHtml = "<div class='border d-flex justify-content-between'>" +
-                "<h1 id='" + title + "'>" + title + "</h1>" +
-                "<div><a class='btn btn-secondary' href='" + absoluteUrl(document.location, includedPageUrl) + "'><i class=\"fas fa-external-link-square-alt\"></i></a>" +
-                editLinkHtml + "</div>" +
-                "</div>";
+        // console.debug(addTitle);
+        var titleHtml = "<div />";
+        if (addTitle && addTitle != "false") {
+            titleHtml = "<h1 id='" + title + "'>" + title + "</h1>";
         }
+        var popoutHtml = "<div class='border d-flex justify-content-between'>" + titleHtml + "<div><a class='btn btn-secondary' href='" + absoluteUrl(document.location, includedPageUrl) + "'><i class=\"fas fa-external-link-square-alt\"></i></a>" +
+            editLinkHtml + "</div>"
+        "</div>";
         var contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
         var elementToInclude = $("<div class='included-post-content border'/>");
-        elementToInclude.html(fixIncludedHtml(includedPageUrl, titleHtml, includedPageNewLevelForH1) + fixIncludedHtml(includedPageUrl, contentHtml, includedPageNewLevelForH1));
+        elementToInclude.html(fixIncludedHtml(includedPageUrl, popoutHtml, includedPageNewLevelForH1) + fixIncludedHtml(includedPageUrl, contentHtml, includedPageNewLevelForH1));
         return elementToInclude;
     }
 }
@@ -175,6 +175,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     if (includedPageNewLevelForH1 === undefined) {
         includedPageNewLevelForH1 = 6;
     }
+    // console.debug(includedPageNewLevelForH1);
     let getAjaxResponsePromise = $.ajax(includedPageUrl);
     function processingFn(responseHtml) {
         return processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement.attr("includeTitle"), includedPageNewLevelForH1, includedPageUrl);
@@ -213,11 +214,12 @@ import {updateToc} from "./toc";
 // <div class="js_include" url="index.md"/>
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
 export default function handleIncludes() {
+    console.log("Entering handleIncludes.");
     if ($('.js_include').length === 0 ) { return; }
-    return Promise.all($('.js_include').map(function() {
+    return Promise.allSettled($('.js_include').map(function() {
         var jsIncludeJqueryElement = $(this);
         // The actual filling happens in a separate thread!
-        return fillJsInclude(jsIncludeJqueryElement, 2);
+        return fillJsInclude(jsIncludeJqueryElement, undefined);
     }))
         .then(function(values) {
             console.log("Done including.", values);
@@ -227,5 +229,6 @@ export default function handleIncludes() {
                 updateToc();
             }, 5000);
             return values;
-        });
+        })
+        .catch(reason => console.error(reason));
 }
