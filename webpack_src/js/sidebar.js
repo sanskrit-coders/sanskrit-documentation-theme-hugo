@@ -70,21 +70,22 @@ function getHtmlForDirProperty(sidebarItem) {
     return itemHtml;
 }
 
-function getHtmlForRecdirProperty(sidebarItem) {
+function getHtmlForRecdirProperty(sidebarItem, childDirsSuperset) {
     var itemHtml = "";
     var dirUrl = sidebarItem.url.replace("recdir://", "/");
     if (!dirUrl.endsWith("/")) {
         dirUrl = dirUrl + "/";
     }
-    var childDirs = Object.keys(pageDirectoryToUrl).filter(
+    // Passing childDirsSuperset increases efficiency.
+    var childDirs = (childDirsSuperset || Object.keys(pageDirectoryToUrl)).filter(
         function (path) {
             var subpath = path.replace(dirUrl, "").replace("//", "/");
             return path.startsWith(dirUrl) && subpath.split("/").filter(x => x.length > 0).length == 1});
     // console.debug(childDirs);
     itemHtml = getHtmlForDirProperty({"url": `dir:/${dirUrl}`});
     for (let childDir of childDirs) {
-        var subitem = {"contents": [{"url": `recdir:/${childDir}`}]};
-        itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
+        var subitem = {"url": `recdir:/${childDir}`};
+        itemHtml = `${itemHtml}\n${getHtmlForRecdirProperty(subitem, childDirs)}`;
     }
     return itemHtml;
 }
