@@ -76,16 +76,15 @@ function getHtmlForRecdirProperty(sidebarItem, childDirsSuperset) {
     if (!dirUrl.endsWith("/")) {
         dirUrl = dirUrl + "/";
     }
-    // Passing childDirsSuperset increases efficiency.
-    var childDirs = (childDirsSuperset || Object.keys(pageDirectoryToUrl)).filter(
+    var childDirs = Object.keys(pageDirectoryToUrl).filter(
         function (path) {
             var subpath = path.replace(dirUrl, "").replace("//", "/");
             return path.startsWith(dirUrl) && subpath.split("/").filter(x => x.length > 0).length == 1});
     // console.debug(childDirs);
     itemHtml = getHtmlForDirProperty({"url": `dir:/${dirUrl}`});
     for (let childDir of childDirs) {
-        var subitem = {"url": `recdir:/${childDir}`};
-        itemHtml = `${itemHtml}\n${getHtmlForRecdirProperty(subitem, childDirs)}`;
+        var subitem = {"contents": [{"url": `recdir:/${childDir}`}]};
+        itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
     }
     return itemHtml;
 }
