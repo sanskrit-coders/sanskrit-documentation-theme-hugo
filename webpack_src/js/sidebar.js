@@ -97,7 +97,7 @@ function getHtmlForDirProperty(sidebarItem) {
         let subitem = {"url": dirUrl};
         itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
     }
-    for (let childPage of childPages) {
+    for (let childPage of childPages.sort()) {
         let subitem = {"url": `${dirUrl}${childPage}/`};
         itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
     }
@@ -118,7 +118,7 @@ function getHtmlForRecdirProperty(sidebarItem, childDirsSuperset) {
     let childTree = getChildTree(dirUrl);
     var childDirKeys = getChildDirKeys(childTree);
     // console.debug(childDirs);
-    for (let childDirKey of childDirKeys) {
+    for (let childDirKey of childDirKeys.sort()) {
         var subitem = {"contents": [{"url": `recdir:/${dirUrl}${childDirKey}/`}]};
         itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
     }
