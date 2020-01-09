@@ -70,16 +70,14 @@ function getHtmlForDirProperty(sidebarItem) {
     let childTree = dirTree.getChildTree(dirUrl);
     var childPages = dirTree.getNonDirPageKeys(childTree);
     // console.debug(dirUrl, childTree, childPages, Object.keys(getChildTree(dirUrl)));
-    if (pageRelUrlTreeMETAkey in childTree) {
-        let subitem = {"url": dirUrl};
-        itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
-    }
+    let subitem = {"url": dirUrl};
+    itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
     for (let childPage of childPages.sort()) {
         let subitem = {"url": `${dirUrl}${childPage}/`};
         itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
     }
-    if (childPages.length == 0 && !(pageRelUrlTreeMETAkey in childTree) ){
-        console.error(`Directory ${dirUrl} is missing or empty.`, childPages, childTree);
+    if (childPages.length == 0 ){
+        console.warn(`Directory ${dirUrl} has only one item.`, childPages, childTree);
     }
     return itemHtml;
 }

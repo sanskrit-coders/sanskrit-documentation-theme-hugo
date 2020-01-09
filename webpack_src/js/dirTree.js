@@ -1,4 +1,5 @@
-// addRelUrlToTree() ought to have been here, but has been placed in a hugo template for simplicity.
+let pageRelUrlTreeMETAkey = "__meta";
+
 
 export function addRelUrlToTree(item, pageParams) {
     // console.debug(item, pageParams);
