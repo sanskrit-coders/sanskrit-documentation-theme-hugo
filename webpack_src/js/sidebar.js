@@ -81,7 +81,7 @@ function getHtmlForDirProperty(sidebarItem) {
         itemHtml = `${itemHtml}\n${getSidebarItemHtml(childPageItem)}`;
     }
     if (childPages.length == 0 ){
-        console.warn(`Directory ${dirUrl} has only one item.`, childPages, childTree);
+        // console.warn(`Directory ${dirUrl} has only one item.`, childPages, childTree);
     }
     return itemHtml;
 }
