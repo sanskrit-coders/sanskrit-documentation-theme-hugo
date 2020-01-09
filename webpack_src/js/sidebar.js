@@ -74,7 +74,7 @@ function getHtmlForDirProperty(sidebarItem) {
     let childTree = dirTree.getChildTree(dirUrl);
     var childPages = dirTree.getNonDirPageKeys(childTree);
     let childPageItems = childPages.map(x => {return {"url": `${dirUrl}${x}/`}});
-    console.debug(dirUrl, childTree, childPages,childPageItems);
+    // console.debug(dirUrl, childTree, childPages,childPageItems);
     let subitem = {"url": dirUrl};
     itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
     for (let childPageItem of childPageItems.sort(titleSorter)) {
