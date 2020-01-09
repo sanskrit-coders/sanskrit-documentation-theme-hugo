@@ -29,14 +29,14 @@
     {{ if eq (getenv "HUGO_ENV") "production" | or (eq .Site.Params.env "production")  }}
       {{ template "_internal/google_analytics_async.html" . }}
     {{ end }}
-    
+
+    <script src="{{ relURL "dist/dir_tree-bundle.js" }}"></script>
     {{ partialCached "hugo-site-vars-to-js-general.html" .}}
     <script>
     // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds this partial just once and includes it everywhere.
     let pageUrlRelative = "{{.RelPermalink}}";
     let pageUrlMinusBasePath = pageUrlRelative.replace(basePath, "/")
     let pageParams = pageUrlToParams.get(pageUrlMinusBasePath) || {};
-    let pageFileParams = pageUrlToFileParams.get(pageUrlMinusBasePath) || {};
     let pageSource = "{{ with .File }}{{.Path}}{{ end }}";
     console.log(pageSource);
     var pageDefaults;

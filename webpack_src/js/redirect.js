@@ -34,11 +34,15 @@ export function redirectToPage(url, manualRedirectionDiv) {
     }
 }
 
+import * as dirTree from "./dirTree";
 
-export function redirectToRandomPage(weightingFn, manualRedirectionDiv) {
-    const urls = Array.from(pageUrlToParams.keys());
+export function redirectToRandomPage(weightingFn, manualRedirectionDiv, dryRun) {
+    const urls = dirTree.getAllPaths(pageRelUrlTree);
     const weights = urls.map(weightingFn);
+    // console.debug(urls, weights);
     let randomUrl = baseURL + urls[weightedRandom(weights)];
     console.log(randomUrl);
-    redirectToPage(randomUrl, manualRedirectionDiv);
+    if (!dryRun) {
+        redirectToPage(randomUrl, manualRedirectionDiv);
+    }
 }

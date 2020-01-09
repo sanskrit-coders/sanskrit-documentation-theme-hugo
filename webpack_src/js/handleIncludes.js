@@ -163,7 +163,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     console.info("Inserting include for ", jsIncludeJqueryElement);
 
     // Special logic for files which produce index.html.
-    let sameLevelRelativePath = (pageFileParams.baseFileName === "_index")? "./": "../";
+    let sameLevelRelativePath = (pageParams["logicalName"] === "_index.md")? "./": "../";
     var includedPageUrl = sameLevelRelativePath + jsIncludeJqueryElement.attr("url").replace(".md", "/");
     if (includedPageUrl.endsWith("/")) {
         // In case one loads file://x/y/z/ rather than http://x/y/z/, the following is needed. 
