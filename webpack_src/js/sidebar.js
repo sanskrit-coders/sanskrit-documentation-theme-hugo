@@ -76,7 +76,8 @@ function getHtmlForDirProperty(sidebarItem) {
         console.error(`Directory ${dirUrl} not found!`);
     }
     var childPages = dirTree.getNonDirPageKeys(childTree);
-    let childPageItems = childPages.map(x => {return {"title": getTitle(`${dirUrl}${x}/`), "url": `${dirUrl}${x}/`}});
+    let childPageItems = childPages.map(x => {return {"url": `${dirUrl}${x}/`}});
+    childPageItems = childPageItems.map(x => {return {"title": getTitle(x), "url": x.url}})
     // console.debug(dirUrl, childTree, childPages,childPageItems);
     let subitem = {"url": dirUrl};
     itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
@@ -99,7 +100,8 @@ function getHtmlForRecdirProperty(sidebarItem, childDirsSuperset) {
 
     let childTree = dirTree.getChildTree(dirUrl);
     var childDirKeys = dirTree.getChildDirKeys(childTree);
-    let childDirItems = childDirKeys.map(x => {return {"title": getTitle(`${dirUrl}${x}/`), "contents": [{"url": `recdir:/${dirUrl}${x}/`}]}});
+    let childDirItems = childDirKeys.map(x => {return {"contents": [{"url": `recdir:/${dirUrl}${x}/`}]}});
+    childDirItems = childDirItems.map(x => {return {"title": getTitle(x), "contents": x.contents}})
     // console.debug(childDirs);
     for (let childDirItem of childDirItems.sort(titleSorter)) {
         itemHtml = `${itemHtml}\n${getSidebarItemHtml(childDirItem)}`;
