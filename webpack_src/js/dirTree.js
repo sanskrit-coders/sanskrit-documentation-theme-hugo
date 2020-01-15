@@ -46,6 +46,7 @@ export function getChildDirKeys(tree) {
 
 export function getAllPaths(tree, prefix_in) {
     var prefix = prefix_in  || "/";
+    console.assert(prefix.endsWith("/"));
     let nonDirPageKeys = getNonDirPageKeys(tree);
     let paths = nonDirPageKeys.map(x => `${prefix}${x}/`);
     let childDirKeys = getChildDirKeys(tree);
