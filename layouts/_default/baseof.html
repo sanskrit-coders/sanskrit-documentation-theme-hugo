@@ -87,7 +87,7 @@
             {{ $.Param "sidebar_menu_title"  | default "Menu"}} <i class="fas fa-caret-down"></i></a>
         </div>
         <nav class="card-body p-0" id="sidebar_body">
-        <ul id="displayed_sidebar" class="list pl2 p-2 bg-yellow">
+          <ul id="displayed_sidebar" class="list pl2 p-2 {{.Site.Params.background_color_class | default "bg-yellow" }}">
         </ul>
         </nav>
       </aside>
