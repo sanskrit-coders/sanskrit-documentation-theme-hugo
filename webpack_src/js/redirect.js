@@ -41,6 +41,7 @@ export function redirectToRandomPage(weightingFn, manualRedirectionDiv, dryRun) 
     const weights = urls.map(weightingFn);
     // console.debug(urls, weights);
     let randomUrl = baseURL + urls[weightedRandom(weights)];
+    randomUrl = randomUrl.replace("//", "/");
     console.log(randomUrl);
     if (!dryRun) {
         redirectToPage(randomUrl, manualRedirectionDiv);

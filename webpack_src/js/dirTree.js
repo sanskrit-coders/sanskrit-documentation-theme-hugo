@@ -44,10 +44,10 @@ export function getChildDirKeys(tree) {
     return getNonMetaNodeKeys(tree).filter(x => getNonMetaNodeKeys(tree[x]).length > 0);
 }
 
-export function getAllPaths(tree, prefix) {
-    prefix = prefix  || "/";
+export function getAllPaths(tree, prefix_in) {
+    var prefix = prefix_in  || "/";
     let nonDirPageKeys = getNonDirPageKeys(tree);
-    let paths = nonDirPageKeys.map(x => `${prefix}/${x}/`);
+    let paths = nonDirPageKeys.map(x => `${prefix}${x}/`);
     let childDirKeys = getChildDirKeys(tree);
     childDirKeys.forEach(childDirKey => {
         paths = paths.concat(getAllPaths(tree[childDirKey], `${prefix}${childDirKey}/`));
