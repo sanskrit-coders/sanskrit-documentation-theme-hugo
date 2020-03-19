@@ -24,7 +24,7 @@ ome notable things you get with this theme (in decreasing order of interest):
 
 ## Example sites
 
-- https://vvasuki.github.io/saMskAra/mantra/worlds/gadya/mArtANDa-daNDaka/
+- https://vvasuki.github.io/saMskAra/mantraH/worlds/gadya/mArtANDa-daNDaka/
 
 ## Recommendations about config.toml
 ### Recommended settings
