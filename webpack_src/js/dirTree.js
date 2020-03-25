@@ -57,7 +57,7 @@ export function getAllPaths(tree, prefix_in) {
 }
 
 export function getParentDirPath(relUrl) {
-    return "/" + relUrl.split("/").filter(x => x.length > 0).slice(0, -1).join("/") + "/";
+    return ("/" + relUrl.split("/").filter(x => x.length > 0).slice(0, -1).join("/") + "/").replace("//", "/");
 }
 
 export function getItemNameNoPath(relUrl) {
@@ -82,5 +82,30 @@ export function getNextPage(relUrl, skipDir) {
     } else {
         console.debug("We'll get a child page");
         return tree[getPageKeys(tree)[0]];
+    }
+}
+
+export function getLastPage(tree) {
+    const pageKeys = getPageKeys(tree);
+    if (pageKeys.length == 0) {
+        return tree;
+    } else {
+        const lastKey = pageKeys.slice(-1)[0];
+        return getLastPage(tree[lastKey]);
+    }
+}
+
+export function getPreviousPage(relUrl) {
+    const tree = getChildTree(getParentDirPath(relUrl));
+    console.debug(relUrl, tree);
+    const pageKeys = getPageKeys(tree);
+    // console.log(pageKeys);
+    const currentItemPosition = pageKeys.indexOf(getItemNameNoPath(relUrl));
+    if (currentItemPosition == 0) {
+        console.debug("Moving a directory up.");
+        return tree;
+    } else {
+        console.debug("We'll get a sibling page");
+        return getLastPage(tree[pageKeys[currentItemPosition - 1]]);
     }
 }
