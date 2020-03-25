@@ -32,8 +32,17 @@ export function getNonMetaNodeKeys(tree) {
     return Object.keys(tree).filter(x => x != pageRelUrlTreeMETAkey);
 }
 
+
 export function getPageKeys(tree) {
-    return getNonMetaNodeKeys(tree).filter(x => pageRelUrlTreeMETAkey in tree[x]);
+    function titleSorter(a, b) {
+        let titleA = tree[a][pageRelUrlTreeMETAkey].title;
+        let titleB = tree[a][pageRelUrlTreeMETAkey].title;
+        if (titleA === undefined || titleB === undefined) {
+            return false;
+        }
+        else return titleA.localeCompare(titleB);
+    }
+    return getNonMetaNodeKeys(tree).filter(x => pageRelUrlTreeMETAkey in tree[x]).sort(titleSorter);
 }
 
 export function getNonDirPageKeys(tree) {
@@ -41,7 +50,7 @@ export function getNonDirPageKeys(tree) {
 }
 
 export function getChildDirKeys(tree) {
-    return getNonMetaNodeKeys(tree).filter(x => getNonMetaNodeKeys(tree[x]).length > 0);
+    return getPageKeys(tree).filter(x => getNonMetaNodeKeys(tree[x]).length > 0);
 }
 
 export function getAllPaths(tree, prefix_in) {
@@ -97,6 +106,9 @@ export function getLastPage(tree) {
 
 export function getPreviousPage(relUrl) {
     const tree = getChildTree(getParentDirPath(relUrl));
+    if (relUrl == "/") {
+        return tree;
+    }
     console.debug(relUrl, tree);
     const pageKeys = getPageKeys(tree);
     // console.log(pageKeys);
@@ -108,4 +120,9 @@ export function getPreviousPage(relUrl) {
         console.debug("We'll get a sibling page");
         return getLastPage(tree[pageKeys[currentItemPosition - 1]]);
     }
+}
+
+export function setAnchor(element, tree, textPrefix="") {
+    element.setAttribute("href", tree[pageRelUrlTreeMETAkey].absUrl);
+    element.textContent = textPrefix + tree[pageRelUrlTreeMETAkey].title.replace("+", "");
 }

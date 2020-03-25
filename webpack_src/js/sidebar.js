@@ -75,13 +75,14 @@ function getHtmlForDirProperty(sidebarItem) {
     if (Object.keys(childTree).length == 0 ){
         console.error(`Directory ${dirUrl} not found!`);
     }
+    // Not sorting as it comes presorted by title.
     var childPages = dirTree.getNonDirPageKeys(childTree);
     let childPageItems = childPages.map(x => {return {"url": `${dirUrl}${x}/`}});
     childPageItems = childPageItems.map(x => {return {"title": getTitle(x), "url": x.url}})
     // console.debug(dirUrl, childTree, childPages,childPageItems);
     let subitem = {"url": dirUrl};
     itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
-    for (let childPageItem of childPageItems.sort(titleSorter)) {
+    for (let childPageItem of childPageItems) {
         itemHtml = `${itemHtml}\n${getSidebarItemHtml(childPageItem)}`;
     }
     if (childPages.length == 0 ){
