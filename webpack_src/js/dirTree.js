@@ -124,5 +124,5 @@ export function getPreviousPage(relUrl) {
 
 export function setAnchor(element, tree, textPrefix="") {
     element.setAttribute("href", tree[pageRelUrlTreeMETAkey].absUrl);
-    element.textContent = textPrefix + tree[pageRelUrlTreeMETAkey].title.replace("+", "");
+    element.innerHTML = element.innerHTML.replace("###", tree[pageRelUrlTreeMETAkey].title);
 }
