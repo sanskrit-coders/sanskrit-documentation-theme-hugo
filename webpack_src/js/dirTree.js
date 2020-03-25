@@ -67,7 +67,7 @@ export function getItemNameNoPath(relUrl) {
 export function getNextPage(relUrl, skipDir) {
     var tree = getChildTree(relUrl);
     console.debug(relUrl, tree);
-    if (getPageKeys(tree) == 0 || skipDir) {
+    if (getPageKeys(tree).length == 0 || skipDir) {
         tree = getChildTree(getParentDirPath(relUrl));
         const pageKeys = getPageKeys(tree);
         // console.log(pageKeys);
@@ -83,5 +83,4 @@ export function getNextPage(relUrl, skipDir) {
         console.debug("We'll get a child page");
         return tree[getPageKeys(tree)[0]];
     }
-    // TODO : To be debugged.
 }
