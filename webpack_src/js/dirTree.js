@@ -56,3 +56,32 @@ export function getAllPaths(tree, prefix_in) {
     return paths;
 }
 
+export function getParentDirPath(relUrl) {
+    return "/" + relUrl.split("/").filter(x => x.length > 0).slice(0, -1).join("/") + "/";
+}
+
+export function getItemNameNoPath(relUrl) {
+    return relUrl.split("/").filter(x => x.length > 0).slice(-1)[0];
+}
+
+export function getNextPage(relUrl, skipDir) {
+    var tree = getChildTree(relUrl);
+    console.debug(relUrl, tree);
+    if (getPageKeys(tree) == 0 || skipDir) {
+        tree = getChildTree(getParentDirPath(relUrl));
+        const pageKeys = getPageKeys(tree);
+        // console.log(pageKeys);
+        const currentItemPosition = pageKeys.indexOf(getItemNameNoPath(relUrl));
+        if (currentItemPosition == pageKeys.length - 1) {
+            console.debug("Moving a directory up.");
+            return getNextPage(getParentDirPath(getParentDirPath(relUrl)), true);
+        } else {
+            console.debug("We'll get a sibling page");
+            return tree[pageKeys[currentItemPosition + 1]];
+        }
+    } else {
+        console.debug("We'll get a child page");
+        return tree[getPageKeys(tree)[0]];
+    }
+    // TODO : To be debugged.
+}
