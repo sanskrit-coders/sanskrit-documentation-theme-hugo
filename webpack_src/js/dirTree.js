@@ -36,7 +36,8 @@ export function getNonMetaNodeKeys(tree) {
 export function getPageKeys(tree) {
     function titleSorter(a, b) {
         let titleA = tree[a][pageRelUrlTreeMETAkey].title;
-        let titleB = tree[a][pageRelUrlTreeMETAkey].title;
+        let titleB = tree[b][pageRelUrlTreeMETAkey].title;
+        // console.debug(titleA, titleB, titleA.localeCompare(titleB));
         if (titleA === undefined || titleB === undefined) {
             return false;
         }

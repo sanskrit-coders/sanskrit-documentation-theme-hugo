@@ -77,6 +77,7 @@ function getHtmlForDirProperty(sidebarItem) {
     }
     // Not sorting as it comes presorted by title.
     var childPages = dirTree.getNonDirPageKeys(childTree);
+    // console.debug(childPages);
     let childPageItems = childPages.map(x => {return {"url": `${dirUrl}${x}/`}});
     childPageItems = childPageItems.map(x => {return {"title": getTitle(x), "url": x.url}})
     // console.debug(dirUrl, childTree, childPages,childPageItems);
