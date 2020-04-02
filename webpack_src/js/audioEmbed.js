@@ -37,10 +37,30 @@ export function fillAudioEmbeds() {
         mp3Embed(audioEmbedTag);
     });
     document.addEventListener('play', function(e){
+        // Pause other audios if this one is playing.
         var audios = document.getElementsByTagName('audio');
         for(var i = 0, len = audios.length; i < len;i++){
             if(audios[i] != e.target){
                 audios[i].pause();
+            }
+        }
+    }, true);
+    document.addEventListener('ended', function(e){
+        // Play the next audio after this one ends.
+        var audios = Array.from(document.getElementsByTagName('audio'));
+        let currentAudioIndex = audios.findIndex(x => x.currentSrc == e.target.currentSrc);
+        if (currentAudioIndex == -1) {
+            console.error("Something went wrong", e);
+            return;
+        }
+        console.log(currentAudioIndex);
+        if (currentAudioIndex < audios.length - 1) {
+            audios[currentAudioIndex + 1].play();
+            audios[currentAudioIndex + 1].focus();
+        } else {
+            let nextPageLinks = document.getElementsByName("nextPage");
+            if (nextPageLinks.length > 0) {
+                nextPageLinks[0].focus();
             }
         }
     }, true);
