@@ -4,6 +4,7 @@ import * as query from "./query";
 
 let transliterationTarget = "devanagari";
 let previousTransliterationTarget = transliterationTarget;
+let transliterationSource = pageParams.unicode_script || "devanagari";
 /* ---- Cookies ---- */
 let LIPI_DEFAULT = "devanagari";
 let LIPI_COOKIE = "translitration_target";
@@ -39,7 +40,7 @@ export function transliterateDevanagariBody() {
     // console.debug(textNodes);
     textNodes.forEach(function (textNode) {
         if(textNode.parentNode.nodeName.toLowerCase() != "option") {
-            textNode.textContent = Sanscript.t(textNode.textContent, "devanagari", transliterationTarget);
+            textNode.textContent = Sanscript.t(textNode.textContent, transliterationSource, transliterationTarget);
         }
     })
 }
