@@ -36,6 +36,12 @@ blockquote {
   vertical-align: sub;
 }
 
+
+
+.handsontable th, .handsontable td {
+  line-height: 1.2em;
+}
+
 *[emphasis_as_inline_comments=true] {
   em {
     // Copied from inline_comments class above.
