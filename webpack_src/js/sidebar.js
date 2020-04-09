@@ -1,6 +1,16 @@
 import urljoin from 'url-join';
 import * as dirTree from "./dirTree";
 
+export function sidebarToggleHandler() {
+    let expanded = document.getElementsByName("sidebarToggleLink")[0].getAttribute("aria-expanded") === "true";
+    console.debug(expanded);
+    if(expanded) {
+        document.getElementsByName("contentRow")[0].setAttribute("class", "col");
+    } else {
+        document.getElementsByName("contentRow")[0].setAttribute("class", "row");
+    }
+}
+
 function getTitle(sidebarItem) {
     var title = sidebarItem.title;
     if (!title) {

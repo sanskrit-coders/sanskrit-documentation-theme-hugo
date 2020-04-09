@@ -19,7 +19,7 @@ import * as videoEmbed from "./videoEmbed";
 import * as audioEmbed from "./audioEmbed";
 import handleIncludes from "./handleIncludes";
 import {updateToc} from "./toc";
-import {insertSidebarItems, insertNavItems} from "./sidebar";
+import * as sidebar from "./sidebar";
 import * as transliteration from "./transliteration";
 import * as spreadsheets from "./spreadsheets";
 import * as query from "./query";
@@ -34,17 +34,17 @@ export function prepareContentWithoutIncludes() {
 }
 
 function onDocumentReadyTasks() {
-  insertSidebarItems();
+  sidebar.insertSidebarItems();
   let nextPage = module_dir_tree.getNextPage(pageUrlMinusBasePath);
   module_dir_tree.setAnchor(document.getElementsByName("nextPage")[0], nextPage, ">" );
   let previousPage = module_dir_tree.getPreviousPage(pageUrlMinusBasePath);
   module_dir_tree.setAnchor(document.getElementsByName("previousPage")[0], previousPage, "<" );
   
   if (topnavId) {
-    insertNavItems("#div_top_bar", sidebarsData[topnavId]);
+    sidebar.insertNavItems("#div_top_bar", sidebarsData[topnavId]);
   }
   if (footernavId) {
-    insertNavItems("#div_footer_bar", sidebarsData[footernavId]);
+    sidebar.insertNavItems("#div_footer_bar", sidebarsData[footernavId]);
   }
   if (unicodeScript) {
     $("#post_content").attr("unicode_script", unicodeScript);
@@ -64,6 +64,7 @@ export default {
   onDocumentReadyTasks: onDocumentReadyTasks,
   redirectToRandomPage: redirectToRandomPage,
   redirectToPage: redirectToPage,
-  addRelUrlToTree: dirTree.addRelUrlToTree
+  addRelUrlToTree: dirTree.addRelUrlToTree,
+  sidebarToggleHandler: sidebar.sidebarToggleHandler
 }
 
