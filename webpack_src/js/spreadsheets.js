@@ -3,19 +3,22 @@ import 'handsontable/dist/handsontable.full.css';
 
 export function fillTable(sheetEmbedTag) {
     let jsonUrl = sheetEmbedTag.getAttribute("src");
+    let headerStr = sheetEmbedTag.getAttribute("headers") || "";
     $.getJSON(jsonUrl, function (data) {
         if (data.length > 0) {
             const tableData = [];             // The array to store JSON data.
             let columnWidths = [];
-            let row = {};
-            for (let key in data[0]) {
-                row[key] = key;
-                columnWidths.push(20);
+            let headers = [];
+            if (headerStr === "") {
+                for (let key in data[0]) {
+                    headers.push(key);
+                    columnWidths.push(20);
+                }
+            } else {
+                headerStr.split(",")
             }
-            // console.debug(row);
-            tableData.push(row);
+            console.debug(headerStr, headers);
             $.each(data, function (index, value) {
-                let row = [];
                 tableData.push(data[index]);
                 for (let key in data[index]) {
                     let value = data[index][key];
@@ -23,18 +26,20 @@ export function fillTable(sheetEmbedTag) {
                     columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], Math.min(value.length * 20, 200));
                     // console.debug(value, value.length, columnWidths);
                 }
-                tableData.push(row);
             });
             // console.debug(tableData);
             const hoTable = new Handsontable(sheetEmbedTag, {
                 data: tableData,
                 rowHeaders: true,
-                colHeaders: true,
+                colHeaders: headers,
                 colWidths: columnWidths,
                 manualColumnResize: true,
                 manualRowResize: true,
                 contextMenu: true,
                 fixedRowsTop: 1,
+                minSpareRows: 1,
+                columnSorting: true,
+                bindRowsWithHeaders: true,
                 manualColumnFreeze: true,
                 licenseKey: 'non-commercial-and-evaluation'
             });
