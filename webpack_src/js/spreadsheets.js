@@ -1,5 +1,6 @@
 import Handsontable from "handsontable";
 import 'handsontable/dist/handsontable.full.css';
+import * as sidebar from "./sidebar";
 
 export function fillTable(sheetEmbedTag) {
     let jsonUrl = sheetEmbedTag.getAttribute("src");
@@ -45,6 +46,7 @@ export function fillTable(sheetEmbedTag) {
                 manualColumnFreeze: true,
                 licenseKey: 'non-commercial-and-evaluation'
             });
+            sidebar.setupSidebarToggle();
         }
     });
 

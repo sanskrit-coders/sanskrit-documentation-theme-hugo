@@ -36,7 +36,7 @@ export function prepareContentWithoutIncludes() {
 
 function onDocumentReadyTasks() {
   sidebar.insertSidebarItems();
-  setTimeout(sidebar.setupSidebarToggle, 3000);
+  sidebar.setupSidebarToggle();
   let nextPage = module_dir_tree.getNextPage(pageUrlMinusBasePath);
   module_dir_tree.setAnchor(document.getElementsByName("nextPage")[0], nextPage, ">" );
   let previousPage = module_dir_tree.getPreviousPage(pageUrlMinusBasePath);
