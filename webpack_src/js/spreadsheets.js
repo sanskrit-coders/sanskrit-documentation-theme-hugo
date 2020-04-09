@@ -21,7 +21,7 @@ export function fillTable(sheetEmbedTag) {
                     row.push(value);
                     let columnIndex = Object.keys(data[index]).indexOf(key);
                     columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], Math.min(value.length * 20, 200));
-                    console.debug(value, value.length, columnWidths);
+                    // console.debug(value, value.length, columnWidths);
                 }
                 tableData.push(row);
             });
