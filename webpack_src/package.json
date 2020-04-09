@@ -15,6 +15,7 @@
     "@sanskrit-coders/sanscript": "^1.0.2",
     "bootstrap": "^4.4.1",
     "fuse.js": "^3.4.6",
+    "handsontable": "^7.4.2",
     "jquery": "^3.4.1",
     "jquery-ui-dist": "^1.12.1",
     "mark.js": "^8.11.1",

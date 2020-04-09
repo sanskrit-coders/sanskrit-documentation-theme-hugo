@@ -89,7 +89,7 @@ function getNextPageFromTreePosition(tree, relUrl) {
 
 export function getNextPage(relUrl, startUrl) {
     var tree = getChildTree(relUrl);
-    console.debug(relUrl, tree);
+    // console.debug(relUrl, tree);
     if (getPageKeys(tree).length == 0) {
         tree = getChildTree(getParentDirPath(relUrl));
         return getNextPageFromTreePosition(tree, relUrl);
@@ -118,7 +118,7 @@ export function getPreviousPage(relUrl) {
     if (relUrl == "/") {
         return tree;
     }
-    console.debug(relUrl, tree);
+    // console.debug(relUrl, tree);
     const pageKeys = getPageKeys(tree);
     // console.log(pageKeys);
     const currentItemPosition = pageKeys.indexOf(getItemNameNoPath(relUrl));

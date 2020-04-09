@@ -21,6 +21,7 @@ import handleIncludes from "./handleIncludes";
 import {updateToc} from "./toc";
 import {insertSidebarItems, insertNavItems} from "./sidebar";
 import * as transliteration from "./transliteration";
+import * as spreadsheets from "./spreadsheets";
 import * as query from "./query";
 
 // No includes processing - or adding navigation bars.
@@ -29,6 +30,7 @@ export function prepareContentWithoutIncludes() {
   transliteration.transliterateDevanagariBody();
   audioEmbed.fillAudioEmbeds();
   videoEmbed.fillVideoEmbeds();
+  spreadsheets.fillSheets();
 }
 
 function onDocumentReadyTasks() {
