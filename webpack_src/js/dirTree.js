@@ -131,7 +131,12 @@ export function getPreviousPage(relUrl) {
     }
 }
 
-export function setAnchor(element, tree, textPrefix="") {
+export function setAnchor(element, tree, textPrefix="", maxLength = 10) {
     element.setAttribute("href", tree[pageRelUrlTreeMETAkey].absUrl);
-    element.innerHTML = element.innerHTML.replace("###", tree[pageRelUrlTreeMETAkey].title);
+    let title = tree[pageRelUrlTreeMETAkey].title;
+    if (title.length > maxLength) {
+        title = title.substr(0, maxLength);
+        title = title + "…"
+    }
+    element.innerHTML = element.innerHTML.replace("###", title);
 }
