@@ -13,8 +13,8 @@ export function setupSidebarToggle() {
 }
 
 export function collapse() {
-    $('#sidebar_body').classList.remove("show");
-    sidebarToggleHandler();
+    console.debug("collapsing sidebar");
+    document.querySelector("[name='sidebarToggleLink']").click();
 }
 
 export function sidebarToggleHandler() {
