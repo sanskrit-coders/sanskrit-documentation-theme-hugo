@@ -33,6 +33,8 @@ export function fillTable(sheetEmbedTag) {
                 rowHeaders: true,
                 colHeaders: headers,
                 colWidths: columnWidths,
+                rowHeights: '100px',
+                // preventOverflow: false,
                 manualColumnResize: true,
                 manualRowResize: true,
                 contextMenu: true,
