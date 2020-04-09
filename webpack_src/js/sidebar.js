@@ -1,14 +1,30 @@
 import urljoin from 'url-join';
 import * as dirTree from "./dirTree";
 
+export function setupSidebarToggle() {
+    let sidebarBounds = document.querySelector("#sidebar_body").getBoundingClientRect();
+    let mainBounds = document.querySelector("main").getBoundingClientRect();
+    console.debug(mainBounds, sidebarBounds);
+    
+    // This seems to not work: page layout seems to get fixed after this function is called.
+    if (mainBounds.y > sidebarBounds.y + sidebarBounds.height) {
+        collapse();
+    }
+}
+
+export function collapse() {
+    $('#sidebar_body').classList.remove("show");
+    sidebarToggleHandler();
+}
+
 export function sidebarToggleHandler() {
     // Acual collapsing/ expanding happens elsewhere in some library function. 
-    let expanded = document.getElementsByName("sidebarToggleLink")[0].getAttribute("aria-expanded") === "true";
+    let expanded = document.querySelector("[name='sidebarToggleLink']").getAttribute("aria-expanded") === "true";
     // console.debug(expanded);
     if(expanded) {
-        document.getElementsByName("contentRow")[0].setAttribute("class", "col");
+        document.querySelector("[name='contentRow']").setAttribute("class", "col");
     } else {
-        document.getElementsByName("contentRow")[0].setAttribute("class", "row");
+        document.querySelector("[name='contentRow']").setAttribute("class", "row");
     }
 }
 
