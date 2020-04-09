@@ -2,8 +2,9 @@ import urljoin from 'url-join';
 import * as dirTree from "./dirTree";
 
 export function sidebarToggleHandler() {
+    // Acual collapsing/ expanding happens elsewhere in some library function. 
     let expanded = document.getElementsByName("sidebarToggleLink")[0].getAttribute("aria-expanded") === "true";
-    console.debug(expanded);
+    // console.debug(expanded);
     if(expanded) {
         document.getElementsByName("contentRow")[0].setAttribute("class", "col");
     } else {
