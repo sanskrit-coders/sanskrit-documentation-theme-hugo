@@ -1,20 +1,15 @@
 import urljoin from 'url-join';
 import * as dirTree from "./dirTree";
 
+// This should be called whenever an element with potential to resize the main content column is loaded/ filled. Eg. Spreadsheets.
 export function setupSidebarToggle() {
     let sidebarBounds = document.querySelector("#sidebar_body").getBoundingClientRect();
     let mainBounds = document.querySelector("main").getBoundingClientRect();
     console.debug(mainBounds, sidebarBounds);
     
-    // This seems to not work: page layout seems to get fixed after this function is called.
     if (mainBounds.y > sidebarBounds.y + sidebarBounds.height) {
-        collapse();
+        document.querySelector("[name='sidebarToggleLink']").click();
     }
-}
-
-export function collapse() {
-    console.debug("collapsing sidebar");
-    document.querySelector("[name='sidebarToggleLink']").click();
 }
 
 export function sidebarToggleHandler() {
