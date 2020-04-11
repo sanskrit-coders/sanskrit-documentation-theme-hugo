@@ -28,12 +28,14 @@ export function fillTable(sheetEmbedTag) {
                     // console.debug(value, value.length, columnWidths);
                 }
             });
-            // console.debug(tableData);
+            // console.debug(screen.availWidth);
             const hoTable = new Handsontable(sheetEmbedTag, {
                 data: tableData,
                 rowHeaders: true,
                 colHeaders: headers,
                 colWidths: columnWidths,
+                stretchH: 'all',
+                height: screen.height,
                 // rowHeights: '100px',
                 // preventOverflow: false,
                 manualColumnResize: true,
