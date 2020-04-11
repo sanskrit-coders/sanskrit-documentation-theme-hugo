@@ -35,7 +35,7 @@ export function fillTable(sheetEmbedTag) {
                 colHeaders: headers,
                 colWidths: columnWidths,
                 stretchH: 'all',
-                height: screen.height,
+                height: .8*screen.availHeight,
                 // rowHeights: '100px',
                 // preventOverflow: false,
                 manualColumnResize: true,
