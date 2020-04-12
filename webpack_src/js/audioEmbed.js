@@ -18,13 +18,13 @@ export function mp3Embed(audioEmbedTag) {
             if(srcParts[1].indexOf('autoplay=1') !== -1) var autoplay=1; else var autoplay=0;
             if(srcParts[1].indexOf('loop=1') !== -1) var loop=1; else var loop=0;
             if(srcParts[1].indexOf('controls=0') !== -1) var controls=0; else var controls=1;
-            var newInnerHTML = '<audio';
+            var newInnerHTML = '<hr><audio';
             if(autoplay==1) newInnerHTML += ' autoplay';
             if(loop==1) newInnerHTML += ' loop';
             if(controls==1) newInnerHTML += ' controls';
             newInnerHTML += '><source src="'+srcParts[0]+'" type="audio/mpeg">Your browser does not support the audio element, but here is <a href="' + srcParts[0] + '">a link.</a></audio>';
             if(caption) {
-                newInnerHTML += `(${caption})`;
+                newInnerHTML += `<div class="audioCaption"> (${caption})</div><hr>`;
             }
             audioEmbedTag.innerHTML = newInnerHTML;
         }

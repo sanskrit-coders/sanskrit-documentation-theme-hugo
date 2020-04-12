@@ -47,6 +47,11 @@ audio {
   line-height: 1.2em;
 }
 
+.audioCaption {
+  text-align: center;
+  font-style: italic;
+}
+
 *[emphasis_as_inline_comments=true] {
   em {
     // Copied from inline_comments class above.
