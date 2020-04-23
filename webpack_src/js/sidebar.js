@@ -120,15 +120,22 @@ function getHtmlForRecdirProperty(sidebarItem, childDirsSuperset) {
     if (!dirUrl.endsWith("/")) {
         dirUrl = dirUrl + "/";
     }
-    itemHtml = getHtmlForDirProperty({"url": `dir:/${dirUrl}`});
+
+    let subitem = {"url": dirUrl};
+    itemHtml = `${itemHtml}\n${getSidebarItemHtml(subitem)}`;
 
     let childTree = dirTree.getChildTree(dirUrl);
-    var childDirKeys = dirTree.getChildDirKeys(childTree);
-    let childDirItems = childDirKeys.map(x => {return {"contents": [{"url": `recdir:/${dirUrl}${x}/`}]}});
-    childDirItems = childDirItems.map(x => {return {"title": getTitle(x), "contents": x.contents}})
+    var childPageKeys = dirTree.getPageKeys(childTree);
+    let childPageItems = childPageKeys.map(x => {
+        if (dirTree.isDirKey(childTree, x)) {
+            return {"contents": [{"url": `recdir:/${dirUrl}${x}/`}]};
+        } else {
+            return {"url": `/${dirUrl}${x}/`};
+        }
+    });
     // console.debug(childDirs);
-    for (let childDirItem of childDirItems.sort(titleSorter)) {
-        itemHtml = `${itemHtml}\n${getSidebarItemHtml(childDirItem)}`;
+    for (let childItem of childPageItems.sort(titleSorter)) {
+        itemHtml = `${itemHtml}\n${getSidebarItemHtml(childItem)}`;
     }
     return itemHtml;
 }

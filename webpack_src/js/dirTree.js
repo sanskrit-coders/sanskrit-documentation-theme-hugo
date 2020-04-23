@@ -46,12 +46,16 @@ export function getPageKeys(tree) {
     return getNonMetaNodeKeys(tree).filter(x => pageRelUrlTreeMETAkey in tree[x]).sort(titleSorter);
 }
 
+export function isDirKey(tree, key) {
+  return getNonMetaNodeKeys(tree[key]).length > 0;
+}
+
 export function getNonDirPageKeys(tree) {
-    return getPageKeys(tree).filter(x => getNonMetaNodeKeys(tree[x]).length == 0);
+    return getPageKeys(tree).filter(x => !isDirKey(tree, x));
 }
 
 export function getChildDirKeys(tree) {
-    return getPageKeys(tree).filter(x => getNonMetaNodeKeys(tree[x]).length > 0);
+    return getPageKeys(tree).filter(x => isDirKey(tree, x));
 }
 
 export function getAllPaths(tree, prefix_in) {
