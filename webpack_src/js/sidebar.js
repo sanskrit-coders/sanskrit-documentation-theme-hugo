@@ -147,17 +147,18 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     let isExternalLink = finalUrl.startsWith("http") || finalUrl.startsWith("ftp");
         
     if (!isExternalLink) {
-        itemUrlStripped = itemUrlStripped.replace("_index.md.html", "").replace("_index.md.md", "").replace(".md", "/");
+        itemUrlStripped = itemUrlStripped.replace("_index.md.html", "").replace("_index.md.md", "").replace(".md", "/").replace("//", "/");
         finalUrl = urljoin(baseURL, itemUrlStripped);
     }
 
-    // console.debug(itemUrlStripped);
     let anchorClasses = "";
     var liClass = "inactive";  // list-group-item-* is a bootstrap class.
     if (pageUrlMinusBasePath == itemUrlStripped) {
         liClass = "active underline";
     }
-    // console.debug(sidebarItem);
+    if (itemUrlStripped.includes("pashupati")) {
+        console.debug(itemUrlStripped, pageUrlMinusBasePath, sidebarItem);
+    }
     if(sidebarItem.hasOwnProperty("contents")) {
         return getHtmlForContentsProperty(sidebarItem, parentListIdIn, anchorClasses, liClass);
     }
