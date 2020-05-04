@@ -1,6 +1,7 @@
 import * as main from "./main";
 
 import urljoin from 'url-join';
+
 /*
 Example: absoluteUrl("../subfolder1/divaspari/", "../images/forest-fire.jpg") == "../subfolder1/images/forest-fire.jpg"
 WARNING NOTE: won't work with say base = "http://google.com" since it does not end with /. 
@@ -26,7 +27,7 @@ function absoluteUrl(base, relative) {
 }
 
 // WHen you include html from one page within another, you need to fix image urls, anchor urls etc..
-function fixIncludedHtml(url, html, newLevelForH1) {
+function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
     // We want to use jquery to parse html, but without loading images. Hence this.
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
@@ -43,8 +44,7 @@ function fixIncludedHtml(url, html, newLevelForH1) {
     jqueryElement.find(".back-to-top").remove();
 
     jqueryElement.find('.js_include').each(function() {
-        // The url (not $(this).attr("url")) which we get here is warped by the calling function, which includes an extra ../ in the beginning. Further, xyz.md files get the terminal "xyz/index.html". Both of these must be undone to make the include element url attribute sane. Note that this correction only applies to js_include elements because they accept urls of the type xyz.md rather than xyz/index.html.
-        let includerUrl = url.replace(/^\.\.\//, "").replace("/index.html", ".md");
+        let includerUrl = includedPageRelativeUrl.replace("index.html", "");
 
         $(this).attr("url", absoluteUrl(includerUrl, $(this).attr("url")));
         if (newLevelForH1 < 1) {
@@ -68,7 +68,7 @@ function fixIncludedHtml(url, html, newLevelForH1) {
      */
     var headers = jqueryElement.find(":header");
     if (headers.length > 0) {
-        var id_prefix = url.replace("/", "_");
+        var id_prefix = includedPageRelativeUrl.replace("/", "_");
         headers.replaceWith(function() {
             var headerElement = $(this);
             // console.debug(headerElement);
@@ -82,9 +82,9 @@ function fixIncludedHtml(url, html, newLevelForH1) {
 
     // Fix image urls.
     jqueryElement.find("img").each(function() {
-        console.log(url, $(this).attr("src"), absoluteUrl(url, $(this).attr("src")));
+        console.log(includedPageRelativeUrl, $(this).attr("src"), absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
         // console.log($(this).attr("src"))
-        $(this).attr("src", absoluteUrl(url, $(this).attr("src")));
+        $(this).attr("src", absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
         // console.log($(this).attr("src"))
     });
 
@@ -105,15 +105,19 @@ function fixIncludedHtml(url, html, newLevelForH1) {
             }
             $(this).attr("href", new_href);
         } else {
-            $(this).attr("href", absoluteUrl(url, href));
+            $(this).attr("href", absoluteUrl(includedPageRelativeUrl, href));
         }
     });
 
     return jqueryElement.html();
 }
 
+/* This function looks at the html of the page to be included, and changes it in the following ways:
+- It fixes heading levels and figures out whether a title is needed.
+- It fixes urls of images, links and includes to be relative to the includedPageUrl (which is inturn relative to the current page url), so that they work as expected when included in the given page.
+*/
 // An async function returns results wrapped in Promise objects.
-async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLevelForH1, includedPageUrl) {
+async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLevelForH1, includedPageRelativeUrl) {
     // We want to use jquery to parse html, but without loading images. Hence this.
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
@@ -145,14 +149,26 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
         if (addTitle && addTitle != "false") {
             titleHtml = "<h1 id='" + title + "'>" + title + "</h1>";
         }
-        var popoutHtml = "<div class='border d-flex justify-content-between'>" + titleHtml + "<div><a class='btn btn-secondary' href='" + absoluteUrl(document.location, includedPageUrl) + "'><i class=\"fas fa-external-link-square-alt\"></i></a>" +
+        var popoutHtml = "<div class='border d-flex justify-content-between'>" + titleHtml + "<div><a class='btn btn-secondary' href='" + absoluteUrl(document.location, includedPageRelativeUrl) + "'><i class=\"fas fa-external-link-square-alt\"></i></a>" +
             editLinkHtml + "</div>"
         "</div>";
         var contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
         var elementToInclude = $("<div class='included-post-content border'/>");
-        elementToInclude.html(fixIncludedHtml(includedPageUrl, popoutHtml, includedPageNewLevelForH1) + fixIncludedHtml(includedPageUrl, contentHtml, includedPageNewLevelForH1));
+        elementToInclude.html(fixIncludedHtml(includedPageRelativeUrl, popoutHtml, includedPageNewLevelForH1) + fixIncludedHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));
         return elementToInclude;
     }
+}
+
+/*
+Get included page url relative to the current page url.
+* */
+function getRelativeIncludedPageUrl(jsIncludeJqueryElement) {
+    var includedPageUrl = jsIncludeJqueryElement.attr("url");
+    if (includedPageUrl.endsWith("/")) {
+        // In case one loads file://x/y/z/ rather than http://x/y/z/, the following is needed. 
+        includedPageUrl = includedPageUrl + "index.html";
+    }
+    return includedPageUrl;
 }
 
 async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) {
@@ -162,13 +178,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     }
     console.info("Inserting include for ", jsIncludeJqueryElement);
 
-    // Special logic for files which produce index.html.
-    let sameLevelRelativePath = (pageParams["logicalName"] === "_index.md")? "./": "../";
-    var includedPageUrl = sameLevelRelativePath + jsIncludeJqueryElement.attr("url").replace(".md", "/");
-    if (includedPageUrl.endsWith("/")) {
-        // In case one loads file://x/y/z/ rather than http://x/y/z/, the following is needed. 
-        includedPageUrl = includedPageUrl + "index.html";
-    }
+    let includedPageUrl = getRelativeIncludedPageUrl(jsIncludeJqueryElement);
     if (includedPageNewLevelForH1 === undefined) {
         includedPageNewLevelForH1 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
     }
@@ -211,7 +221,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
 
 import {updateToc} from "./toc";
 // Process includes of the form:
-// <div class="js_include" url="index.md"/>
+// <div class="js_include" url="../xyz/"/>.
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
 export default function handleIncludes() {
     console.log("Entering handleIncludes.");
