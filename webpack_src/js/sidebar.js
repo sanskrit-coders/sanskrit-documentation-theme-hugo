@@ -200,6 +200,10 @@ export function insertSidebarItems() {
 }
 
 export function insertNavItems(navbarId, items) {
+    if (items === undefined) {
+        return;
+    }
+    console.debug(items)
     if (topnavId && !$(navbarId).attr("addedCustomItems")) {
         // console.debug(topnavDropdown);
         for (let item of items) {
