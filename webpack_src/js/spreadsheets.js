@@ -97,8 +97,7 @@ function fillTsvTable(sheetEmbedTag) {
                     data: tableData,
                     rowHeaders: true,
                     colHeaders: headers,
-                    colWidth
-                    s: columnWidths,
+                    colWidths: columnWidths,
                     stretchH: 'all',
                     height: .8*screen.availHeight,
                     // rowHeights: '100px',
