@@ -88,7 +88,7 @@ function getHtmlForContentsProperty(sidebarItem, parentListIdIn, anchorClasses, 
 function getHtmlForDirProperty(sidebarItem) {
     var itemHtml = "";
     // console.debug(sidebarItem);
-    var dirUrl = sidebarItem.url.replace("dir://", "/");
+    var dirUrl = sidebarItem.url.replace("dir://", "/").replace("//", "/");
     if (!dirUrl.endsWith("/")) {
         dirUrl = dirUrl + "/";
     }
