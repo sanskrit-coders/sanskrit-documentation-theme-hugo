@@ -1,6 +1,7 @@
 import urljoin from 'url-join';
 import * as dirTree from "./dirTree";
 
+
 // This should be called whenever an element with potential to resize the main content column is loaded/ filled. Eg. Spreadsheets.
 export function setupSidebarToggle() {
     let sidebarBounds = document.querySelector("#sidebar_body").getBoundingClientRect();
@@ -176,6 +177,8 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     // Finally, the default case.
     // console.debug(baseURL +itemUrlStripped);
     var title = getTitle(sidebarItem);
+    let special_pages = ["tags", "categories"];
+    
     var itemHtml = `<li class="${liClass}"><a href="${finalUrl }"  class="${anchorClasses}" target="">${title}</a></li>`;
     return itemHtml;
 }
