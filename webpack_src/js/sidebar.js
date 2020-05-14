@@ -1,12 +1,13 @@
 import urljoin from 'url-join';
 import * as dirTree from "./dirTree";
 
+
 // This should be called whenever an element with potential to resize the main content column is loaded/ filled. Eg. Spreadsheets.
 export function setupSidebarToggle() {
     let sidebarBounds = document.querySelector("#sidebar_body").getBoundingClientRect();
     let mainBounds = document.querySelector("main").getBoundingClientRect();
     console.debug(mainBounds, sidebarBounds);
-    
+
     if (mainBounds.y > sidebarBounds.y + sidebarBounds.height) {
         document.querySelector("[name='sidebarToggleLink']").click();
     }
@@ -126,6 +127,10 @@ function getHtmlForRecdirProperty(sidebarItem, childDirsSuperset) {
 
     let childTree = dirTree.getChildTree(dirUrl);
     var childPageKeys = dirTree.getPageKeys(childTree);
+    if (dirUrl == "/") {
+        let excluded_keys = ["tags", "categories"];
+        childPageKeys = childPageKeys.filter((key) => !excluded_keys.includes(key) );
+    }
     let childPageItems = childPageKeys.map(x => {
         if (dirTree.isDirKey(childTree, x)) {
             return {"contents": [{"url": `recdir:/${dirUrl}${x}/`}]};
@@ -145,7 +150,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     let finalUrl = sidebarItem.url || "#";
     var itemUrlStripped = finalUrl;
     let isExternalLink = finalUrl.startsWith("http") || finalUrl.startsWith("ftp");
-        
+
     if (!isExternalLink) {
         itemUrlStripped = itemUrlStripped.replace("_index.md.html", "").replace("_index.md.md", "").replace(".md", "/").replace("//", "/");
         finalUrl = urljoin(baseURL, itemUrlStripped);
@@ -172,10 +177,11 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     if (sidebarItem.url.startsWith("recdir://")) {
         return getHtmlForRecdirProperty(sidebarItem);
     }
-    
+
     // Finally, the default case.
     // console.debug(baseURL +itemUrlStripped);
     var title = getTitle(sidebarItem);
+
     var itemHtml = `<li class="${liClass}"><a href="${finalUrl }"  class="${anchorClasses}" target="">${title}</a></li>`;
     return itemHtml;
 }
