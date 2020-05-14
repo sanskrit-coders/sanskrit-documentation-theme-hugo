@@ -138,7 +138,7 @@ export function getPreviousPage(relUrl) {
 export function setAnchor(element, tree, textPrefix="", maxLength = 10) {
     element.setAttribute("href", tree[pageRelUrlTreeMETAkey].absUrl);
     let title = tree[pageRelUrlTreeMETAkey].title;
-    if (title.length > maxLength) {
+    if (title != undefined && title.length > maxLength) {
         title = title.substr(0, maxLength);
         title = title + "…"
     }
