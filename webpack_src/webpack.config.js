@@ -47,6 +47,18 @@ module.exports = {
                         name: 'images/[hash]-[name].[ext]'
                     }
                 }]
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[ext]',
+                            outputPath: 'fonts/' // under the main output folder defined above in the output tuple.
+                        }
+                    }
+                ],
             }
         ]
     },

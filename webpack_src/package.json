@@ -27,6 +27,7 @@
   "devDependencies": {
     "autoprefixer": "^9.7.6",
     "css-loader": "^2.1.1",
+    "file-loader": "^6.0.0",
     "font-awesome-loader": "^1.0.2",
     "node-sass": "^4.13.1",
     "npm-watch": "^0.6.0",
