@@ -30,7 +30,7 @@
       {{ template "_internal/google_analytics_async.html" . }}
     {{ end }}
 
-    <script src="{{ relURL "dist/dir_tree-bundle.js" }}"></script>
+    <script src="{{ relURL "webpack_dist/dir_tree-bundle.js" }}"></script>
     {{ partialCached "hugo-site-vars-to-js-general.html" .}}
     <script>
     // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds this partial just once and includes it everywhere.
@@ -51,10 +51,10 @@
     var unicodeScript = pageParams.unicode_script || pageDefaults.unicode_script;
     // console.debug(pageParams);
     </script>
-    <script src="{{ relURL "dist/main-bundle.js" }}"></script>
-    <script src="{{ relURL "dist/transliteration-bundle.js" }}"></script>
+    <script src="{{ relURL "webpack_dist/main-bundle.js" }}"></script>
+    <script src="{{ relURL "webpack_dist/transliteration-bundle.js" }}"></script>
     <script src="{{ relURL "non_webpack_js/disqus.js" }}"></script>
-    <script src="{{ relURL "dist/ui_lib-bundle.js" }}"></script>
+    <script src="{{ relURL "webpack_dist/ui_lib-bundle.js" }}"></script>
     <link rel="stylesheet" href="{{ relURL "css/fonts.css" }}">
     <link rel="stylesheet" href="{{ relURL "css/@fortawesome/fontawesome-free/css/solid.min.css" }}">
     <link rel="stylesheet" href="{{ relURL "css/@fortawesome/fontawesome-free/css/fontawesome.min.css" }}">

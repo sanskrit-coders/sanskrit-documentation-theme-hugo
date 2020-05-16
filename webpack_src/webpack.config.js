@@ -10,7 +10,7 @@ module.exports = {
     },
     output: {
         filename: "[name]-bundle.js",
-        path: path.resolve(__dirname, '../static/dist'),
+        path: path.resolve(__dirname, '../static/webpack_dist'),
         libraryTarget: 'var',
         library: 'module_[name]'
     },
