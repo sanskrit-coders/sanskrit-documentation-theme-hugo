@@ -7,12 +7,12 @@ let previousTransliterationTarget = transliterationTarget;
 let transliterationSource = pageParams.unicode_script || "devanagari";
 /* ---- Cookies ---- */
 let LIPI_DEFAULT = "devanagari";
-let LIPI_COOKIE = "translitration_target";
+let LIPI_COOKIE = "transliteration_target";
 let LIPI_EXPIRY = 30 * 24 * 3600 * 1000;  // 30 days
 
 function loadLipi() {
     let previousTransliterationTarget = transliterationTarget;
-    transliterationTarget = query.getQueryVariable("translitration_target");
+    transliterationTarget = query.getQueryVariable("transliteration_target");
     if (!transliterationTarget) {
         transliterationTarget = utils.getCookie(LIPI_COOKIE) || LIPI_DEFAULT;
     }
@@ -49,6 +49,6 @@ export function updateTransliteration() {
     var translitrationTargetDropdown = document.getElementsByName("transliterationDropdown")[0];
     var translitrationTarget = translitrationTargetDropdown.options[translitrationTargetDropdown.selectedIndex].value;
     saveLipi(translitrationTarget);
-    query.insertQueryParam("translitration_target", translitrationTarget);
+    query.insertQueryParam("transliteration_target", translitrationTarget);
 }
 
