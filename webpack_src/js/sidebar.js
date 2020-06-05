@@ -6,8 +6,8 @@ import * as dirTree from "./dirTree";
 export function setupSidebarToggle() {
     let sidebarBounds = document.querySelector("#sidebar_body").getBoundingClientRect();
     let mainBounds = document.querySelector("main").getBoundingClientRect();
-    console.debug(mainBounds, sidebarBounds);
-    
+    // console.debug(mainBounds, sidebarBounds);
+
     if (mainBounds.y > sidebarBounds.y + sidebarBounds.height) {
         document.querySelector("[name='sidebarToggleLink']").click();
     }
@@ -150,7 +150,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     let finalUrl = sidebarItem.url || "#";
     var itemUrlStripped = finalUrl;
     let isExternalLink = finalUrl.startsWith("http") || finalUrl.startsWith("ftp");
-        
+
     if (!isExternalLink) {
         itemUrlStripped = itemUrlStripped.replace("_index.md.html", "").replace("_index.md.md", "").replace(".md", "/").replace("//", "/");
         finalUrl = urljoin(baseURL, itemUrlStripped);
@@ -161,7 +161,8 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     if (pageUrlMinusBasePath == itemUrlStripped) {
         liClass = "active underline";
     }
-    if (itemUrlStripped.includes("pashupati")) {
+
+    if (itemUrlStripped.includes("mImAMsA")) { // For debugging
         console.debug(itemUrlStripped, pageUrlMinusBasePath, sidebarItem);
     }
     if(sidebarItem.hasOwnProperty("contents")) {
@@ -177,7 +178,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
     if (sidebarItem.url.startsWith("recdir://")) {
         return getHtmlForRecdirProperty(sidebarItem);
     }
-    
+
     // Finally, the default case.
     // console.debug(baseURL +itemUrlStripped);
     var title = getTitle(sidebarItem);
@@ -208,7 +209,7 @@ export function insertNavItems(navbarId, items) {
     if (items === undefined) {
         return;
     }
-    console.debug(items)
+    // console.debug(items)
     if (topnavId && !$(navbarId).attr("addedCustomItems")) {
         // console.debug(topnavDropdown);
         for (let item of items) {
