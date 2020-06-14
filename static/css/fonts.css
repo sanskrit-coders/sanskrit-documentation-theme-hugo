@@ -69,10 +69,10 @@
     src: url(../fonts/NotoSansBrahmi-Regular.ttf) format('truetype');
 }
 @font-face {
-    font-family: 'NotoSansTibetan-Regular';
+    font-family: 'NotoSerifTibetan-Medium';
     font-style: normal;
     font-weight: normal;
-    src: url(../fonts/NotoSansTibetan-Regular.ttf) format('truetype');
+    src: url(../fonts/NotoSerifTibetan-Medium.ttf) format('truetype');
 }
 /************************************************************/
 
