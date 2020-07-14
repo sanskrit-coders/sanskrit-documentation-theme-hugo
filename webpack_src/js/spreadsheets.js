@@ -124,7 +124,7 @@ function fillTable(sheetEmbedTag) {
     let srcUrl = sheetEmbedTag.getAttribute("src");
     if (srcUrl.endsWith("json")) {
         fillJsonTable(sheetEmbedTag);
-    } else if (srcUrl.endsWith("tsv")) {
+    } else if (srcUrl.endsWith("tsv") || srcUrl.endsWith("csv")) {
         fillTsvTable(sheetEmbedTag);
     } else {
         console.error("Don't know how to deal with this file type: " + srcUrl)
