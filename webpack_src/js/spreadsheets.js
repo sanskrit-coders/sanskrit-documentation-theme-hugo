@@ -2,6 +2,7 @@ import Handsontable from "handsontable";
 import 'handsontable/dist/handsontable.full.css';
 import * as sidebar from "./sidebar";
 const json5 = require('json5');
+const toml = require('toml');
 
 function fillTableFromJsObject(data, sheetEmbedTag, headerStr) {
     const tableData = [];             // The array to store JSON data.
@@ -70,9 +71,27 @@ function fillJson5Table(sheetEmbedTag) {
         mimeType: "text/plain",
         success: function(data){
             if (data.length > 0) {
-                console.debug(data);
+                // console.debug(data);
                 var jsonData = json5.parse(data);
                 fillTableFromJsObject(jsonData, sheetEmbedTag, headerStr);
+            }
+        }
+    });
+}
+
+function fillTomlTable(sheetEmbedTag) {
+    let tomlUrl = sheetEmbedTag.getAttribute("src");
+    let headerStr = sheetEmbedTag.getAttribute("headers") || "";
+    $.ajax({
+        url: tomlUrl,
+        type: "GET",
+        dataType: "text",
+        mimeType: "text/plain",
+        success: function(data){
+            if (data.length > 0) {
+                // console.debug(data);
+                var jsObj = toml.parse(data);
+                fillTableFromJsObject(jsObj.data, sheetEmbedTag, headerStr);
             }
         }
     });
@@ -150,6 +169,8 @@ function fillTable(sheetEmbedTag) {
         fillTsvTable(sheetEmbedTag);
     } else if (srcUrl.endsWith("json5")) {
         fillJson5Table(sheetEmbedTag);
+    } else if (srcUrl.endsWith("toml")) {
+        fillTomlTable(sheetEmbedTag);
     } else {
         console.error("Don't know how to deal with this file type: " + srcUrl)
     }

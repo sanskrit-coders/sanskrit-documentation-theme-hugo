@@ -23,6 +23,7 @@
     "popper.js": "^1.16.1",
     "seedrandom": "^3.0.5",
     "tachyons": "^4.11.1",
+    "toml": "^3.0.0",
     "url-join": "^4.0.1"
   },
   "devDependencies": {
