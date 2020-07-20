@@ -5,6 +5,7 @@ const json5 = require('json5');
 const toml = require('toml');
 
 function fillTableFromJsObject(data, sheetEmbedTag, headerStr) {
+    console.debug(sheetEmbedTag);
     const tableData = [];             // The array to store JSON data.
     let columnWidths = [];
     let headers = [];
@@ -17,15 +18,21 @@ function fillTableFromJsObject(data, sheetEmbedTag, headerStr) {
         headerStr.split(",")
     }
     console.debug(headerStr, headers);
-    $.each(data, function (index, value) {
-        tableData.push(data[index]);
-        for (let key in data[index]) {
-            let value = data[index][key];
-            let columnIndex = Object.keys(data[index]).indexOf(key);
+    // Because toml parser makes a js object without hasOwnProperty() method as required by handsontable, we do the below.
+    data = JSON.parse(JSON.stringify(data));
+    data.forEach(function (item, value) {
+        tableData.push(item);
+        // console.debug(JSON.stringify(item));
+        // console.debug(JSON.stringify(tableData));
+        for (let key in item) {
+            let value = item[key];
+            let columnIndex = Object.keys(item).indexOf(key);
             columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], Math.min(value.length * 20, 200));
             // console.debug(value, value.length, columnWidths);
         }
     });
+    // console.debug(JSON.stringify(tableData));
+    console.debug(tableData);
     // console.debug(screen.availWidth);
     const hoTable = new Handsontable(sheetEmbedTag, {
         data: tableData,
