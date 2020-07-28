@@ -7,6 +7,13 @@
 }
 
 @font-face {
+    font-family: 'Adishila';
+    font-style: normal;
+    font-weight: normal;
+    src: url(../fonts/Adishila.ttf) format('truetype');
+}
+
+@font-face {
     font-family: 'NotoSansDevanagari-Regular';
     font-style: normal;
     font-weight: normal;
