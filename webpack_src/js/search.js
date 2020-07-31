@@ -13,10 +13,10 @@ let fuseOptions = {
   maxPatternLength: 32,
   minMatchCharLength: 1,
   keys: [
-    {name:"title",weight:0.8},
-    {name:"contents",weight:0.5},
-    {name:"tags",weight:0.3},
-    {name:"categories",weight:0.3}
+    {name:"title",weight:0.7},
+    {name:"contents",weight:0.1},
+    {name:"tags",weight:0.1},
+    {name:"categories",weight:0.1}
   ]
 };
 
@@ -56,17 +56,18 @@ function populateResults(result){
       });
     }
 
-    if(snippet.length<1){
+    if(snippet.length<1 && contents){
       snippet += contents.substring(0,summaryInclude*2);
     }
     //pull template from hugo templarte definition
     var templateDefinition = $('#search-result-template').html();
     //replace values
-    var output = render(templateDefinition,{key:key,title:value.item.title,link:value.item.permalink,tags:value.item.tags,categories:value.item.categories,snippet:snippet});
+    var output = render(templateDefinition,{key:key,title:value.item.title,link:baseURL.replace(basePath, "") + value.item.relUrl,tags:value.item.tags,categories:value.item.categories,snippet:snippet});
     $('#search-results').append(output);
 
+    // TODO: The below does not work.
     $.each(snippetHighlights,function(snipkey,snipvalue){
-      $("#summary-"+key).mark(snipvalue);
+      // $("#summary-"+key).mark(snipvalue);
     });
 
   });
