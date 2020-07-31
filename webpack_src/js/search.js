@@ -62,7 +62,7 @@ function populateResults(result){
     //pull template from hugo templarte definition
     var templateDefinition = $('#search-result-template').html();
     //replace values
-    var output = render(templateDefinition,{key:key,title:value.item.title,link:baseURL.replace(basePath, "") + value.item.relUrl,tags:value.item.tags,categories:value.item.categories,snippet:snippet});
+    var output = render(templateDefinition,{key:key,title:value.item.title,link:baseURL + value.item.relUrl,tags:value.item.tags,categories:value.item.categories,snippet:snippet});
     $('#search-results').append(output);
 
     // TODO: The below does not work.

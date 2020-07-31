@@ -1,6 +1,5 @@
 let pageRelUrlTreeMETAkey = "__meta";
 
-
 export function addRelUrlToTree(item, pageParams) {
     // console.debug(item, pageParams);
     var parts = item.split("/").filter(x => x.length > 0);
@@ -11,6 +10,17 @@ export function addRelUrlToTree(item, pageParams) {
         cursor = cursor[part];
     });
     cursor[pageRelUrlTreeMETAkey] = pageParams;
+}
+
+export async function populateTree() {
+    await $.getJSON(baseURL + "/index.json", function(data) {
+        for (let pageParams of data) {
+            // console.debug(pageParams);
+            pageParams["absUrl"] = baseURL + pageParams["relUrl"];
+            addRelUrlToTree(pageParams["relUrl"], pageParams);
+        }
+    });
+
 }
 
 export function getChildTree(relativeUrl) {
@@ -95,7 +105,12 @@ export function getNextPage(relUrl, startUrl) {
     var tree = getChildTree(relUrl);
     // console.debug(relUrl, tree);
     if (getPageKeys(tree).length == 0) {
-        tree = getChildTree(getParentDirPath(relUrl));
+        let parentPath = getParentDirPath(relUrl);
+        if (parentPath == relUrl) {
+            console.log("No next page found!");
+            return "";
+        }
+        tree = getChildTree(parentPath);
         return getNextPageFromTreePosition(tree, relUrl);
     } else {
         console.debug("We'll get a child page");
@@ -119,28 +134,32 @@ export function getLastPage(tree) {
 
 export function getPreviousPage(relUrl) {
     const tree = getChildTree(getParentDirPath(relUrl));
+    console.debug(relUrl, tree);
     if (relUrl == "/") {
         return tree;
     }
     // console.debug(relUrl, tree);
     const pageKeys = getPageKeys(tree);
-    // console.log(pageKeys);
+    console.debug(pageKeys);
     const currentItemPosition = pageKeys.indexOf(getItemNameNoPath(relUrl));
     if (currentItemPosition == 0) {
         console.debug("Moving a directory up.");
         return tree;
     } else {
-        console.debug("We'll get a sibling page");
+        console.debug("We'll get a sibling page", pageKeys[currentItemPosition - 1]);
         return getLastPage(tree[pageKeys[currentItemPosition - 1]]);
     }
 }
 
 export function setAnchor(element, tree, textPrefix="", maxLength = 10) {
+    if (tree == "") {
+        return;
+    }
     element.setAttribute("href", tree[pageRelUrlTreeMETAkey].absUrl);
     let title = tree[pageRelUrlTreeMETAkey].title;
     if (title != undefined && title.length > maxLength) {
         title = title.substr(0, maxLength);
-        title = title + "…"
+        title = title + "…";
     }
     element.innerHTML = element.innerHTML.replace("###", title);
 }

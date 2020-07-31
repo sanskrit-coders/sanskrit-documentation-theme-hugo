@@ -34,13 +34,14 @@ export function prepareContentWithoutIncludes() {
 }
 
 
-function onDocumentReadyTasks() {
+async function onDocumentReadyTasks() {
+  await dirTree.populateTree();
   sidebar.insertSidebarItems();
   sidebar.setupSidebarToggle();
   let nextPage = module_dir_tree.getNextPage(pageUrlMinusBasePath);
-  module_dir_tree.setAnchor(document.getElementsByName("nextPage")[0], nextPage, ">" );
+  dirTree.setAnchor(document.getElementsByName("nextPage")[0], nextPage, ">" );
   let previousPage = module_dir_tree.getPreviousPage(pageUrlMinusBasePath);
-  module_dir_tree.setAnchor(document.getElementsByName("previousPage")[0], previousPage, "<" );
+  dirTree.setAnchor(document.getElementsByName("previousPage")[0], previousPage, "<" );
   
   if (topnavId) {
     sidebar.insertNavItems("#div_top_bar", sidebarsData[topnavId]);

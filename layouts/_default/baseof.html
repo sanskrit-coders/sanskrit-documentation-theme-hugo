@@ -35,7 +35,7 @@
     <script>
     // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds this partial just once and includes it everywhere.
     let pageUrlRelative = "{{.RelPermalink}}";
-    let pageUrlMinusBasePath = pageUrlRelative.replace(basePath, "/")
+    let pageUrlMinusBasePath = pageUrlRelative.replace(basePath, "/");
     let pageParams = module_dir_tree.getPageParams(pageUrlMinusBasePath) || {};
     let pageSource = "{{ with .File }}{{.Path}}{{ end }}";
     console.log(pageSource);
