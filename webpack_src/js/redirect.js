@@ -42,10 +42,15 @@ export function redirectToRandomPage(weightingFn, manualRedirectionDiv, dryRun) 
     const weights = urls.map(weightingFn);
     // console.debug(urls, weights);
     let randomUrlRelative = urls[weightedRandom(weights)];
+    if (!randomUrlRelative) {
+        console.warn("Misfire? No random url found");
+        return;
+    }
+    console.debug(randomUrlRelative);
     if (randomUrlRelative.startsWith("/") ) {
         randomUrlRelative = randomUrlRelative.replace("/", "", 1)
     }
     let randomUrl = baseURL + randomUrlRelative;
-    console.log(randomUrl, manualRedirectionDiv);
+    console.log(randomUrlRelative, randomUrl, manualRedirectionDiv);
     redirectToPage(randomUrl, manualRedirectionDiv, dryRun);
 }
