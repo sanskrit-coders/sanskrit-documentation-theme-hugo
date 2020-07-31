@@ -134,13 +134,13 @@ export function getLastPage(tree) {
 
 export function getPreviousPage(relUrl) {
     const tree = getChildTree(getParentDirPath(relUrl));
-    console.debug(relUrl, tree);
+    // console.debug(relUrl, tree);
     if (relUrl == "/") {
         return tree;
     }
     // console.debug(relUrl, tree);
     const pageKeys = getPageKeys(tree);
-    console.debug(pageKeys);
+    // console.debug(pageKeys);
     const currentItemPosition = pageKeys.indexOf(getItemNameNoPath(relUrl));
     if (currentItemPosition == 0) {
         console.debug("Moving a directory up.");

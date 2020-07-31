@@ -25,11 +25,12 @@ function weightedRandom(weights) {
 }
 
 
-export function redirectToPage(url, manualRedirectionDiv) {
+export function redirectToPage(url, manualRedirectionDiv, dryRun) {
     if (manualRedirectionDiv) {
+        // TODO: The below has no visible effect.
         manualRedirectionDiv.innerHTML = `Redirecting <a href='${url}'>here</a>`;
     }
-    if (url) {
+    if (url && !dryRun) {
         window.location.replace(url);
     }
 }
@@ -40,9 +41,11 @@ export function redirectToRandomPage(weightingFn, manualRedirectionDiv, dryRun) 
     const urls = dirTree.getAllPaths(pageRelUrlTree);
     const weights = urls.map(weightingFn);
     // console.debug(urls, weights);
-    let randomUrl = baseURL + urls[weightedRandom(weights)];
-    console.log(randomUrl);
-    if (!dryRun) {
-        redirectToPage(randomUrl, manualRedirectionDiv);
+    let randomUrlRelative = urls[weightedRandom(weights)];
+    if (randomUrlRelative.startsWith("/") ) {
+        randomUrlRelative = randomUrlRelative.replace("/", "", 1)
     }
+    let randomUrl = baseURL + randomUrlRelative;
+    console.log(randomUrl, manualRedirectionDiv);
+    redirectToPage(randomUrl, manualRedirectionDiv, dryRun);
 }
