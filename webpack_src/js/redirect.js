@@ -36,13 +36,20 @@ import * as dirTree from "./dirTree";
 
 export function redirectToRandomPage(weightingFn, manualRedirectionDiv, dryRun) {
     const urls = dirTree.getAllPaths(pageRelUrlTree);
-    // console.debug(urls.filter(url => url.startsWith("/m")));
+    console.debug(urls.filter(url => url.startsWith("/m")));
     const weights = urls.map(weightingFn);
     var urlWeights = [];
     urls.forEach((url, i) => urlWeights[i] = [url, weights[i]]);
-    console.debug(urlWeights, urlWeights.filter((value) => {value[1] > 0}));
-    let [randomIndex, totalWeight] = weightedRandom(weights);
-    let randomUrlRelative = urls[randomIndex];
+    // console.debug(urlWeights, urlWeights.filter((value, index, array) => {return value[0].startsWith("/mantraH/AdityaH/");}));
+    let nonZeroUrlWeights = urlWeights.filter((value, index, array) => {return value[1] > 0});
+    let nonZeroWeights = nonZeroUrlWeights.map(x => x[1]);
+    if (nonZeroWeights.length == 0) {
+        console.warn("Did not get any non zero weights!");
+        return;
+    }
+    // console.debug(nonZeroUrlWeights, nonZeroWeights);
+    let [randomIndex, totalWeight] = weightedRandom(nonZeroWeights);
+    let randomUrlRelative = nonZeroUrlWeights[randomIndex][0];
     if (!randomUrlRelative) {
         console.warn("Misfire? No random url found");
         return;
@@ -54,5 +61,5 @@ export function redirectToRandomPage(weightingFn, manualRedirectionDiv, dryRun) 
     }
     let randomUrl = baseURL + randomUrlRelative;
     // console.log(randomUrlRelative, randomUrl, manualRedirectionDiv);
-    redirectToPage(randomUrl, manualRedirectionDiv, dryRun, `urlWeight=${urlWeight}&totalWeight=${totalWeight}`);
+    redirectToPage(randomUrl, manualRedirectionDiv, dryRun, `"urlWeight=${urlWeight}&totalWeight=${totalWeight}"`);
 }

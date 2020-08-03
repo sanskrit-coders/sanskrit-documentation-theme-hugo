@@ -36,6 +36,7 @@ export function prepareContentWithoutIncludes() {
 
 async function onDocumentReadyTasks() {
   await dirTree.populateTree();
+  pageParams = module_dir_tree.getPageParams(pageUrlMinusBasePath);
   sidebar.insertSidebarItems();
   sidebar.setupSidebarToggle();
   let nextPage = module_dir_tree.getNextPage(pageUrlMinusBasePath);
