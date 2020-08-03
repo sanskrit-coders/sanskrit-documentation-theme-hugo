@@ -162,9 +162,9 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
         liClass = "active underline";
     }
 
-    if (itemUrlStripped.includes("mImAMsA")) { // For debugging
-        console.debug(itemUrlStripped, pageUrlMinusBasePath, sidebarItem);
-    }
+    // if (itemUrlStripped.includes("mImAMsA")) { // For debugging
+    //     console.debug(itemUrlStripped, pageUrlMinusBasePath, sidebarItem);
+    // }
     if(sidebarItem.hasOwnProperty("contents")) {
         return getHtmlForContentsProperty(sidebarItem, parentListIdIn, anchorClasses, liClass);
     }
