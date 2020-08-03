@@ -9,14 +9,16 @@ function weightedRandom(weights) {
     for (i = 0; i < weights.length; i++) {
         totalWeight += weights[i];
     }
+    console.debug("totalWeight :", totalWeight);
     random = randomGenerator() * totalWeight;
     for (i = 0; i < weights.length; i++) {
         if (random < weights[i]) {
-            return i;
+            console.debug(i);
+            return [i, totalWeight];
         }
         random -= weights[i];
     }
-    return -1;
+    return [-1, totalWeight];
 }
 
 
@@ -38,8 +40,9 @@ export function redirectToRandomPage(weightingFn, manualRedirectionDiv, dryRun) 
     const weights = urls.map(weightingFn);
     var urlWeights = [];
     urls.forEach((url, i) => urlWeights[i] = [url, weights[i]]);
-    // console.debug(urlWeights, urlWeights.filter((value) => {value[1] > 0}));
-    let randomUrlRelative = urls[weightedRandom(weights)];
+    console.debug(urlWeights, urlWeights.filter((value) => {value[1] > 0}));
+    let [randomIndex, totalWeight] = weightedRandom(weights);
+    let randomUrlRelative = urls[randomIndex];
     if (!randomUrlRelative) {
         console.warn("Misfire? No random url found");
         return;
@@ -51,5 +54,5 @@ export function redirectToRandomPage(weightingFn, manualRedirectionDiv, dryRun) 
     }
     let randomUrl = baseURL + randomUrlRelative;
     // console.log(randomUrlRelative, randomUrl, manualRedirectionDiv);
-    redirectToPage(randomUrl, manualRedirectionDiv, dryRun, urlWeight);
+    redirectToPage(randomUrl, manualRedirectionDiv, dryRun, `urlWeight=${urlWeight}&totalWeight=${totalWeight}`);
 }
