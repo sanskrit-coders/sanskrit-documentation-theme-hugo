@@ -57,6 +57,12 @@
     <script src="{{ relURL "webpack_dist/ui_lib-bundle.js" }}"></script>
     <link rel="stylesheet" href="{{ relURL "css/fonts.css" }}">
     <link rel="stylesheet" href="{{ relURL "css/@fortawesome/fontawesome-free/css/solid.min.css" }}">
+    {{ if or .Params.math .Site.Params.math}}
+      <script type="text/javascript" id="MathJax-script" async
+              src="{{ relURL "non_webpack_js/mathjax/tex-mml-chtml.js" }}">
+      </script>
+    {{end}}
+
     <link rel="stylesheet" href="{{ relURL "css/@fortawesome/fontawesome-free/css/fontawesome.min.css" }}">
 
     <!-- Reference: https://support.google.com/webmasters/answer/189077  
