@@ -58,8 +58,15 @@
     <link rel="stylesheet" href="{{ relURL "css/fonts.css" }}">
     <link rel="stylesheet" href="{{ relURL "css/@fortawesome/fontawesome-free/css/solid.min.css" }}">
     {{ if or .Params.math .Site.Params.math}}
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"], linebreaks: { automatic:true }, EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) },
+        tex2jax: { inlineMath: [ ["\\$", "\\$"], ["\\(", "\\)"] ], displayMath: [ ["$$","$$"], ["\\[", "\\]"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno" },
+        TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } } },
+        messageStyle: "none"
+    });
+</script>
       <script type="text/javascript" id="MathJax-script" async
-              src="{{ relURL "non_webpack_js/mathjax/tex-mml-chtml.js" }}">
+              src="{{ relURL "non_webpack_js/mathjax/es5/tex-chtml.js?config=TeX-AMS-MML_HTMLorMML" }}">
       </script>
     {{end}}
 
@@ -92,6 +99,7 @@
   </head>
 
   <body class="ma0 {{ $.Param "body_classes"  | default "bg-near-white"}}{{ with getenv "HUGO_ENV" }} {{ . }}{{ end }}">
+    {{ partial "mathjax_tex_commands.html" .}}
 
     {{ block "header" . }}{{ partial "site-header.html" .}}{{ end }}
     <!-- Content Row -->
