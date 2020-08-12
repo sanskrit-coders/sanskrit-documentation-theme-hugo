@@ -52,6 +52,16 @@ audio {
   font-style: italic;
 }
 
+.proof:before {
+  content:"Proof:";
+}
+.proof {
+  color: #2a82a5;
+}
+.proof:after {
+  content:"∎";
+}
+
 *[emphasis_as_inline_comments=true] {
   em {
     // Copied from inline_comments class above.
