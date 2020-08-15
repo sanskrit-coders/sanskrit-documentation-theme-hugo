@@ -33,8 +33,8 @@ function fillTableFromJsObject(data, sheetEmbedTag) {
         }
     });
     let height = .8*screen.availHeight;
-    if (sheetEmbedTag.hasAttribute("fullHeight")) {
-        height = height * Math.ceil(data.length / 8.0);
+    if (sheetEmbedTag.hasAttribute("fullHeightWithRowsPerScreen")) {
+        height = height * Math.ceil(data.length / sheetEmbedTag.getAttribute("fullHeightWithRowsPerScreen"));
     }
     console.debug(sheetEmbedTag.hasAttribute("fullHeight"), height);
     // console.debug(JSON.stringify(tableData));
