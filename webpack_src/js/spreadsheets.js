@@ -18,7 +18,7 @@ function fillTableFromJsObject(data, sheetEmbedTag) {
     } else {
         headerStr.split(",")
     }
-    console.debug(headerStr, headers);
+    // console.debug(headerStr, headers);
     // Because toml parser makes a js object without hasOwnProperty() method as required by handsontable, we do the below.
     data = JSON.parse(JSON.stringify(data));
     data.forEach(function (item, value) {
@@ -32,8 +32,13 @@ function fillTableFromJsObject(data, sheetEmbedTag) {
             // console.debug(value, value.length, columnWidths);
         }
     });
+    let height = .8*screen.availHeight;
+    if (sheetEmbedTag.hasAttribute("fullHeight")) {
+        height = height * Math.ceil(data.length / 8.0);
+    }
+    console.debug(sheetEmbedTag.hasAttribute("fullHeight"), height);
     // console.debug(JSON.stringify(tableData));
-    console.debug(tableData);
+    // console.debug(tableData);
     // console.debug(screen.availWidth);
     const hoTable = new Handsontable(sheetEmbedTag, {
         data: tableData,
@@ -41,7 +46,7 @@ function fillTableFromJsObject(data, sheetEmbedTag) {
         colHeaders: headers,
         colWidths: columnWidths,
         stretchH: 'all',
-        height: .8*screen.availHeight,
+        height: height,
         // rowHeights: '100px',
         // preventOverflow: false,
         manualColumnResize: true,
