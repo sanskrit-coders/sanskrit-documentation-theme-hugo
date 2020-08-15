@@ -4,11 +4,12 @@ import * as sidebar from "./sidebar";
 const json5 = require('json5');
 const toml = require('toml');
 
-function fillTableFromJsObject(data, sheetEmbedTag, headerStr) {
+function fillTableFromJsObject(data, sheetEmbedTag) {
     console.debug(sheetEmbedTag);
     const tableData = [];             // The array to store JSON data.
     let columnWidths = [];
     let headers = [];
+    let headerStr = sheetEmbedTag.getAttribute("headers") || "";
     if (headerStr === "") {
         for (let key in data[0]) {
             headers.push(key);
@@ -60,17 +61,15 @@ function fillTableFromJsObject(data, sheetEmbedTag, headerStr) {
 
 function fillJsonTable(sheetEmbedTag) {
     let jsonUrl = sheetEmbedTag.getAttribute("src");
-    let headerStr = sheetEmbedTag.getAttribute("headers") || "";
     $.getJSON(jsonUrl, function (data) {
         if (data.length > 0) {
-            fillTableFromJsObject(data, sheetEmbedTag, headerStr);
+            fillTableFromJsObject(data, sheetEmbedTag);
         }
     });
 }
 
 function fillJson5Table(sheetEmbedTag) {
     let tomlUrl = sheetEmbedTag.getAttribute("src");
-    let headerStr = sheetEmbedTag.getAttribute("headers") || "";
     $.ajax({
         url: tomlUrl,
         type: "GET",
@@ -80,7 +79,7 @@ function fillJson5Table(sheetEmbedTag) {
             if (data.length > 0) {
                 // console.debug(data);
                 var jsonData = json5.parse(data);
-                fillTableFromJsObject(jsonData, sheetEmbedTag, headerStr);
+                fillTableFromJsObject(jsonData, sheetEmbedTag);
             }
         }
     });
@@ -88,7 +87,6 @@ function fillJson5Table(sheetEmbedTag) {
 
 function fillTomlTable(sheetEmbedTag) {
     let tomlUrl = sheetEmbedTag.getAttribute("src");
-    let headerStr = sheetEmbedTag.getAttribute("headers") || "";
     $.ajax({
         url: tomlUrl,
         type: "GET",
@@ -98,7 +96,7 @@ function fillTomlTable(sheetEmbedTag) {
             if (data.length > 0) {
                 // console.debug(data);
                 var jsObj = toml.parse(data);
-                fillTableFromJsObject(jsObj.data, sheetEmbedTag, headerStr);
+                fillTableFromJsObject(jsObj.data, sheetEmbedTag);
             }
         }
     });
@@ -107,7 +105,6 @@ function fillTomlTable(sheetEmbedTag) {
 function fillTsvTable(sheetEmbedTag) {
     let tsvUrl = sheetEmbedTag.getAttribute("src");
     let separatorStr = sheetEmbedTag.getAttribute("separator") || "\t";
-    let headerStr = sheetEmbedTag.getAttribute("headers") || "";
     $.ajax({
         url: tsvUrl,
         type: "GET",
@@ -117,52 +114,11 @@ function fillTsvTable(sheetEmbedTag) {
             if (data.length > 0) {
                 var lines = data.split("\n");
                 const tableData = [];             // The array to store JSON data.
-                let columnWidths = [];
-                let headers = [];
-                if (headerStr === "") {
-                    let keys = lines[0].split(separatorStr);
-                    for (let index in keys) {
-                        headers.push(keys[index]);
-                        columnWidths.push(20);
-                    }
-                    lines = lines.splice(1);
-                    // console.debug(lines);
-                } else {
-                    headerStr.split(",")
-                }
-                console.debug(headerStr, headers);
                 $.each(lines, function (index, line) {
                     var values = line.split(separatorStr);
                     tableData.push(values);
-                    for (let columnIndex in values) {
-                        let value = values[columnIndex];
-                        columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], Math.min(value.length * 20, 200));
-                        // console.debug(value, value.length, columnWidths);
-                    }
                 });
-                // console.debug(screen.availWidth);
-                const hoTable = new Handsontable(sheetEmbedTag, {
-                    data: tableData,
-                    rowHeaders: true,
-                    colHeaders: headers,
-                    colWidths: columnWidths,
-                    stretchH: 'all',
-                    height: .8*screen.availHeight,
-                    // rowHeights: '100px',
-                    // preventOverflow: false,
-                    manualColumnResize: true,
-                    manualRowResize: true,
-                    contextMenu: true,
-                    autoWrapRow: false,
-                    autoWrapCol: false,
-                    // fixedRowsTop: 1,
-                    minSpareRows: 1,
-                    columnSorting: true,
-                    bindRowsWithHeaders: true,
-                    manualColumnFreeze: true,
-                    licenseKey: 'non-commercial-and-evaluation'
-                });
-                sidebar.setupSidebarToggle();
+                fillTableFromJsObject(tableData, sheetEmbedTag);
             }
         }
     });
