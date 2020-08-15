@@ -40,7 +40,10 @@ function fillTableFromJsObject(data, sheetEmbedTag) {
     // console.debug(JSON.stringify(tableData));
     // console.debug(tableData);
     // console.debug(screen.availWidth);
-    const hoTable = new Handsontable(sheetEmbedTag, {
+    
+    let tableElement = document.createElement ("div");
+    sheetEmbedTag.appendChild(tableElement);
+    const hoTable = new Handsontable(tableElement, {
         data: tableData,
         rowHeaders: true,
         colHeaders: headers,
