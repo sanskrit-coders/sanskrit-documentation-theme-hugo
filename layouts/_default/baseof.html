@@ -34,21 +34,17 @@
     {{ partialCached "hugo-site-vars-to-js-general.html" .}}
     <script>
     // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds this partial just once and includes it everywhere.
-    let pageUrlRelative = "{{.RelPermalink}}";
-    let pageUrlMinusBasePath = pageUrlRelative.replace(basePath, "/");
-    let pageParams = {};
-    let pageSource = "{{ with .File }}{{.Path}}{{ end }}";
-    console.log(pageSource);
+    let pageVars = {};
+    pageVars.pageUrlMinusBasePath = "{{.RelPermalink}}".replace(basePath, "/");
+    pageVars.pageParams = {};
+    pageVars.pageSource = "{{ with .File }}{{.Path}}{{ end }}";
+    console.log(pageVars.pageSource);
     var pageDefaults;
     for (let possiblePageDefaults of pageDefaultsList) {
-      if (pageSource.startsWith(possiblePageDefaults.scope.pathPrefix)) {
+      if (pageVars.pageSource.startsWith(possiblePageDefaults.scope.pathPrefix)) {
         pageDefaults = possiblePageDefaults.values
       }
     }
-    var sidebarId = pageParams.sidebar || pageDefaults.sidebar;
-    var topnavId = pageParams.topnav || pageDefaults.topnav;
-    var footernavId = pageParams.footernav || pageDefaults.footernav;
-    var unicodeScript = pageParams.unicode_script || pageDefaults.unicode_script;
     // console.debug(pageParams);
     </script>
     <script src="{{ relURL "webpack_dist/main-bundle.js" }}"></script>

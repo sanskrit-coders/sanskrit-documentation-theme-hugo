@@ -158,7 +158,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
 
     let anchorClasses = "";
     var liClass = "inactive";  // list-group-item-* is a bootstrap class.
-    if (pageUrlMinusBasePath == itemUrlStripped) {
+    if (pageVars.pageUrlMinusBasePath == itemUrlStripped) {
         liClass = "active underline";
     }
 
@@ -187,7 +187,7 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
 }
 
 export function insertSidebarItems() {
-    var sidebar = sidebarsData[sidebarId];
+    var sidebar = sidebarsData[pageVars.sidebarId];
     // $("#sidebarTitle a").html(sidebar.title);
     // console.debug(sidebar);
     if ($("#displayed_sidebar li").length > 0) {
@@ -210,7 +210,7 @@ export function insertNavItems(navbarId, items) {
         return;
     }
     // console.debug(items)
-    if (topnavId && !$(navbarId).attr("addedCustomItems")) {
+    if (pageVars.topnavId && !$(navbarId).attr("addedCustomItems")) {
         // console.debug(topnavDropdown);
         for (let item of items) {
             $(navbarId).append(getSidebarItemHtml(item));

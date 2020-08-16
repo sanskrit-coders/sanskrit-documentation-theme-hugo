@@ -4,7 +4,7 @@ import * as query from "./query";
 
 let transliterationTarget = "devanagari";
 let previousTransliterationTarget = transliterationTarget;
-let transliterationSource = pageParams.unicode_script || "devanagari";
+let transliterationSource = pageVars.pageParams.unicode_script || "devanagari";
 /* ---- Cookies ---- */
 let LIPI_DEFAULT = "devanagari";
 let LIPI_COOKIE = "transliteration_target";

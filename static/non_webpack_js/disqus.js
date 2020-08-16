@@ -4,7 +4,7 @@
 
 var disqus_config = function () {
     this.page.url = pageUrl;  // Replace PAGE_URL with your page's canonical URL variable
-    this.page.identifier = pageSource; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    this.page.identifier = pageVars.pageSource; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
 };
 
 function setupDisqus() { // DON'T EDIT BELOW THIS LINE

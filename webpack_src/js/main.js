@@ -36,22 +36,26 @@ export function prepareContentWithoutIncludes() {
 
 async function onDocumentReadyTasks() {
   await dirTree.populateTree();
-  pageParams = module_dir_tree.getPageParams(pageUrlMinusBasePath);
+  pageVars.pageParams = module_dir_tree.getPageParams(pageVars.pageUrlMinusBasePath);
+  pageVars.sidebarId = pageVars.pageParams.sidebar || pageDefaults.sidebar;
+  pageVars.topnavId = pageVars.pageParams.topnav || pageDefaults.topnav;
+  pageVars.footernavId = pageVars.pageParams.footernav || pageDefaults.footernav;
+  pageVars.unicodeScript = pageVars.pageParams.unicode_script || pageDefaults.unicode_script;
   sidebar.insertSidebarItems();
   sidebar.setupSidebarToggle();
-  let nextPage = module_dir_tree.getNextPage(pageUrlMinusBasePath);
+  let nextPage = module_dir_tree.getNextPage(pageVars.pageUrlMinusBasePath);
   dirTree.setAnchor(document.getElementsByName("nextPage")[0], nextPage, ">" );
-  let previousPage = module_dir_tree.getPreviousPage(pageUrlMinusBasePath);
+  let previousPage = module_dir_tree.getPreviousPage(pageVars.pageUrlMinusBasePath);
   dirTree.setAnchor(document.getElementsByName("previousPage")[0], previousPage, "<" );
   
-  if (topnavId) {
-    sidebar.insertNavItems("#div_top_bar", sidebarsData[topnavId]);
+  if (pageVars.topnavId) {
+    sidebar.insertNavItems("#div_top_bar", sidebarsData[pageVars.topnavId]);
   }
-  if (footernavId) {
-    sidebar.insertNavItems("#div_footer_bar", sidebarsData[footernavId]);
+  if (pageVars.footernavId) {
+    sidebar.insertNavItems("#div_footer_bar", sidebarsData[pageVars.footernavId]);
   }
-  if (unicodeScript) {
-    $("#post_content").attr("unicode_script", unicodeScript);
+  if (pageVars.unicodeScript) {
+    $("#post_content").attr("unicode_script", pageVars.unicodeScript);
   }
   prepareContentWithoutIncludes();
   // For unknown reasons, handleIncludes() called first does not work as well 201901 desktop.
