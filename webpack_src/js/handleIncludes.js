@@ -179,6 +179,10 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     console.info("Inserting include for ", jsIncludeJqueryElement);
 
     let includedPageUrl = getRelativeIncludedPageUrl(jsIncludeJqueryElement);
+    if (includedPageUrl == "") {
+        console.error("Invalid url!", jsIncludeJqueryElement);
+        return "Invalid url!"
+    }
     if (includedPageNewLevelForH1 === undefined) {
         includedPageNewLevelForH1 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
     }
