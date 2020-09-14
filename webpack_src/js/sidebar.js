@@ -187,7 +187,10 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn, liClassesIn, anchorClas
 }
 
 export function insertSidebarItems() {
-    var sidebar = sidebarsData[pageVars.sidebarId];
+    var sidebar = {"contents": [{"url": "recdir://"}]};
+    if (pageVars.sidebarId) {
+        sidebar = sidebarsData[pageVars.sidebarId];
+    }
     // $("#sidebarTitle a").html(sidebar.title);
     // console.debug(sidebar);
     if ($("#displayed_sidebar li").length > 0) {
