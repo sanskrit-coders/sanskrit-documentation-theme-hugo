@@ -30,7 +30,11 @@ Some notable things you get with this theme (in decreasing order of interest):
 
 ## Example sites
 
-- https://vvasuki.github.io/saMskAra/mantraH/worlds/gadya/mArtANDa-daNDaka/
+- https://vvasuki.github.io/saMskAra/mantraH/rogAH/padyAni/corona-virus/
+- https://vvasuki.github.io/notes/
+- https://sanskrit-coders.github.io/
+- https://sanskrit.github.io/
+
 
 ## Recommendations about config.toml
 ### Recommended settings
