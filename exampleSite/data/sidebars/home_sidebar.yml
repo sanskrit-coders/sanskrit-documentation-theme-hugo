@@ -8,3 +8,6 @@ contents:
   - title: कल्पः
     contents:
       - url: recdir://kalpaH/
+  - title: Basic Example
+    contents:
+      - url: recdir://basic_example/
