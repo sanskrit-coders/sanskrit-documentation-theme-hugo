@@ -1,0 +1,18 @@
+baseURL = "https://example.com/saMskAra/"
+languageCode = "en-us"
+title = "संस्कारे विश्वासटिप्पणयः"
+theme = "sanskrit-documentation-theme-hugo"
+publishDir = "build_github"
+disablePathToLower = true
+
+[params]
+  githubEditMePathBase = "https://github.com/sanskrit-coders/sanskrit-documentation-theme-hugo/edit/master/exampleSite/content/"
+  contactLink = "https://github.com/sanskrit-coders/sanskrit-documentation-theme-hugo/issues/new"
+  env = "production"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON", "CSV"]
+  section = ["HTML", "RSS", "JSON"]
+
+[markup.goldmark.renderer]
+  unsafe= true

@@ -4,10 +4,10 @@
 name = "Sanskrit Documentation Theme"
 license = "MIT"
 licenselink = "https://github.com/sanskrit-coders/sanskrit-documentation-theme-hugo/blob/master/LICENSE"
-description = ""
-homepage = ""
+description = "A wiki-like theme for managing and presenting your content in Hugo - with special support for Sanskrit/ Indic languages (where mixed case words are common when Roman script is used)."
+homepage = "https://github.com/sanskrit-coders/sanskrit-documentation-theme-hugo/"
 tags = ["documentation", "sanskrit"]
-features = ["search", "Table of contents", "navigation sidebar", "mobile friendly", "directory listing", "page inclusion with js", "inline annotation"]
+features = ["search", "Table of contents", "navigation sidebar", "mobile friendly", "directory listing", "page inclusion with js", "inline annotation", "next and previous buttons", "github edit button", "sanskrit", "transliteration", "indic languages", "mathML"]
 min_version = "0.41"
 
 [author]
