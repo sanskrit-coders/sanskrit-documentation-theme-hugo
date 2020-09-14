@@ -146,7 +146,7 @@ function getHtmlForRecdirProperty(sidebarItem, childDirsSuperset) {
 }
 
 
-function getSidebarItemHtml(sidebarItem, parentListIdIn) {
+function getSidebarItemHtml(sidebarItem, parentListIdIn, liClassesIn, anchorClassesIn) {
     let finalUrl = sidebarItem.url || "#";
     var itemUrlStripped = finalUrl;
     let isExternalLink = finalUrl.startsWith("http") || finalUrl.startsWith("ftp");
@@ -156,8 +156,8 @@ function getSidebarItemHtml(sidebarItem, parentListIdIn) {
         finalUrl = urljoin(baseURL, itemUrlStripped);
     }
 
-    let anchorClasses = "";
-    var liClass = "inactive";  // list-group-item-* is a bootstrap class.
+    let anchorClasses = anchorClassesIn || "";
+    var liClass = liClassesIn || "inactive";  // list-group-item-* is a bootstrap class.
     if (pageVars.pageUrlMinusBasePath == itemUrlStripped) {
         liClass = "active underline";
     }
@@ -213,7 +213,7 @@ export function insertNavItems(navbarId, items) {
     if (pageVars.topnavId && !$(navbarId).attr("addedCustomItems")) {
         // console.debug(topnavDropdown);
         for (let item of items) {
-            $(navbarId).append(getSidebarItemHtml(item));
+            $(navbarId).append(getSidebarItemHtml(item, null, "list-group-item list-group-item-dark"));
         }
         $(navbarId).attr("addedCustomItems", "true");
     }
