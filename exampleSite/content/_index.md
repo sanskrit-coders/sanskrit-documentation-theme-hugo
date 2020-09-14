@@ -8,8 +8,12 @@ outputs:
   - json
 ---
 
-Welcome, if you are an Arya! I am deeply interested and invested in Hindu conservativism, via the practice of Sanskrit, mantra-s, tantra-s, kalpa-s and kAvya-s.
+If you are visiting this page via the hugo themes gallery demo option - beware - you'll see some features malfunctioning. Instead, run the exampleSite yourself and see - all will be well. For more meaty examples: 
 
-## Tech details
-### Building this site
-- This site is built using the hugo static website generator, with the sanskrit-documentation theme; auto-built with wercker, hosted on github.
+
+
+- https://vvasuki.github.io/saMskAra/mantraH/rogAH/padyAni/corona-virus/
+- https://vvasuki.github.io/notes/
+- https://sanskrit-coders.github.io/
+- https://sanskrit.github.io/
+
