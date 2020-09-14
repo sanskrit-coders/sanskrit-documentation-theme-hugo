@@ -2,10 +2,15 @@
 A wiki-like theme for managing and presenting your content in Hugo - with special support for Sanskrit/ Indic languages (where mixed case words are common when Roman script is used).
 
 ## Features
-ome notable things you get with this theme (in decreasing order of interest):
+![Annotated screenshot](images/screenshot_annotated.png)
+
+
+Some notable things you get with this theme (in decreasing order of interest):
+
 - A collapsible "accordion" sidebar
   - automatic directory listing for use within sidebar
 - A collapsible "accordion" table-of-contents for each page.
+- "Next and Previous" page navigation buttons. 
 - A layout which automatically adjusts to the user's screen size. 
 - An "Edit me" link on top of each page.
 - Basic ability to include contents from another page using the same theme within anoher. 
@@ -17,6 +22,7 @@ ome notable things you get with this theme (in decreasing order of interest):
   - Search engine optimization and webmaster stuff - which you would use with various search engines.
 - Disqus for comments.
 - Special formatting consideration for fonts which need to be displayed bigger (eg: Devanagari for sanskrit.)
+- Support for optionally enabling MathML.
 - Transliteration dropdown: Substitute devanAgarI with other scripts!
 - Portability
   - We try to minimize the use of liquid templating language in favor of accomplishing stuff (menus, tables of contents, page inclusions) with javascript. This makes it a bit easier to move to another static website generator like hugo in the future.
