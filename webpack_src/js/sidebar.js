@@ -190,6 +190,8 @@ export function insertSidebarItems() {
     var sidebar = {"contents": [{"url": "recdir://"}]};
     if (pageVars.sidebarId) {
         sidebar = sidebarsData[pageVars.sidebarId];
+    } else {
+        console.warn("pageVars.sidebarId is undefined. Using a default page enumeration.", pageVars.sidebarId);
     }
     // $("#sidebarTitle a").html(sidebar.title);
     // console.debug(sidebar);
