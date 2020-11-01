@@ -1,8 +1,8 @@
 {{- $.Scratch.Add "index" slice -}}
 {{- range .Site.Pages -}}
-    {{$FileLogicalName := ""}}
-    {{ with .File }}{{$FileLogicalName := .LogicalName }}{{ end }}
-    {{ $params := merge .Params (dict "title" .Title "relUrl" (replace .Permalink .Site.BaseURL "") "logicalName" $FileLogicalName) }}
-    {{- $.Scratch.Add "index" $params -}}
+{{- $FileLogicalName := "" -}}
+{{- with .File -}}{{- $FileLogicalName := .LogicalName -}}{{- end -}}
+{{- $params := merge .Params (dict "title" .Title "relUrl" (replace .Permalink .Site.BaseURL "") "logicalName" $FileLogicalName) -}}
+{{- $.Scratch.Add "index" $params -}}
 {{- end -}}
 {{- $.Scratch.Get "index" | jsonify -}}
