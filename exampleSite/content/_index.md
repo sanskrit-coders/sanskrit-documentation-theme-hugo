@@ -8,7 +8,7 @@ outputs:
   - json
 ---
 
-If you are visiting this page via the hugo themes gallery demo option - beware - you'll see some features malfunctioning. Instead, run the exampleSite yourself and see - all will be well. For more meaty examples: 
+For more meaty examples: 
 
 
 
