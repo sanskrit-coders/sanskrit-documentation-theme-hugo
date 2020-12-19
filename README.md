@@ -43,7 +43,7 @@ Some notable things you get with this theme (in decreasing order of interest):
 disablePathToLower = true Since we assume mixed case to have special meaning.
 
 #### canonifyURLs
-canonifyURLs = True won't work well as of 20190304. .URL variable does will then not include the subdirectory portion of the basepath (ie kAvya/ bit in http://localhost:1313/kAvya/), leading to urls like http://localhost:1313/TIkA/padya/kAlidAsa/raghuvaMsha/01/ instead of  http://localhost:1313/kAvya/TIkA/padya/kAlidAsa/raghuvaMsha/01/.
+canonifyURLs = True won't work well as of 20190304. .URL variable does will then not include the subdirectory portion of the basepath (ie kAvya/ bit in http://localhost:1313/kAvyam/), leading to urls like http://localhost:1313/TIkA/padya/kAlidAsa/raghuvaMsha/01/ instead of  http://localhost:1313/kAvyam/TIkA/padya/kAlidAsa/raghuvaMsha/01/.
 
 
 ## Code Contributions
