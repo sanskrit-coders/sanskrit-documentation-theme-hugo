@@ -28,14 +28,16 @@ function fillTableFromJsObject(data, sheetEmbedTag) {
         for (let key in item) {
             let value = item[key];
             let columnIndex = Object.keys(item).indexOf(key);
-            columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], Math.min(value.length * 20, 200));
-            // console.debug(value, value.length, columnWidths);
+            columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], Math.min(value.toString().length * 20, 200));
+            // console.debug(value, value.toString().length, columnWidths);
         }
     });
     let height = .8*screen.availHeight;
     if (sheetEmbedTag.hasAttribute("fullHeightWithRowsPerScreen")) {
         height = height * Math.ceil(data.length / sheetEmbedTag.getAttribute("fullHeightWithRowsPerScreen"));
     }
+    let width = columnWidths.reduce((a, b) => a + b, 0);
+    console.debug(columnWidths, width);
     console.debug(sheetEmbedTag.hasAttribute("fullHeight"), height);
     // console.debug(JSON.stringify(tableData));
     // console.debug(tableData);
@@ -50,6 +52,7 @@ function fillTableFromJsObject(data, sheetEmbedTag) {
         colWidths: columnWidths,
         stretchH: 'all',
         height: height,
+        width: width,
         // rowHeights: '100px',
         // preventOverflow: false,
         manualColumnResize: true,
