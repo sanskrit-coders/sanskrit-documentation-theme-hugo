@@ -151,8 +151,7 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
             titleHtml = "<h1 id='" + title + "'>" + title + "</h1>";
         }
         var popoutHtml = "<div class='border d-flex justify-content-between'>" + titleHtml + "<div><a class='btn btn-secondary' href='" + includedPageRelativeUrl + "'><i class=\"fas fa-external-link-square-alt\"></i></a>" +
-            editLinkHtml + "</div>"
-        "</div>";
+            editLinkHtml + "</div></div>";
         var contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
         var elementToInclude = $("<div class='included-post-content border'/>");
         elementToInclude.html(popoutHtml + fixIncludedHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));
