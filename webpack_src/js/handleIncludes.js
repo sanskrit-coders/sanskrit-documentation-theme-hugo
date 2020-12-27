@@ -146,14 +146,13 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
             editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
         }
         // console.debug(addTitle);
-        var titleHtml = "<div />";
+        var titleHtml = "<div></div>";
         if (addTitle && addTitle != "false") {
-            titleHtml = "<h1 id='" + title + "'>" + title + "</h1>";
+            titleHtml = fixIncludedHtml(includedPageRelativeUrl, "<h1 id='" + title + "'>" + title + "</h1>");
         }
-        var popoutHtml = "<div class='border d-flex justify-content-between'>" + titleHtml + "<div><a class='btn btn-secondary' href='" + includedPageRelativeUrl + "'><i class=\"fas fa-external-link-square-alt\"></i></a>" +
-            editLinkHtml + "</div></div>";
+        var popoutHtml = `<div class='border d-flex justify-content-between'>${titleHtml}<div><a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>${editLinkHtml}</div></div>`;
         var contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
-        var elementToInclude = $("<div class='included-post-content border'/>");
+        var elementToInclude = $("<div class='included-post-content border'></div>");
         elementToInclude.html(popoutHtml + fixIncludedHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));
         return elementToInclude;
     }
