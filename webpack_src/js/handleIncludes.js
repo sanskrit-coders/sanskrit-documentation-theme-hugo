@@ -148,7 +148,7 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
         // console.debug(addTitle);
         var titleHtml = "<div></div>";
         if (addTitle && addTitle != "false") {
-            titleHtml = fixIncludedHtml(includedPageRelativeUrl, "<h1 id='" + title + "'>" + title + "</h1>");
+            titleHtml = fixIncludedHtml(includedPageRelativeUrl, "<h1 id='" + title + "'>" + title + "</h1>", includedPageNewLevelForH1);
         }
         var popoutHtml = `<div class='border d-flex justify-content-between'>${titleHtml}<div><a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>${editLinkHtml}</div></div>`;
         var contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
