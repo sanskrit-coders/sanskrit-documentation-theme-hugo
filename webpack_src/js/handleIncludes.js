@@ -8,7 +8,8 @@ WARNING NOTE: won't work with say base = "http://google.com" since it does not e
  */
 function absoluteUrl(base, relative) {
     // console.debug(base.toString(), relative.toString());
-    // console.debug(base, relative);
+    console.debug(base, relative);
+    base = base.toString();
     if (relative.startsWith("http") || relative.startsWith("file")) {
         return relative;
     }
