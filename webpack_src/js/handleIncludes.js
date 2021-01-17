@@ -6,16 +6,21 @@ import urljoin from 'url-join';
 Example: absoluteUrl("../subfolder1/divaspari/", "../images/forest-fire.jpg") == "../subfolder1/images/forest-fire.jpg"
 WARNING NOTE: won't work with say base = "http://google.com" since it does not end with /. 
  */
-function absoluteUrl(base, relative) {
+function absoluteUrl(baseUrl, relative) {
     // console.debug(base.toString(), relative.toString());
-    console.debug(base, relative);
-    base = base.toString();
+    console.debug(baseUrl, relative);
+    let base = baseUrl.toString();
     if (relative.startsWith("http") || relative.startsWith("file")) {
         return relative;
     }
-    if (relative.startsWith("/") && !base.startsWith("http") && !base.startsWith("file")) {
+    if (!base.startsWith("http") && !base.startsWith("file")) {
         return relative;
     }
+    if (relative.startsWith("/")) {
+        let siteBase = new URL("/", baseUrl);
+        return `${sitebase}${relative}`;
+    }
+    
     let baseWithoutIntraPageLink = base.toString().split("#")[0];
     var baseDirStack = baseWithoutIntraPageLink.toString().split("/");
     baseDirStack.pop(); // remove current file name (or empty string)
@@ -214,7 +219,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         if (jsIncludeJqueryElement.attr("includeTitle")) {
             titleHtml = "<h1 id='" + title + "'>" + title + "</h1>";
         }
-        var elementToInclude = titleHtml + "Could not get: " + includedPageUrl + " See debug messages in console for details.";
+        var elementToInclude = titleHtml + `Could not get: <a href='${includedPageUrl}'> ${includedPageUrl}</a> . See debug messages in console for details.`;
         fixIncludedHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
         jsIncludeJqueryElement.html(elementToInclude);
         console.warn("An error!", error);
