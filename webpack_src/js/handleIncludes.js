@@ -1,3 +1,7 @@
+/*
+Code to handle includes. handleIncludes() is the entry point.
+ */
+
 import * as main from "./main";
 
 import urljoin from 'url-join';
@@ -7,13 +11,10 @@ Example: absoluteUrl("../subfolder1/divaspari/", "../images/forest-fire.jpg") ==
 WARNING NOTE: won't work with say base = "http://google.com" since it does not end with /. 
  */
 function absoluteUrl(baseUrl, relative) {
-    // console.debug(base.toString(), relative.toString());
+    let baseUrlStr = baseUrl.toString();
     console.debug(baseUrl, relative);
-    let base = baseUrl.toString();
+    // console.trace();
     if (relative.startsWith("http") || relative.startsWith("file")) {
-        return relative;
-    }
-    if (!base.startsWith("http") && !base.startsWith("file")) {
         return relative;
     }
     if (relative.startsWith("/")) {
@@ -21,14 +22,15 @@ function absoluteUrl(baseUrl, relative) {
         return `${sitebase}${relative}`;
     }
     
-    let baseWithoutIntraPageLink = base.toString().split("#")[0];
+    let baseWithoutIntraPageLink = baseUrlStr.split("#")[0];
     var baseDirStack = baseWithoutIntraPageLink.toString().split("/");
+    console.debug(baseDirStack, urljoin(baseDirStack.join("/"), relative.toString()));
     baseDirStack.pop(); // remove current file name (or empty string)
+    console.debug(baseDirStack, urljoin(baseDirStack.join("/"), relative.toString()));
     // (omit if "base" is the current folder without trailing slash)
     if (baseDirStack.length === 0) {
         return relative;
     }
-    // console.debug(baseDirStack);
     return urljoin(baseDirStack.join("/"), relative.toString());
 }
 
@@ -50,9 +52,7 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
     jqueryElement.find(".back-to-top").remove();
 
     jqueryElement.find('.js_include').each(function() {
-        let includerUrl = includedPageRelativeUrl.replace("index.html", "");
-
-        $(this).attr("url", absoluteUrl(includerUrl, $(this).attr("url")));
+        $(this).attr("url", absoluteUrl(includedPageRelativeUrl, $(this).attr("url")));
         if (newLevelForH1 < 1) {
             console.error("Ignoring invalid newLevelForH1: %d, using 6", newLevelForH1);
             newLevelForH1 = 6;

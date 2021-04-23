@@ -67,6 +67,7 @@ async function onDocumentReadyTasks() {
 
 import {redirectToRandomPage, redirectToPage} from "./redirect";
 import * as dirTree from "./dirTree";
+
 // So that these can be used like module_main.default.redirectToPage(..).
 export default {
   onDocumentReadyTasks: onDocumentReadyTasks,
