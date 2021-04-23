@@ -1,6 +1,12 @@
+import * as query from "./query";
 
 export function setInlineComments(htmlIn) {
-  return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\">$1</span>");
+  let commentStyle = query.getQueryVariable("comment_style");
+  if (commentStyle === "hidden") {
+    return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\" hidden>$1</span>");
+  } else {
+    return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\">$1</span>");
+  }
 }
 
 function setInlineCommentsInPostContent() {
@@ -22,7 +28,6 @@ import {updateToc} from "./toc";
 import * as sidebar from "./sidebar";
 import * as transliteration from "./transliteration";
 import * as spreadsheets from "./spreadsheets";
-import * as query from "./query";
 
 // No includes processing - or adding navigation bars.
 export function prepareContentWithoutIncludes() {
