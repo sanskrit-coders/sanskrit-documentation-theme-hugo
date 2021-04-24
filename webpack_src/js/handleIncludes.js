@@ -24,7 +24,7 @@ function absoluteUrl(baseUrl, relative) {
     
     let baseWithoutIntraPageLink = baseUrlStr.split("#")[0];
     var baseDirStack = baseWithoutIntraPageLink.toString().split("/");
-    console.debug(baseDirStack, urljoin(baseDirStack.join("/"), relative.toString()));
+    // console.debug(baseDirStack, urljoin(baseDirStack.join("/"), relative.toString()));
     baseDirStack.pop(); // remove current file name (or empty string)
     console.debug(baseDirStack, urljoin(baseDirStack.join("/"), relative.toString()));
     // (omit if "base" is the current folder without trailing slash)
