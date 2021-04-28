@@ -18,8 +18,7 @@ function absoluteUrl(baseUrl, relative) {
         return relative;
     }
     if (relative.startsWith("/")) {
-        let siteBase = new URL("/", baseUrl);
-        return `${sitebase}${relative}`;
+        return urljoin(baseUrl, relative);
     }
     
     let baseWithoutIntraPageLink = baseUrlStr.split("#")[0];
