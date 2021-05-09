@@ -65,10 +65,10 @@
     "bessel" "^1.0.2"
     "jstat" "^1.9.2"
 
-"@sanskrit-coders/sanscript@^1.1.0":
-  "integrity" "sha512-LZZ3vU44wODwQL4cRvKkNQVmnpNvKZ2BNCyhF/cLaxfWu9FciAcjk+ClwHf/6lStKHu/v+Bmm1XVGlrNrXdzkQ=="
-  "resolved" "https://registry.npmjs.org/@sanskrit-coders/sanscript/-/sanscript-1.1.0.tgz"
-  "version" "1.1.0"
+"@sanskrit-coders/sanscript@^1.1.2":
+  "integrity" "sha512-tD21WlLpeImC7ndAUXjIAnFni5WWp/lCNMaKxB+/kleM9JVmAFU7sGkqmW0FTzCacxMwj96IX2/nIFAqLoV+Mg=="
+  "resolved" "https://registry.npmjs.org/@sanskrit-coders/sanscript/-/sanscript-1.1.2.tgz"
+  "version" "1.1.2"
 
 "@sindresorhus/is@^0.14.0":
   "integrity" "sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ=="
