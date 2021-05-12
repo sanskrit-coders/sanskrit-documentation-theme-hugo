@@ -23,6 +23,7 @@ Some notable things you get with this theme (in decreasing order of interest):
 - Disqus for comments.
 - Special formatting consideration for fonts which need to be displayed bigger (eg: Devanagari for sanskrit.)
 - Support for optionally enabling MathML.
+  - See layouts/partials/mathjax_tex_commands.html for useful tex shortcuts.
 - Transliteration dropdown: Substitute devanAgarI with other scripts!
 - Portability
   - We try to minimize the use of liquid templating language in favor of accomplishing stuff (menus, tables of contents, page inclusions) with javascript. This makes it a bit easier to move to another static website generator like hugo in the future.
