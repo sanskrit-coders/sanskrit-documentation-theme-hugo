@@ -14,12 +14,8 @@ function absoluteUrl(baseUrl, relative) {
     let baseUrlStr = baseUrl.toString();
     console.debug(baseUrl, relative);
     // console.trace();
-    if (relative.startsWith("http") || relative.startsWith("file")) {
+    if (relative.startsWith("http") || relative.startsWith("file") || relative.startsWith("/")) {
         return relative;
-    }
-    if (relative.startsWith("/")) {
-        let siteBase = new URL("/", baseUrl);
-        return `${sitebase}${relative}`;
     }
     
     let baseWithoutIntraPageLink = baseUrlStr.split("#")[0];

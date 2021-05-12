@@ -32,14 +32,16 @@ export function saveLipi(lipi) {
 
 export function transliterateDevanagariBody() {
     loadLipi();
-    if (!transliterationTarget || previousTransliterationTarget == transliterationTarget) {
+    if (!transliterationTarget) {
         return;
     }
+    transliterationSource = pageVars.pageParams.unicode_script || "devanagari";
     
     var textNodes = utils.textNodesUnder(document.getElementsByTagName("body")[0]);
     // console.debug(textNodes);
     textNodes.forEach(function (textNode) {
         if(textNode.parentNode.nodeName.toLowerCase() != "option") {
+            // console.debug(textNode.textContent, transliterationSource, transliterationTarget);
             textNode.textContent = Sanscript.t(textNode.textContent, transliterationSource, transliterationTarget);
         }
     })

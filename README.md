@@ -48,5 +48,11 @@ canonifyURLs = True won't work well as of 20190304. .URL variable does will then
 
 
 ## Code Contributions
+### JS and CSS
 Javascript and css dependencies are mostly managed with npm and webpack.
-If you modify javascript (src folder) or add some bundled css, you must rerun webpack.  
+If you modify javascript (src folder) or add some bundled css, you must rerun webpack. A good workflow for such development:
+
+- Switch to webpack_src directory.
+- Clean node_modules if needed.
+- Run `npm install`
+- Run `npm run watch`
