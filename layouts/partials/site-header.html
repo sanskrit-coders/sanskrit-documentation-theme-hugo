@@ -8,9 +8,6 @@
           </a>
         </div>
         <div id="div_top_bar_right" class="col-md-auto d-flex justify-content-center">
-          <form action="{{ .Site.Params.SearchUrl  | default "search" }}">
-            <input id="titleSearchInputBox" placeholder="शीर्षिकान्विष्यताम्" name="s"><i class="btn fas fa-search "></i>
-          </form>
           <a href="{{ .Site.Params.FullSearchUrl  | default "full_search" }}"  class="btn btn-primary bg-green">🥽🔦</a>
           ✍
           <select name="transliterationDropdown" size="1" onchange="module_transliteration.updateTransliteration()">

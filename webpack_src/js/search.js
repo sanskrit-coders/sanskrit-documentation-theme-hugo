@@ -1,111 +1,146 @@
 import Fuse from 'fuse.js';
 import mark from 'mark.js';
 
+var fuse; // holds our search engine
+var searchVisible = false;
+var firstRun = true; // allow us to delay loading json data unless search activated
+var list = document.getElementById('searchResults'); // targets the <ul>
+var first = list.firstChild; // first child of search list
+var last = list.lastChild; // last child of search list
+var maininput = document.getElementById('searchInput'); // input box for search
+var resultsAvailable = false; // Did we get any search results?
 
-let summaryInclude=60;
-let fuseOptions = {
-  shouldSort: true,
-  includeMatches: true,
-  threshold: 0.0,
-  tokenize:true,
-  location: 0,
-  distance: 100,
-  maxPatternLength: 32,
-  minMatchCharLength: 1,
-  keys: [
-    {name:"title",weight:0.7},
-    {name:"contents",weight:0.1},
-    {name:"tags",weight:0.1},
-    {name:"categories",weight:0.1}
-  ]
-};
+// ==========================================
+// The main keyboard event listener running the show
+//
+document.addEventListener('keydown', function(event) {
 
-
-function executeSearch(searchQuery){
-  $.getJSON( baseURL + "/index.json", function( data ) {
-    var pages = data;
-    var fuse = new Fuse(pages, fuseOptions);
-    var result = fuse.search(searchQuery);
-    console.log({"matches":result});
-    if(result.length > 0){
-      populateResults(result);
-    }else{
-      $('#search-results').append("<p>No matches found</p>");
+  // CMD-/ to show / hide Search
+  if (event.metaKey && event.which === 191) {
+    // Load json search index if first time invoking search
+    // Means we don't load json unless searches are going to happen; keep user payload small unless needed
+    if(firstRun) {
+      loadSearch(); // loads our json data and builds fuse.js search index
+      firstRun = false; // let's never do this again
     }
+
+    // Toggle visibility of search box
+    if (!searchVisible) {
+      document.getElementById("fastSearch").style.visibility = "visible"; // show search box
+      document.getElementById("searchInput").focus(); // put focus in input box so you can just start typing
+      searchVisible = true; // search visible
+    }
+    else {
+      document.getElementById("fastSearch").style.visibility = "hidden"; // hide search box
+      document.activeElement.blur(); // remove focus from search box 
+      searchVisible = false; // search not visible
+    }
+  }
+
+  // Allow ESC (27) to close search box
+  if (event.keyCode == 27) {
+    if (searchVisible) {
+      document.getElementById("fastSearch").style.visibility = "hidden";
+      document.activeElement.blur();
+      searchVisible = false;
+    }
+  }
+
+  // DOWN (40) arrow
+  if (event.keyCode == 40) {
+    if (searchVisible && resultsAvailable) {
+      console.log("down");
+      event.preventDefault(); // stop window from scrolling
+      if ( document.activeElement == maininput) { first.focus(); } // if the currently focused element is the main input --> focus the first <li>
+      else if ( document.activeElement == last ) { last.focus(); } // if we're at the bottom, stay there
+      else { document.activeElement.parentElement.nextSibling.firstElementChild.focus(); } // otherwise select the next search result
+    }
+  }
+
+  // UP (38) arrow
+  if (event.keyCode == 38) {
+    if (searchVisible && resultsAvailable) {
+      event.preventDefault(); // stop window from scrolling
+      if ( document.activeElement == maininput) { maininput.focus(); } // If we're in the input box, do nothing
+      else if ( document.activeElement == first) { maininput.focus(); } // If we're at the first item, go to input box
+      else { document.activeElement.parentElement.previousSibling.firstElementChild.focus(); } // Otherwise, select the search result above the current active one
+    }
+  }
+});
+
+
+// ==========================================
+// execute search as each character is typed
+//
+document.getElementById("searchInput").onkeyup = function(e) {
+  executeSearch(this.value);
+}
+
+
+// ==========================================
+// fetch some json without jquery
+//
+function fetchJSONFile(path, callback) {
+  var httpRequest = new XMLHttpRequest();
+  httpRequest.onreadystatechange = function() {
+    if (httpRequest.readyState === 4) {
+      if (httpRequest.status === 200) {
+        var data = JSON.parse(httpRequest.responseText);
+        if (callback) callback(data);
+      }
+    }
+  };
+  httpRequest.open('GET', path);
+  httpRequest.send();
+}
+
+
+// ==========================================
+// load our search index, only executed once
+// on first call of search box (CMD-/)
+//
+function loadSearch() {
+  fetchJSONFile('/index.json', function(data){
+
+    var options = { // fuse.js options; check fuse.js website for details
+      shouldSort: true,
+      location: 0,
+      distance: 100,
+      threshold: 0.4,
+      minMatchCharLength: 2,
+      keys: [
+        'title',
+        'permalink',
+        'summary'
+      ]
+    };
+    fuse = new Fuse(data, options); // build the index from the json file
   });
 }
 
-function populateResults(result){
-  $.each(result,function(key,value){
-    var contents= value.item.contents;
-    var snippet = "";
-    var snippetHighlights=[];
-    var tags =[];
-    if( fuseOptions.tokenize ){
-      snippetHighlights.push(searchQuery);
-    }else{
-      $.each(value.matches,function(matchKey,mvalue){
-        if(mvalue.key == "tags" || mvalue.key == "categories" ){
-          snippetHighlights.push(mvalue.value);
-        }else if(mvalue.key == "contents"){
-          let start = mvalue.indices[0][0]-summaryInclude>0?mvalue.indices[0][0]-summaryInclude:0;
-          let end = mvalue.indices[0][1]+summaryInclude<contents.length?mvalue.indices[0][1]+summaryInclude:contents.length;
-          snippet += contents.substring(start,end);
-          snippetHighlights.push(mvalue.value.substring(mvalue.indices[0][0],mvalue.indices[0][1]-mvalue.indices[0][0]+1));
-        }
-      });
+
+// ==========================================
+// using the index we loaded on CMD-/, run 
+// a search query (for "term") every time a letter is typed
+// in the search box
+//
+function executeSearch(term) {
+  let results = fuse.search(term); // the actual query being run using fuse.js
+  let searchitems = ''; // our results bucket
+
+  if (results.length === 0) { // no results based on what was typed into the input box
+    resultsAvailable = false;
+    searchitems = '';
+  } else { // build our html 
+    for (let item in results.slice(0,5)) { // only show first 5 results
+      searchitems = searchitems + '<li><a href="' + results[item].permalink + '" tabindex="0">' + '<span class="title">' + results[item].title + '</span><br /> <span class="sc">'+ results[item].section +'</span> — ' + results[item].date + ' — <em>' + results[item].desc + '</em></a></li>';
     }
-
-    if(snippet.length<1 && contents){
-      snippet += contents.substring(0,summaryInclude*2);
-    }
-    //pull template from hugo templarte definition
-    var templateDefinition = $('#search-result-template').html();
-    //replace values
-    var output = render(templateDefinition,{key:key,title:value.item.title,link:baseURL + value.item.relUrl,tags:value.item.tags,categories:value.item.categories,snippet:snippet});
-    $('#search-results').append(output);
-
-    // TODO: The below does not work.
-    $.each(snippetHighlights,function(snipkey,snipvalue){
-      // $("#summary-"+key).mark(snipvalue);
-    });
-
-  });
-}
-
-function param(name) {
-    return decodeURIComponent((location.search.split(name + '=')[1] || '').split('&')[0]).replace(/\+/g, ' ');
-}
-
-function render(templateString, data) {
-  var conditionalMatches,conditionalPattern,copy;
-  conditionalPattern = /\$\{\s*isset ([a-zA-Z]*) \s*\}(.*)\$\{\s*end\s*}/g;
-  //since loop below depends on re.lastInxdex, we use a copy to capture any manipulations whilst inside the loop
-  copy = templateString;
-  while ((conditionalMatches = conditionalPattern.exec(templateString)) !== null) {
-    if(data[conditionalMatches[1]]){
-      //valid key, remove conditionals, leave contents.
-      copy = copy.replace(conditionalMatches[0],conditionalMatches[2]);
-    }else{
-      //not valid, remove entire section
-      copy = copy.replace(conditionalMatches[0],'');
-    }
+    resultsAvailable = true;
   }
-  templateString = copy;
-  //now any conditionals removed we can do simple substitution
-  var key, find, re;
-  for (key in data) {
-    find = '\\$\\{\\s*' + key + '\\s*\\}';
-    re = new RegExp(find, 'g');
-    templateString = templateString.replace(re, data[key]);
-  }
-  return templateString;
-}
 
-var searchQuery = param("s");
-if(searchQuery){
-  $("#titleSearchInputBox").val(searchQuery);
-  executeSearch(searchQuery);
-}else {
-  $('#search-results').append("<p>Please enter a word or phrase above</p>");
+  document.getElementById("searchResults").innerHTML = searchitems;
+  if (results.length > 0) {
+    first = list.firstChild.firstElementChild; // first result container — used for checking against keyboard up/down location
+    last = list.lastChild.firstElementChild; // last result container — used for checking against keyboard up/down location
+  }
 }
