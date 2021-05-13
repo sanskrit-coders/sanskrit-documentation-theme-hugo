@@ -95,7 +95,10 @@ function getNextPageFromTreePosition(tree, relUrl) {
     if (currentItemPosition == pageKeys.length - 1) {
         console.debug("Moving a directory up.");
         return getNextPage(getParentDirPath(getParentDirPath(relUrl)), getParentDirPath(relUrl));
-    } else {
+    } else if (currentItemPosition == -1) {
+        return tree;
+    } 
+    else {
         console.debug("We'll get a sibling page");
         return tree[pageKeys[currentItemPosition + 1]];
     }
@@ -140,12 +143,16 @@ export function getPreviousPage(relUrl) {
     }
     // console.debug(relUrl, tree);
     const pageKeys = getPageKeys(tree);
-    // console.debug(pageKeys);
+    // console.debug(pageKeys, getItemNameNoPath(relUrl));
     const currentItemPosition = pageKeys.indexOf(getItemNameNoPath(relUrl));
     if (currentItemPosition == 0) {
         console.debug("Moving a directory up.");
         return tree;
-    } else {
+    } else if (currentItemPosition == -1) {
+        console.debug(pageKeys, getItemNameNoPath(relUrl));
+        return tree;
+    }
+    else {
         console.debug("We'll get a sibling page", pageKeys[currentItemPosition - 1]);
         return getLastPage(tree[pageKeys[currentItemPosition - 1]]);
     }
