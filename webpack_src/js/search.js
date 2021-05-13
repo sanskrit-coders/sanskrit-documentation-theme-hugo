@@ -1,13 +1,9 @@
 import Fuse from 'fuse.js';
 import mark from 'mark.js';
 
-var fuse; // holds our search engine
+var fuse, list, first, last, maininput; // holds our search engine
 var searchVisible = false;
 var firstRun = true; // allow us to delay loading json data unless search activated
-var list = document.getElementById('searchResults'); // targets the <ul>
-var first = list.firstChild; // first child of search list
-var last = list.lastChild; // last child of search list
-var maininput = document.getElementById('searchInput'); // input box for search
 var resultsAvailable = false; // Did we get any search results?
 
 // ==========================================
@@ -20,6 +16,18 @@ document.addEventListener('keydown', function(event) {
     // Load json search index if first time invoking search
     // Means we don't load json unless searches are going to happen; keep user payload small unless needed
     if(firstRun) {
+      list = document.getElementById('searchResults'); // targets the <ul>
+      first = list.firstChild; // first child of search list
+      last = list.lastChild; // last child of search list
+      maininput = document.getElementById('searchInput'); // input box for search
+
+      // ==========================================
+      // execute search as each character is typed
+      //
+      document.getElementById("searchInput").onkeyup = function(e) {
+        executeSearch(this.value);
+      }
+
       loadSearch(); // loads our json data and builds fuse.js search index
       firstRun = false; // let's never do this again
     }
@@ -70,14 +78,6 @@ document.addEventListener('keydown', function(event) {
 
 
 // ==========================================
-// execute search as each character is typed
-//
-document.getElementById("searchInput").onkeyup = function(e) {
-  executeSearch(this.value);
-}
-
-
-// ==========================================
 // fetch some json without jquery
 //
 function fetchJSONFile(path, callback) {
@@ -101,7 +101,7 @@ function fetchJSONFile(path, callback) {
 //
 function loadSearch() {
   fetchJSONFile('/index.json', function(data){
-
+    console.log("loading search!");
     var options = { // fuse.js options; check fuse.js website for details
       shouldSort: true,
       location: 0,
