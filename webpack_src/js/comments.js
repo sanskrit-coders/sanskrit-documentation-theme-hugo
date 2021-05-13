@@ -1,7 +1,9 @@
 import * as query from "./query";
 
 export function setInlineComments(htmlIn) {
-    let commentStyle = query.getQueryVariable("comment_style");
+    let commentStyle = query.getQueryVariable("comment_style") || "on";
+    let commentStyleDropdown = document.getElementsByName("commentStyleDropdown")[0];
+    commentStyleDropdown.value = commentStyle;
     if (commentStyle === "hidden") {
         return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\" hidden>$1</span>");
     } else {
@@ -10,7 +12,7 @@ export function setInlineComments(htmlIn) {
 }
 
 export function updateCommentStyleFromDropdown() {
-    var commentStyleDropdown = document.getElementsByName("commentStyleDropdown")[0];
+    let commentStyleDropdown = document.getElementsByName("commentStyleDropdown")[0];
     var commentStyle = commentStyleDropdown.options[commentStyleDropdown.selectedIndex].value;
     query.insertQueryParam("comment_style", commentStyle);
 }
