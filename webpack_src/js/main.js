@@ -1,21 +1,5 @@
 import * as query from "./query";
 
-export function setInlineComments(htmlIn) {
-  let commentStyle = query.getQueryVariable("comment_style");
-  if (commentStyle === "hidden") {
-    return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\" hidden>$1</span>");
-  } else {
-    return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\">$1</span>");
-  }
-}
-
-function setInlineCommentsInPostContent() {
-  if ($("#post_content").length > 0) {
-    // console.debug( $("#post_content").html);
-    // console.log(setInlineComments($("#post_content").html()));
-    $("#post_content").html(setInlineComments($("#post_content").html()));
-  }
-}
 
 export function relUrlOfCurrentPage() {
   return document.location.href.split("#")[0].replace(baseURL, "/");
@@ -27,11 +11,12 @@ import handleIncludes from "./handleIncludes";
 import {updateToc} from "./toc";
 import * as sidebar from "./sidebar";
 import * as transliteration from "./transliteration";
+import * as comments from "./comments";
 import * as spreadsheets from "./spreadsheets";
 
 // No includes processing - or adding navigation bars.
 export function prepareContentWithoutIncludes() {
-  setInlineCommentsInPostContent();
+  comments.setInlineCommentsInPostContent();
   transliteration.transliterateDevanagariBody();
   audioEmbed.fillAudioEmbeds();
   videoEmbed.fillVideoEmbeds();
@@ -72,6 +57,8 @@ async function onDocumentReadyTasks() {
 
 import {redirectToRandomPage, redirectToPage} from "./redirect";
 import * as dirTree from "./dirTree";
+import {saveLipi} from "./transliteration";
+import {updateCommentStyleFromDropdown} from "./comments";
 
 // So that these can be used like module_main.default.redirectToPage(..).
 export default {
@@ -79,6 +66,7 @@ export default {
   redirectToRandomPage: redirectToRandomPage,
   redirectToPage: redirectToPage,
   addRelUrlToTree: dirTree.addRelUrlToTree,
-  sidebarToggleHandler: sidebar.sidebarToggleHandler
+  sidebarToggleHandler: sidebar.sidebarToggleHandler,
+  updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown
 }
 

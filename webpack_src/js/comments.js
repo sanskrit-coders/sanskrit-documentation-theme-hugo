@@ -1,0 +1,24 @@
+import * as query from "./query";
+
+export function setInlineComments(htmlIn) {
+    let commentStyle = query.getQueryVariable("comment_style");
+    if (commentStyle === "hidden") {
+        return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\" hidden>$1</span>");
+    } else {
+        return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\">$1</span>");
+    }
+}
+
+export function updateCommentStyleFromDropdown() {
+    var commentStyleDropdown = document.getElementsByName("commentStyleDropdown")[0];
+    var commentStyle = commentStyleDropdown.options[commentStyleDropdown.selectedIndex].value;
+    query.insertQueryParam("comment_style", commentStyle);
+}
+
+export function setInlineCommentsInPostContent() {
+    if ($("#post_content").length > 0) {
+        // console.debug( $("#post_content").html);
+        // console.log(setInlineComments($("#post_content").html()));
+        $("#post_content").html(setInlineComments($("#post_content").html()));
+    }
+}

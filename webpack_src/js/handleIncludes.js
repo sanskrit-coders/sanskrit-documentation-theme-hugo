@@ -3,6 +3,7 @@ Code to handle includes. handleIncludes() is the entry point.
  */
 
 import * as main from "./main";
+import * as comments from "./comments";
 
 import urljoin from 'url-join';
 
@@ -36,7 +37,7 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
     // The surrounding divs are eliminated when the jqueryElement is created.
-    var jqueryElement = $(main.setInlineComments(`<div>${html}</div>`), virtualDocument);
+    var jqueryElement = $(comments.setInlineComments(`<div>${html}</div>`), virtualDocument);
 
     // console.debug(jqueryElement.html());
     // Remove some tags.
