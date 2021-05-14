@@ -3,7 +3,6 @@ import * as utils from "./utils";
 import * as query from "./query";
 
 let transliterationTarget = "devanagari";
-let previousTransliterationTarget = transliterationTarget;
 /* ---- Cookies ---- */
 let LIPI_DEFAULT = "devanagari";
 let LIPI_COOKIE = "transliteration_target";
@@ -34,8 +33,8 @@ export function transliterate() {
     if (!transliterationTarget) {
         return;
     }
-    let transliterationSource = pageVars.unicode_script || "devanagari";
-    
+    let transliterationSource = pageVars.unicodeScript || "devanagari";
+    console.debug(transliterationSource, transliterationTarget);
     var textNodes = utils.textNodesUnder(document.getElementsByTagName("body")[0]);
     // console.debug(textNodes);
     textNodes.forEach(function (textNode) {
