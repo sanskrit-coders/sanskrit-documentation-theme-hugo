@@ -10,6 +10,7 @@ import * as audioEmbed from "./audioEmbed";
 import handleIncludes from "./handleIncludes";
 import {updateToc} from "./toc";
 import * as sidebar from "./sidebar";
+import * as search from "./search";
 import * as transliteration from "./transliteration";
 import * as comments from "./comments";
 import * as spreadsheets from "./spreadsheets";
@@ -33,6 +34,7 @@ async function onDocumentReadyTasks() {
   pageVars.unicodeScript = pageVars.pageParams.unicode_script || pageDefaults.unicode_script;
   sidebar.insertSidebarItems();
   sidebar.setupSidebarToggle();
+  search.setupTitleSearch();
   let nextPage = module_dir_tree.getNextPage(pageVars.pageUrlMinusBasePath);
   dirTree.setAnchor(document.getElementsByName("nextPage")[0], nextPage, ">" );
   let previousPage = module_dir_tree.getPreviousPage(pageVars.pageUrlMinusBasePath);
