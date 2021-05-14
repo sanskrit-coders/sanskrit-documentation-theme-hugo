@@ -18,7 +18,7 @@ import * as spreadsheets from "./spreadsheets";
 // No includes processing - or adding navigation bars.
 export function prepareContentWithoutIncludes() {
   comments.setInlineCommentsInPostContent();
-  transliteration.transliterateDevanagariBody();
+  transliteration.transliterate();
   audioEmbed.fillAudioEmbeds();
   videoEmbed.fillVideoEmbeds();
   spreadsheets.fillSheets();
