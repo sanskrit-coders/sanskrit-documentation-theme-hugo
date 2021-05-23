@@ -1,10 +1,4 @@
-import * as query from "./query";
-
-
-export function relUrlOfCurrentPage() {
-  return document.location.href.split("#")[0].replace(baseURL, "/");
-}
-
+import * as text_to_speech from "./text_to_speech";
 import * as videoEmbed from "./videoEmbed";
 import * as audioEmbed from "./audioEmbed";
 import handleIncludes from "./handleIncludes";
@@ -14,6 +8,14 @@ import * as search from "./search";
 import * as transliteration from "./transliteration";
 import * as comments from "./comments";
 import * as spreadsheets from "./spreadsheets";
+import {redirectToPage, redirectToRandomPage} from "./redirect";
+import * as dirTree from "./dirTree";
+import {handleSpeakToggle} from "./text_to_speech";
+
+
+export function relUrlOfCurrentPage() {
+  return document.location.href.split("#")[0].replace(baseURL, "/");
+}
 
 // No includes processing - or adding navigation bars.
 export function prepareContentWithoutIncludes() {
@@ -57,11 +59,6 @@ async function onDocumentReadyTasks() {
   setupDisqus();
 }
 
-import {redirectToRandomPage, redirectToPage} from "./redirect";
-import * as dirTree from "./dirTree";
-import {saveLipi} from "./transliteration";
-import {updateCommentStyleFromDropdown} from "./comments";
-
 // So that these can be used like module_main.default.redirectToPage(..).
 export default {
   onDocumentReadyTasks: onDocumentReadyTasks,
@@ -69,6 +66,7 @@ export default {
   redirectToPage: redirectToPage,
   addRelUrlToTree: dirTree.addRelUrlToTree,
   sidebarToggleHandler: sidebar.sidebarToggleHandler,
-  updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown
+  updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown,
+  handleSpeakToggle: text_to_speech.handleSpeakToggle
 }
 
