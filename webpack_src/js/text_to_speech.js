@@ -27,6 +27,7 @@ export function speakAll() {
             // console.debug(textNode.textContent, transliterationSource, transliterationTarget);
             let transliteratedText = Sanscript.t(textNode.textContent, transliterationSource, "devanagari");
             suvak.bhaashasva(transliteratedText, 100, 150);
+            
         }
     })
 }
