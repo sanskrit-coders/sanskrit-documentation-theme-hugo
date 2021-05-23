@@ -10,11 +10,11 @@ Some notable things you get with this theme (in decreasing order of interest):
 - A collapsible "accordion" sidebar
   - automatic directory listing for use within sidebar
 - A collapsible "accordion" table-of-contents for each page.
-- "Next and Previous" page navigation buttons. 
-- A layout which automatically adjusts to the user's screen size. 
+- "Next and Previous" page navigation buttons.
+- A layout which automatically adjusts to the user's screen size.
 - An "Edit me" link on top of each page.
-- Basic ability to include contents from another page using the same theme within anoher. 
-- embedding audio and video items 
+- Basic ability to include contents from another page using the same theme within anoher.
+- embedding audio and video items
 - inline annotation
 - search
   - json based search
