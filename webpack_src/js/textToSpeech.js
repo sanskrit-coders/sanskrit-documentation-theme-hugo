@@ -63,6 +63,7 @@ export function handleSpeakToggle() {
         speakAll();
     } else {
         speakerButton.classList.remove("red")
+        ttsOn = false;
         // TODO: How to stop?
     }
 }
