@@ -6,6 +6,9 @@ import * as main from "./main";
 import * as comments from "./comments";
 
 import urljoin from 'url-join';
+import showdown from "showdown";
+
+var showdownConverter = new showdown.Converter();
 
 /*
 Example: absoluteUrl("../subfolder1/divaspari/", "../images/forest-fire.jpg") == "../subfolder1/images/forest-fire.jpg"
@@ -131,33 +134,32 @@ async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLe
         // console.debug(titleElements[0]);
         title = titleElements[0].textContent;
     }
-
+    var contentHtml;
     var contentElements = $(responseHtml, virtualDocument).find("#post_content");
-    // console.log(contentElements);
+    // console.log($(responseHtml, virtualDocument), contentElements);
     if (contentElements.length === 0) {
-        let message = "Could not get \"post-content\" class element.";
-        console.warn(message);
-        console.log(responseHtml);
-        throw Error(message);
+        let message = "Could not get \"post_content\" element.";
+        console.log(message);
+        contentHtml = responseHtml;
     } else {
         // We don't want multiple post-content divs, hence we replace with an included-post-content div.
-        var editLinkElements = $(responseHtml, virtualDocument).find("#editLink");
-        var editLinkHtml = "";
-        if (editLinkElements.length > 0) {
-            // console.debug(editLinkElements);
-            editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
-        }
-        // console.debug(addTitle);
-        var titleHtml = "<div></div>";
-        if (addTitle && addTitle != "false") {
-            titleHtml = fixIncludedHtml(includedPageRelativeUrl, "<h1 id='" + title + "'>" + title + "</h1>", includedPageNewLevelForH1);
-        }
-        var popoutHtml = `<div class='border d-flex justify-content-between'>${titleHtml}<div><a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>${editLinkHtml}</div></div>`;
-        var contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
-        var elementToInclude = $("<div class='included-post-content border'></div>");
-        elementToInclude.html(popoutHtml + fixIncludedHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));
-        return elementToInclude;
+        contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
     }
+    var editLinkElements = $(responseHtml, virtualDocument).find("#editLink");
+    var editLinkHtml = "";
+    if (editLinkElements.length > 0) {
+        // console.debug(editLinkElements);
+        editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
+    }
+    // console.debug(addTitle);
+    var titleHtml = "<div></div>";
+    if (addTitle && addTitle != "false") {
+        titleHtml = fixIncludedHtml(includedPageRelativeUrl, "<h1 id='" + title + "'>" + title + "</h1>", includedPageNewLevelForH1);
+    }
+    var popoutHtml = `<div class='border d-flex justify-content-between'>${titleHtml}<div><a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>${editLinkHtml}</div></div>`;
+    var elementToInclude = $("<div class='included-post-content border'></div>");
+    elementToInclude.html(popoutHtml + fixIncludedHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));
+    return elementToInclude;
 }
 
 /*
@@ -192,7 +194,17 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     }
     // console.debug(includedPageNewLevelForH1);
     let getAjaxResponsePromise = $.ajax(includedPageUrl);
-    function processingFn(responseHtml) {
+    function processingFn(response) {
+        let responseHtml = response;
+        if (includedPageUrl.endsWith(".md")) {
+            let metadataSeparator = response.split("\n")[0].trim();
+            console.log(`metadataSeparator: ${metadataSeparator}`)
+            let mdContent = response
+            if (["---", "+++"].includes(metadataSeparator)) {
+                mdContent = response.split(metadataSeparator).slice(2).join("\n");
+            }
+            responseHtml = `${showdownConverter.makeHtml(mdContent)}`;
+        }
         return processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement.attr("includeTitle"), includedPageNewLevelForH1, includedPageUrl);
     }
     return getAjaxResponsePromise.then(processingFn).then(function(contentElement) {
