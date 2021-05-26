@@ -5505,6 +5505,11 @@
   dependencies:
     "has-flag" "^4.0.0"
 
+"suvak@^0.0.2":
+  "integrity" "sha512-NdN4zVnA/PgFg10SlLAKpaIgIUykdQiKx/GpmQX87g0jR+3f1wSnbeRgINWvC21R9Z090FKj1sEqIZ4GXVA+Wg=="
+  "resolved" "https://registry.npmjs.org/suvak/-/suvak-0.0.2.tgz"
+  "version" "0.0.2"
+
 "tachyons@^4.12.0":
   "integrity" "sha512-2nA2IrYFy3raCM9fxJ2KODRGHVSZNTW3BR0YnlGsLUf1DA3pk3YfWZ/DdfbnZK6zLZS+jUenlUGJsKcA5fUiZg=="
   "resolved" "https://registry.npmjs.org/tachyons/-/tachyons-4.12.0.tgz"

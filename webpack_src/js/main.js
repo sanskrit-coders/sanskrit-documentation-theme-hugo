@@ -1,10 +1,4 @@
-import * as query from "./query";
-
-
-export function relUrlOfCurrentPage() {
-  return document.location.href.split("#")[0].replace(baseURL, "/");
-}
-
+import * as textToSpeech from "./textToSpeech";
 import * as videoEmbed from "./videoEmbed";
 import * as audioEmbed from "./audioEmbed";
 import handleIncludes from "./handleIncludes";
@@ -14,6 +8,12 @@ import * as search from "./search";
 import * as transliteration from "./transliteration";
 import * as comments from "./comments";
 import * as spreadsheets from "./spreadsheets";
+import {redirectToPage, redirectToRandomPage} from "./redirect";
+import * as dirTree from "./dirTree";
+
+export function relUrlOfCurrentPage() {
+  return document.location.href.split("#")[0].replace(baseURL, "/");
+}
 
 // No includes processing - or adding navigation bars.
 export function prepareContentWithoutIncludes() {
@@ -39,7 +39,7 @@ async function onDocumentReadyTasks() {
   dirTree.setAnchor(document.getElementsByName("nextPage")[0], nextPage, ">" );
   let previousPage = module_dir_tree.getPreviousPage(pageVars.pageUrlMinusBasePath);
   dirTree.setAnchor(document.getElementsByName("previousPage")[0], previousPage, "<" );
-  
+
   if (pageVars.topnavId) {
     sidebar.insertNavItems("#top-bar-right-custom", sidebarsData[pageVars.topnavId]);
   }
@@ -55,12 +55,8 @@ async function onDocumentReadyTasks() {
   // Update table of contents (To be called whenever page contents are updated).
   updateToc();
   setupDisqus();
+  textToSpeech.setup();
 }
-
-import {redirectToRandomPage, redirectToPage} from "./redirect";
-import * as dirTree from "./dirTree";
-import {saveLipi} from "./transliteration";
-import {updateCommentStyleFromDropdown} from "./comments";
 
 // So that these can be used like module_main.default.redirectToPage(..).
 export default {
@@ -69,6 +65,7 @@ export default {
   redirectToPage: redirectToPage,
   addRelUrlToTree: dirTree.addRelUrlToTree,
   sidebarToggleHandler: sidebar.sidebarToggleHandler,
-  updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown
+  updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown,
+  handleSpeakToggle: textToSpeech.handleSpeakToggle
 }
 
