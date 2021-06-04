@@ -2,7 +2,7 @@
 Put this file in /layouts/shortcodes/gallery.html
 Originally from at https://github.com/liwenyip/hugo-easy-gallery/ , later modified.
 
-{{/*Usage: {{< gallery dir="/jyotisha/naxatram/images/" figureClass="thumbnail" roodDir="content/">}} */}}}
+{{/*Usage: {{< gallery dir="naxatram/images/" figureClass="thumbnail">}} or {{< gallery dir="." figureClass="thumbnail">}} */}}}
 -->
 <!-- count how many times we've called this shortcode; load the css if it's the first time -->
 {{- if not ($.Page.Scratch.Get "figurecount") }}<link rel="stylesheet" href="/css/hugo-easy-gallery.css" />{{ end }}
@@ -15,7 +15,7 @@ Originally from at https://github.com/liwenyip/hugo-easy-gallery/ , later modifi
 {{- $page := .Page }}
 {{- if eq (.Get "dir") "." }}
 {{- else }}
-{{- $page := .Site.GetPage (.Get "dir") }}
+{{- $page = .Site.GetPage (.Get "dir") }}
 {{- end }}
 {{- with $page -}}
 {{- $files := .Resources.ByType "image"  }}
