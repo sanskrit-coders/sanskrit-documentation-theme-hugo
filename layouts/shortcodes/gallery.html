@@ -10,24 +10,22 @@ Originally from at https://github.com/liwenyip/hugo-easy-gallery/ , later modifi
 {{ $baseURL := .Site.BaseURL }}
 <div class="gallery caption-position-{{ with .Get "caption-position" | default "bottom" }}{{.}}{{end}} caption-effect-{{ with .Get "caption-effect" | default "slide" }}{{.}}{{end}} hover-effect-{{ with .Get "hover-effect" | default "zoom" }}{{.}}{{end}} {{ if ne (.Get "hover-transition") "none" }}hover-transition{{end}}" itemscope itemtype="http://schema.org/ImageGallery">
 
-{{/* TODO: Fix hardcoding below. https://discourse.gohugo.io/t/access-file-system-path-of-content-directory-when-module-mounts-is-used/33228 */}}
-{{- $rootDir := $.Get "rootDir" | default (print "/content/" .Page.File.Dir) }}
 {{- $figureClass := $.Get "figureClass" | default "" }}
 
-{{- with (.Get "dir") -}}
-{{- $relativeUrlPath := replaceRE "^/content/" "" $rootDir}}
-<!-- If a directory was specified, generate figures for all of the images in the directory -->
-{{/* https://discourse.gohugo.io/t/access-file-system-path-of-content-directory-when-module-mounts-is-used/33228 */}}
-{{- if (fileExists (print  $rootDir .))}} 
-{{- $files := readDir (print  $rootDir .) }}
+{{- $page := .Page }}
+{{- if eq (.Get "dir") "." }}
+{{- else }}
+{{- $page := .Site.GetPage (.Get "dir") }}
+{{- end }}
+{{- with $page -}}
+{{- $files := .Resources.ByType "image"  }}
 {{- range $files -}}
 <!-- skip files that aren't images, or that inlcude the thumb suffix in their name -->
 {{- $thumbext := $.Get "thumb" | default "-thumb" }}
 {{- $isthumb := .Name | findRE ($thumbext | printf "%s\\.") }}<!-- is the current file a thumbnail image? -->
-{{- $isimg := lower .Name | findRE "\\.(gif|jpg|jpeg|tiff|png|bmp)" }}<!-- is the current file an image? -->
-{{- if and $isimg (not $isthumb) }}
+{{- if not $isthumb }}
 {{- $caption :=  .Name | replaceRE "\\..*" ""  | replaceRE "[_]" " "}}<!-- humanized filename without extension -->
-{{- $linkURL := print $baseURL $relativeUrlPath "/" .Name | absURL }}<!-- absolute URL to hi-res image -->
+{{- $linkURL := .Permalink }}<!-- absolute URL to hi-res image -->
 {{- $thumb := .Name | replaceRE "(\\.)" ($thumbext | printf "%s.") }}<!-- filename of thumbnail image -->
 {{- $thumbexists := where $files "Name" $thumb }}<!-- does a thumbnail image exist? -->
 {{- $thumbURL := print $baseURL ($.Get "dir") "/" $thumb | absURL }}<!-- absolute URL to thumbnail image -->
@@ -44,11 +42,8 @@ Originally from at https://github.com/liwenyip/hugo-easy-gallery/ , later modifi
         <a href="{{ $linkURL }}" itemprop="contentUrl"></a><!-- put <a> last so it is stacked on top -->
     </figure>
 </div>
-{{- end }} {{/* If image */}}
+{{- end }} {{/* If thumb */}}
 {{- end }} {{/* Range over files */}}
-{{- else -}}
-Could not read directory {{print  $rootDir .}} !
-{{- end }} {{/* {{- if (fileExists (print  $rootDir .))}}*/}}
 {{- else -}}
 <!-- If no directory was specified, include any figure shortcodes called within the gallery -->
 {{ .Inner }}
