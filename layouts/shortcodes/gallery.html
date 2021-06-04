@@ -44,11 +44,13 @@ Originally from at https://github.com/liwenyip/hugo-easy-gallery/ , later modifi
         <a href="{{ $linkURL }}" itemprop="contentUrl"></a><!-- put <a> last so it is stacked on top -->
     </figure>
 </div>
-{{- end }}
-{{- end }}
+{{- end }} {{/* If image */}}
+{{- end }} {{/* Range over files */}}
+{{- else -}}
+Could not read directory {{print  $rootDir .}} !
+{{- end }} {{/* {{- if (fileExists (print  $rootDir .))}}*/}}
 {{- else -}}
 <!-- If no directory was specified, include any figure shortcodes called within the gallery -->
 {{ .Inner }}
-{{- end }}
-{{- end }}
+{{- end }} {{/* with Dir */}}
 </div>
