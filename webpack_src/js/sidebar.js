@@ -41,9 +41,17 @@ function getTitle(sidebarItem) {
         if ("title" in pageParams) {
             title = pageParams["title"];
             if(title.startsWith("+")) {
-                let childTree = dirTree.getChildTree(itemUrlStripped);
-                if (pageParams["logicalName"] == "_index.md" && Object.keys(childTree).length == 1) {
+                // /x/y/z/_index.md is not a dir item, but /x/y/z is (if /x/y/z/a exists). The former should retain a +, the latter entry should not.
+                if (isDirItem) {
                     title = title.substr(1);
+                } else {
+                    // /x/y/z/_index.md is not a dir item. if /x/y/z/a does not exist, it should drop a + mark.
+                    let childTree = dirTree.getChildTree(itemUrlStripped);
+                    if (pageParams["logicalName"] == "_index.md" && Object.keys(childTree).length == 1) {
+                        title = title.substr(1);
+
+                    }
+                    // console.debug(pageParams);
                 }
             }
         } else {
