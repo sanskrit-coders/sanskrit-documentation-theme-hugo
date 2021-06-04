@@ -40,8 +40,17 @@ function getTitle(sidebarItem) {
         // console.debug(sidebarItem, childTree);
         if ("title" in pageParams) {
             title = pageParams["title"];
-            if(isDirItem && title.startsWith("+")) {
-                title = title.substr(1);
+            if(title.startsWith("+")) {
+                if (isDirItem) {
+                    title = title.substr(1);
+                } else {
+                    let childTree = dirTree.getChildTree(itemUrlStripped);
+                    if (pageParams["logicalName"] == "_index.md" && Object.keys(childTree).length == 1) {
+                        title = title.substr(1);
+
+                    }
+                    // console.debug(pageParams);
+                }
             }
         } else {
             console.error(itemUrlStripped, `${itemUrlStripped} not present in dir tree. Something is wrong with the sidebar definition. So can't figure out title.`, sidebarItem);
