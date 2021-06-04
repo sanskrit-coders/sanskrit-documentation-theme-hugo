@@ -41,15 +41,9 @@ function getTitle(sidebarItem) {
         if ("title" in pageParams) {
             title = pageParams["title"];
             if(title.startsWith("+")) {
-                if (isDirItem) {
+                let childTree = dirTree.getChildTree(itemUrlStripped);
+                if (pageParams["logicalName"] == "_index.md" && Object.keys(childTree).length == 1) {
                     title = title.substr(1);
-                } else {
-                    let childTree = dirTree.getChildTree(itemUrlStripped);
-                    if (pageParams["logicalName"] == "_index.md" && Object.keys(childTree).length == 1) {
-                        title = title.substr(1);
-
-                    }
-                    // console.debug(pageParams);
                 }
             }
         } else {
