@@ -10,12 +10,15 @@ Originally from at https://github.com/liwenyip/hugo-easy-gallery/ , later modifi
 {{ $baseURL := .Site.BaseURL }}
 <div class="gallery caption-position-{{ with .Get "caption-position" | default "bottom" }}{{.}}{{end}} caption-effect-{{ with .Get "caption-effect" | default "slide" }}{{.}}{{end}} hover-effect-{{ with .Get "hover-effect" | default "zoom" }}{{.}}{{end}} {{ if ne (.Get "hover-transition") "none" }}hover-transition{{end}}" itemscope itemtype="http://schema.org/ImageGallery">
 
+{{/* TODO: Fix hardcoding below. https://discourse.gohugo.io/t/access-file-system-path-of-content-directory-when-module-mounts-is-used/33228 */}}
 {{- $rootDir := $.Get "rootDir" | default (print "/content/" .Page.File.Dir) }}
 {{- $figureClass := $.Get "figureClass" | default "" }}
 
 {{- with (.Get "dir") -}}
 {{- $relativeUrlPath := replaceRE "^/content/" "" $rootDir}}
 <!-- If a directory was specified, generate figures for all of the images in the directory -->
+{{/* https://discourse.gohugo.io/t/access-file-system-path-of-content-directory-when-module-mounts-is-used/33228 */}}
+{{- if (fileExists (print  $rootDir .))}} 
 {{- $files := readDir (print  $rootDir .) }}
 {{- range $files -}}
 <!-- skip files that aren't images, or that inlcude the thumb suffix in their name -->
@@ -46,5 +49,6 @@ Originally from at https://github.com/liwenyip/hugo-easy-gallery/ , later modifi
 {{- else -}}
 <!-- If no directory was specified, include any figure shortcodes called within the gallery -->
 {{ .Inner }}
+{{- end }}
 {{- end }}
 </div>
