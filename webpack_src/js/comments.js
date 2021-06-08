@@ -5,9 +5,9 @@ export function setInlineComments(htmlIn) {
     let commentStyleDropdown = document.getElementsByName("commentStyleDropdown")[0];
     commentStyleDropdown.value = commentStyle;
     if (commentStyle === "hidden") {
-        return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\" hidden>$1</span>");
+        return htmlIn.replace(/\+\+\+([\s\S]+?)\+\+\+/g, "<span class=\"inline_comment\" hidden>$1</span>");
     } else {
-        return htmlIn.replace(/\+\+\+(.+?)\+\+\+/g, "<span class=\"inline_comment\">$1</span>");
+        return htmlIn.replace(/\+\+\+([\s\S]+?)\+\+\+/g, "<span class=\"inline_comment\">$1</span>");
     }
 }
 
