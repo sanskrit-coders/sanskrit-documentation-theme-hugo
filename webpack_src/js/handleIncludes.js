@@ -201,7 +201,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
             console.log(`metadataSeparator: ${metadataSeparator}`)
             let mdContent = response
             if (["---", "+++"].includes(metadataSeparator)) {
-                mdContent = response.split(metadataSeparator).slice(2).join("\n");
+                mdContent = response.split(metadataSeparator).slice(2).join("+++");
             }
             responseHtml = `${showdownConverter.makeHtml(mdContent)}`;
         }
