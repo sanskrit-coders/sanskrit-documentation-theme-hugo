@@ -31,8 +31,8 @@ Some notable things you get with this theme (in decreasing order of interest):
 
 ## Example sites
 
-- https://vvasuki.github.io/saMskAra/mantraH/rogAH/padyAni/corona-virus/
-- https://vvasuki.github.io/notes/
+- https://vishvAsa.github.io/saMskAra/mantraH/rogAH/padyAni/corona-virus/
+- https://vishvAsa.github.io/notes/
 - https://sanskrit-coders.github.io/
 - https://sanskrit.github.io/
 
