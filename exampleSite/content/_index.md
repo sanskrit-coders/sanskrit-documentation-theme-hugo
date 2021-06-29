@@ -12,7 +12,7 @@ For more meaty examples:
 
 
 
-- https://vishvAsa.github.io/saMskAra/mantraH/rogAH/padyAni/corona-virus/
+- https://vishvAsa.github.io/devaH/mantraH/rogAH/padyAni/corona-virus/
 - https://vishvAsa.github.io/notes/
 - https://sanskrit-coders.github.io/
 - https://sanskrit.github.io/
