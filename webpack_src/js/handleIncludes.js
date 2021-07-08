@@ -4,6 +4,8 @@ Code to handle includes. handleIncludes() is the entry point.
 
 import * as main from "./main";
 import * as comments from "./comments";
+import YAML from 'yaml'
+import toml from 'toml';
 
 import urljoin from 'url-join';
 import showdown from "showdown";
@@ -174,6 +176,41 @@ function getRelativeIncludedPageUrl(jsIncludeJqueryElement) {
     return includedPageUrl;
 }
 
+function markdownToHtml(markdownCode, includeElement) {
+    let metadataSeparator = markdownCode.split("\n")[0].trim();
+    console.log(`metadataSeparator: ${metadataSeparator}`)
+    let mdContent = markdownCode
+    let metadataText = ""
+    if (["---", "+++"].includes(metadataSeparator)) {
+        metadataText = markdownCode.split(metadataSeparator)[1]
+        mdContent = markdownCode.split(metadataSeparator).slice(2).join("+++");
+    }
+
+    let fieldNames = includeElement.attr("fieldNames");
+    if (fieldNames !== undefined) {
+        let metadata;
+        console.debug(metadataText);
+        if (metadataSeparator == "---") {
+            metadata = YAML.parse(metadataText);
+        } else {
+            metadata = toml.parse(metadataText);
+            console.debug(metadata);
+        }
+        let fieldData = fieldNames.split(",").map(fieldName => {
+            console.debug(fieldName, metadata);
+            let data = metadata[fieldName];
+            if (data !== undefined) {
+                return data;
+            } else {
+                return "";
+            }
+        });
+        mdContent = fieldData.join("\n\n") + "\n\n" + mdContent;
+    }
+    let responseHtml = `${showdownConverter.makeHtml(mdContent)}`;
+    return responseHtml;
+}
+
 async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) {
     if (jsIncludeJqueryElement.html().trim() !== "") {
         console.warn("Refusing to refill element with non-empty html - ", jsIncludeJqueryElement);
@@ -197,13 +234,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     function processingFn(response) {
         let responseHtml = response;
         if (includedPageUrl.endsWith(".md")) {
-            let metadataSeparator = response.split("\n")[0].trim();
-            console.log(`metadataSeparator: ${metadataSeparator}`)
-            let mdContent = response
-            if (["---", "+++"].includes(metadataSeparator)) {
-                mdContent = response.split(metadataSeparator).slice(2).join("+++");
-            }
-            responseHtml = `${showdownConverter.makeHtml(mdContent)}`;
+            responseHtml = markdownToHtml(response, jsIncludeJqueryElement);
         }
         return processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement.attr("includeTitle"), includedPageNewLevelForH1, includedPageUrl);
     }
