@@ -36,6 +36,17 @@ function absoluteUrl(baseUrl, relative) {
     return urljoin(baseDirStack.join("/"), relative.toString());
 }
 
+
+function getCollapseStyle(jsIncludeJqueryElement) {
+    var isCollapsed =  jsIncludeJqueryElement.hasClass("collapsed");
+    var collapseStyle = "collapse show";
+    // console.debug(isCollapsed);
+    if (isCollapsed) {
+        collapseStyle = "collapse";
+    }
+    return collapseStyle;
+}
+
 // WHen you include html from one page within another, you need to fix image urls, anchor urls etc..
 function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
     // We want to use jquery to parse html, but without loading images. Hence this.
@@ -140,15 +151,20 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
     let content_div_id = `included_content_${post_id}`;
     var contentHtml;
     var contentElements = $(responseHtml, virtualDocument).find("#post_content");
+    let collapseStyle = getCollapseStyle(jsIncludeJqueryElement);
     // console.log($(responseHtml, virtualDocument), contentElements);
+    let contentInnerHtml = responseHtml;
     if (contentElements.length === 0) {
         let message = "Could not get \"post_content\" element.";
         // console.debug(message);
-        contentHtml = `<div class='included-post-content' id="${content_div_id}">${responseHtml}</div>`;
+        contentInnerHtml = responseHtml;
     } else {
         // We don't want multiple post-content divs, hence we replace with an included-post-content div.
-        contentHtml = `<div class='included-post-content' id="${content_div_id}">${contentElements[0].innerHTML}</div>`;
+        contentInnerHtml = contentElements[0].innerHTML;
     }
+    contentHtml = `<div class='included-post-content ${collapseStyle}' id="${content_div_id}">${contentInnerHtml}</div>`;
+
+
     var editLinkElements = $(responseHtml, virtualDocument).find("#editLink");
     var editLinkHtml = "";
     if (editLinkElements.length > 0) {
