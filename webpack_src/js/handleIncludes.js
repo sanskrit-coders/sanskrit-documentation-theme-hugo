@@ -76,7 +76,7 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
      */
     var headers = jqueryElement.find(":header");
     if (headers.length > 0) {
-        var id_prefix = includedPageRelativeUrl.replace("/", "_");
+        var id_prefix = includedPageRelativeUrl.replaceAll("/", "_").replaceAll(".", "_");
         headers.replaceWith(function() {
             var headerElement = $(this);
             // console.debug(headerElement);
@@ -136,16 +136,18 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
         // console.debug(titleElements[0]);
         title = titleElements[0].textContent;
     }
+    let post_id = includedPageRelativeUrl.replaceAll("/", "_").replaceAll(".", "_");
+    let content_div_id = `included_content_${post_id}`;
     var contentHtml;
     var contentElements = $(responseHtml, virtualDocument).find("#post_content");
     // console.log($(responseHtml, virtualDocument), contentElements);
     if (contentElements.length === 0) {
         let message = "Could not get \"post_content\" element.";
-        console.log(message);
-        contentHtml = responseHtml;
+        // console.debug(message);
+        contentHtml = `<div class='included-post-content' id="${content_div_id}">${responseHtml}</div>`;
     } else {
         // We don't want multiple post-content divs, hence we replace with an included-post-content div.
-        contentHtml = `<div class=''>${contentElements[0].innerHTML}</div>`;
+        contentHtml = `<div class='included-post-content' id="${content_div_id}">${contentElements[0].innerHTML}</div>`;
     }
     var editLinkElements = $(responseHtml, virtualDocument).find("#editLink");
     var editLinkHtml = "";
@@ -158,9 +160,11 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
     if (addTitle && addTitle != "false") {
         titleHtml = fixIncludedHtml(includedPageRelativeUrl, "<h1 id='" + title + "'>" + title + "</h1>", includedPageNewLevelForH1);
     }
-    var popoutHtml = `<div class='border d-flex justify-content-between'>${titleHtml}<div><a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>${editLinkHtml}</div></div>`;
-    var elementToInclude = $("<div class='included-post-content border'></div>");
-    elementToInclude.html(popoutHtml + fixIncludedHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));
+    var collapseLink = `<a id="collapser_${post_id}" class="btn" data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}"><i class="fas fa-caret-down"></i></a>`;
+    let popoutLink = `<a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>`
+    var titleRowHtml = `<div class='border d-flex justify-content-between' id="included_title_${post_id}">${titleHtml}<div class="section-nav row">${collapseLink}${popoutLink}${editLinkHtml}</div></div>`;
+    var elementToInclude = $(`<div class='included-post border' id=\"included_post_${post_id}\"></div>`);
+    elementToInclude.html(titleRowHtml + fixIncludedHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));
     return elementToInclude;
 }
 

@@ -59,6 +59,7 @@ export function updateToc(options) {
               html += `<li class="${liClass}">`;
           }
         }
+        console.debug("header is ", header);
         html += `<a href='#${header.id}'>${header.innerText}</a>`;
       }
       level = this_level; // update for the next one
@@ -71,38 +72,53 @@ export function updateToc(options) {
     // Finally, set up navgoco options.
 };
 
+
+function returnToTopHandler(toc_item_id) {
+    // First, set up the right selections in the table-of-contents menu.
+    // So, the user can follow the trail of highlights menu items and expand the menu items till he reaches the appropriate level.
+    var itemToActivate = undefined;
+    $("#toc_body").removeClass("collapse");
+    // console.debug(toc_item_id, $("#toc_ul").find("li"));
+    $("#toc_ul").find("li").each(function (liIndex, liElement) {
+        // console.debug(liIndex, liElement, toc_item_id);
+        if (liElement.id == toc_item_id) {
+            itemToActivate = $(this);
+        } else {
+            $(this).removeClass("active");
+        }
+    });
+    itemToActivate.addClass("active");
+    itemToActivate.parents("li").addClass("active"); // This call is ineffective for some reason.
+
+    // Now scroll up.
+    $([document.documentElement, document.body]).animate({
+        scrollTop: $("[id='" + toc_item_id + "']").offset().top
+    }, 100);
+}
+
+
 function setUpNavigationLinks(headers) {
   headers.each(function () {
     var header = $(this);
-    if (!header.next().hasClass("back-to-top")){
+    let ancestorIncludedPost = header.closest(".included-post");
+    var navDiv = header.next();
+    if (!navDiv.hasClass("section-nav")) {
+        navDiv = header.children(".secion-nav").last();
+        console.debug("last child of header", navDiv);
+    }
+    if (!navDiv.hasClass("section-nav")) {
+        navDiv = $("<div class=\"section-nav row float-right\" style=\"text-align:right;\"></div><br>");
+        header.append(navDiv);
+    }
+    
+    console.debug(ancestorIncludedPost, navDiv.children(".icon-arrow-up"), navDiv);
+    if (navDiv.children(".icon-arrow-up").length == 0){
         // There is a javascript click listener (defined later in this file) for the below to scroll up.
-        var returnToTopLink = $('<div id="toc_up_' + header.attr('id') + '" class="icon-arrow-up back-to-top" style="text-align:right;">Up↑</div>');
+        var returnToTopLink = $('<div id="toc_up_' + header.attr('id') + '" class="icon-arrow-up back-to-top btn btn-secondary">Up↑</div>');
         var toc_item_id = get_toc_item_id(header.attr('id'));
-        returnToTopLink.click(function () {
-                  // First, set up the right selections in the table-of-contents menu.
-                  // So, the user can follow the trail of highlights menu items and expand the menu items till he reaches the appropriate level.
-                  var itemToActivate = undefined;
-                  $("#toc_body").removeClass("collapse");
-                  // console.debug(toc_item_id, $("#toc_ul").find("li"));
-                  $("#toc_ul").find("li").each(function (liIndex, liElement) {
-                      // console.debug(liIndex, liElement, toc_item_id);
-                      if (liElement.id == toc_item_id) {
-                          itemToActivate = $(this);
-                      } else {
-                          $(this).removeClass("active");
-                      }
-                  });
-                  itemToActivate.addClass("active");
-                  itemToActivate.parents("li").addClass("active"); // This call is ineffective for some reason.
-
-                  // Now scroll up.
-                  $([document.documentElement, document.body]).animate({
-                      scrollTop: $("[id='" + toc_item_id + "']").offset().top
-                  }, 100);
-              });
-          }
-        header.after(returnToTopLink);
-        });
-
+        returnToTopLink.click(function() {returnToTopHandler(toc_item_id)});
+        }
+        navDiv.prepend(returnToTopLink);
+    });
 }
 
