@@ -125,13 +125,13 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
 - It fixes urls of images, links and includes to be relative to the includedPageUrl (which is inturn relative to the current page url), so that they work as expected when included in the given page.
 */
 // An async function returns results wrapped in Promise objects.
-async function processAjaxResponseHtml(responseHtml, addTitle, includedPageNewLevelForH1, includedPageRelativeUrl) {
+async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageRelativeUrl) {
     // We want to use jquery to parse html, but without loading images. Hence this.
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
-
+    let addTitle = jsIncludeJqueryElement.attr("includeTitle") || jsIncludeJqueryElement.attr("title");
     var titleElements = $(responseHtml, virtualDocument).find("h1");
-    var title = "";
+    var title = jsIncludeJqueryElement.attr("title") || "";
     if (titleElements.length > 0) {
         // console.debug(titleElements[0]);
         title = titleElements[0].textContent;
@@ -189,15 +189,15 @@ function markdownToHtml(markdownCode, includeElement) {
     let fieldNames = includeElement.attr("fieldNames");
     if (fieldNames !== undefined) {
         let metadata;
-        console.debug(metadataText);
+        // console.debug(metadataText);
         if (metadataSeparator == "---") {
             metadata = YAML.parse(metadataText);
         } else {
             metadata = toml.parse(metadataText);
-            console.debug(metadata);
+            // console.debug(metadata);
         }
         let fieldData = fieldNames.split(",").map(fieldName => {
-            console.debug(fieldName, metadata);
+            // console.debug(fieldName, metadata);
             let data = metadata[fieldName];
             if (data !== undefined) {
                 return data;
@@ -236,7 +236,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         if (includedPageUrl.endsWith(".md")) {
             responseHtml = markdownToHtml(response, jsIncludeJqueryElement);
         }
-        return processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement.attr("includeTitle"), includedPageNewLevelForH1, includedPageUrl);
+        return processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageUrl);
     }
     return getAjaxResponsePromise.then(processingFn).then(function(contentElement) {
         // console.log(contentElement);
