@@ -111,10 +111,11 @@ function setUpNavigationLinks(headers) {
         header.append(navDiv);
     }
     
-    console.debug(ancestorIncludedPost, navDiv.children(".icon-arrow-up"), navDiv);
-    if (navDiv.children(".icon-arrow-up").length == 0){
+    let up_button_id = `toc_up_${header.attr('id')}`;
+    // console.debug($(`#${up_button_id}`).length, navDiv);
+    if ($(`#${up_button_id}`).length == 0){
         // There is a javascript click listener (defined later in this file) for the below to scroll up.
-        var returnToTopLink = $('<div id="toc_up_' + header.attr('id') + '" class="icon-arrow-up back-to-top btn btn-secondary">Up↑</div>');
+        var returnToTopLink = $(`<div id="${up_button_id}" class="icon-arrow-up back-to-top btn btn-secondary">Up↑</div>`);
         var toc_item_id = get_toc_item_id(header.attr('id'));
         returnToTopLink.click(function() {returnToTopHandler(toc_item_id)});
         }
