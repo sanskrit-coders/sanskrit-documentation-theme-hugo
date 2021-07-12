@@ -6,7 +6,7 @@
     </a>
     <a class="btn btn-secondary" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
     <div class="btn small border">
-      Built on {{ now.Format "2006 Jan 2 15:04:05 MST" }}. (<a href="http://google.com/search?q={{ now.Format "15:04:05 MST" }} to IST">IST</a>)
+      <a href="{{ .Site.Params.build_url}}"><img src="{{ .Site.Params.build_img}}"> Built </a> on {{ now.Format "2006 Jan 2 15:04:05 MST" }}. (<a href="http://google.com/search?q={{ now.Format "15:04:05 MST" }} to IST">IST</a>)
     </div>
   <ul id="footer-bar-right-custom" class="list-group list-group-horizontal">
   </ul>
