@@ -40,7 +40,12 @@ export function transliterate() {
     textNodes.forEach(function (textNode) {
         if(textNode.parentNode.nodeName.toLowerCase() != "option") {
             // console.debug(textNode.textContent, transliterationSource, transliterationTarget);
-            textNode.textContent = Sanscript.t(textNode.textContent, transliterationSource, transliterationTarget);
+            // console.debug(Sanscript.schemes)
+            if (transliterationSource in Sanscript.schemes && transliterationTarget in Sanscript.schemes) {
+                textNode.textContent = Sanscript.t(textNode.textContent, transliterationSource, transliterationTarget);
+            } else {
+                console.error("Some unsupported scheme! Not transliterating! Check!", transliterationSource, transliterationTarget)
+            }
         }
     })
 }
