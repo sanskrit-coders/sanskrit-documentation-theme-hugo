@@ -9,8 +9,13 @@ import toml from 'toml';
 
 import urljoin from 'url-join';
 import showdown from "showdown";
+import {updateToc} from "./toc";
 
 var showdownConverter = new showdown.Converter();
+
+function cleanId(x) {
+    return x.replace(/[\p{P}\p{S}\s]+/gu, "_");
+}
 
 /*
 Example: absoluteUrl("../subfolder1/divaspari/", "../images/forest-fire.jpg") == "../subfolder1/images/forest-fire.jpg"
@@ -23,7 +28,7 @@ function absoluteUrl(baseUrl, relative) {
     if (relative.startsWith("http") || relative.startsWith("file") || relative.startsWith("/")) {
         return relative;
     }
-    
+
     let baseWithoutIntraPageLink = baseUrlStr.split("#")[0];
     var baseDirStack = baseWithoutIntraPageLink.toString().split("/");
     // console.debug(baseDirStack, urljoin(baseDirStack.join("/"), relative.toString()));
@@ -38,7 +43,7 @@ function absoluteUrl(baseUrl, relative) {
 
 
 function getCollapseStyle(jsIncludeJqueryElement) {
-    var isCollapsed =  jsIncludeJqueryElement.hasClass("collapsed");
+    var isCollapsed = jsIncludeJqueryElement.hasClass("collapsed");
     var collapseStyle = "collapse show";
     // console.debug(isCollapsed);
     if (isCollapsed) {
@@ -64,7 +69,7 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
     jqueryElement.find("#toc_header").remove();
     jqueryElement.find(".back-to-top").remove();
 
-    jqueryElement.find('.js_include').each(function() {
+    jqueryElement.find('.js_include').each(function () {
         $(this).attr("url", absoluteUrl(includedPageRelativeUrl, $(this).attr("url")));
         if (newLevelForH1 < 1) {
             console.error("Ignoring invalid newLevelForH1: %d, using 6", newLevelForH1);
@@ -87,20 +92,25 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
      */
     var headers = jqueryElement.find(":header");
     if (headers.length > 0) {
-        var id_prefix = includedPageRelativeUrl.replaceAll("/", "_").replaceAll(".", "_");
-        headers.replaceWith(function() {
+        var id_prefix = cleanId(includedPageRelativeUrl);
+        headers.replaceWith(function () {
             var headerElement = $(this);
-            // console.debug(headerElement);
             var hLevel = parseInt(headerElement.prop("tagName").substring(1));
             var hLevelNew = Math.min(6, newLevelForH1 - 1 + hLevel);
-            var newId = id_prefix + "_" + headerElement[0].id;
-            return $("<h" + hLevelNew +" id='" + newId + "'/>").append(headerElement.contents());
+            var newId = id_prefix + "_" + cleanId(headerElement[0].id);
+            let newHeaderEl = $("<h" + hLevelNew + " id='" + newId + "'/>").append(headerElement.contents());
+            $.each(this.attributes, function() {
+                if(this.name == 'id') return; // Avoid someone (optional)
+                if(this.specified) newHeaderEl.attr(this.name, this.value);
+            });
+            console.debug(headerElement, newHeaderEl);
+            return newHeaderEl;
         });
     }
 
 
     // Fix image urls.
-    jqueryElement.find("img").each(function() {
+    jqueryElement.find("img").each(function () {
         console.log(includedPageRelativeUrl, $(this).attr("src"), absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
         // console.log($(this).attr("src"))
         $(this).attr("src", absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
@@ -108,7 +118,7 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
     });
 
     // Fix links.
-    jqueryElement.find("a").each(function() {
+    jqueryElement.find("a").each(function () {
         // console.debug($(this).html());
         var href = $(this).attr("href");
         if (href.startsWith("#")) {
@@ -135,6 +145,7 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
 - It fixes heading levels and figures out whether a title is needed.
 - It fixes urls of images, links and includes to be relative to the includedPageUrl (which is inturn relative to the current page url), so that they work as expected when included in the given page.
 */
+
 // An async function returns results wrapped in Promise objects.
 async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageRelativeUrl) {
     // We want to use jquery to parse html, but without loading images. Hence this.
@@ -147,7 +158,7 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
         // console.debug(titleElements[0]);
         title = titleElements[0].textContent;
     }
-    let post_id = includedPageRelativeUrl.replaceAll("/", "_").replaceAll(".", "_");
+    let post_id = cleanId(includedPageRelativeUrl);
     let content_div_id = `included_content_${post_id}`;
     var contentHtml;
     var contentElements = $(responseHtml, virtualDocument).find("#post_content");
@@ -171,10 +182,10 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
         // console.debug(editLinkElements);
         editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
     }
-    // console.debug(addTitle);
+    console.debug(addTitle, title, cleanId(title));
     var titleHtml = "<div></div>";
     if (addTitle && addTitle != "false") {
-        titleHtml = fixIncludedHtml(includedPageRelativeUrl, "<h1 id='" + title + "'>" + title + "</h1>", includedPageNewLevelForH1);
+        titleHtml = fixIncludedHtml(includedPageRelativeUrl, `<h1 id='${cleanId(title)}'  data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}">${title}</h1>`, includedPageNewLevelForH1);
     }
     var collapseLink = `<a id="collapser_${post_id}" class="btn" data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}"><i class="fas fa-caret-down"></i></a>`;
     let popoutLink = `<a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>`
@@ -251,6 +262,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     }
     // console.debug(includedPageNewLevelForH1);
     let getAjaxResponsePromise = $.ajax(includedPageUrl);
+
     function processingFn(response) {
         let responseHtml = response;
         if (includedPageUrl.endsWith(".md")) {
@@ -258,7 +270,8 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         }
         return processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageUrl);
     }
-    return getAjaxResponsePromise.then(processingFn).then(function(contentElement) {
+
+    return getAjaxResponsePromise.then(processingFn).then(function (contentElement) {
         // console.log(contentElement);
         jsIncludeJqueryElement.html(contentElement);
         // The below did not work - second level includes did not resolve.
@@ -273,11 +286,11 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         } else {
             return jsIncludeJqueryElement;
         }
-    }).catch(function(error){
+    }).catch(function (error) {
         var titleHtml = "";
         var title = "Missing page.";
         if (jsIncludeJqueryElement.attr("includeTitle")) {
-            titleHtml = "<h1 id='" + title + "'>" + title + "</h1>";
+            titleHtml = "<h1 id='" + cleanId(title) + "'>" + title + "</h1>";
         }
         var elementToInclude = titleHtml + `Could not get: <a href='${includedPageUrl}'> ${includedPageUrl}</a> . See debug messages in console for details.`;
         fixIncludedHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
@@ -287,22 +300,23 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
     });
 }
 
-import {updateToc} from "./toc";
 // Process includes of the form:
 // <div class="js_include" url="../xyz/"/>.
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
 export default function handleIncludes() {
     console.log("Entering handleIncludes.");
-    if ($('.js_include').length === 0 ) { return; }
-    return Promise.allSettled($('.js_include').map(function() {
+    if ($('.js_include').length === 0) {
+        return;
+    }
+    return Promise.allSettled($('.js_include').map(function () {
         var jsIncludeJqueryElement = $(this);
         // The actual filling happens in a separate thread!
         return fillJsInclude(jsIncludeJqueryElement, undefined);
     }))
-        .then(function(values) {
+        .then(function (values) {
             console.log("Done including.", values);
             // The below lines do not having any effect if not called without the timeout.
-            setTimeout(function(){
+            setTimeout(function () {
                 main.prepareContentWithoutIncludes();
                 updateToc();
             }, 5000);
