@@ -198,7 +198,7 @@ function getRelativeIncludedPageUrl(jsIncludeJqueryElement) {
 
 function markdownToHtml(markdownCode, includeElement) {
     let metadataSeparator = markdownCode.split("\n")[0].trim();
-    console.log(`metadataSeparator: ${metadataSeparator}`)
+    // console.log(`metadataSeparator: ${metadataSeparator}`)
     let mdContent = markdownCode
     let metadataText = ""
     if (["---", "+++"].includes(metadataSeparator)) {
