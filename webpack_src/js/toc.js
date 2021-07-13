@@ -104,7 +104,7 @@ function setUpNavigationLinks(headers) {
     var navDiv = header.next();
     if (!navDiv.hasClass("section-nav")) {
         navDiv = header.children(".secion-nav").last();
-        console.debug("last child of header", navDiv);
+        // console.debug("last child of header", navDiv);
     }
     if (!navDiv.hasClass("section-nav")) {
         navDiv = $("<div class=\"section-nav row float-right\" style=\"text-align:right;\"></div><br>");

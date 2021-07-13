@@ -152,17 +152,18 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
     let addTitle = jsIncludeJqueryElement.attr("includeTitle") || jsIncludeJqueryElement.attr("title");
-    // console.debug(responseHtml);
-    var titleElements = $(responseHtml, virtualDocument).find("h1");
-    var title = jsIncludeJqueryElement.attr("title") || "";
-    if (titleElements.length > 0) {
+    let virtualDocJq = $(`<div>${responseHtml}</div>`, virtualDocument);
+    console.debug("virtualDocJq", virtualDocJq, responseHtml);
+    var titleElements = virtualDocJq.find("h1");
+    var title = jsIncludeJqueryElement.attr("title");
+    if (!title && titleElements.length > 0) {
         // console.debug(titleElements[0]);
         title = titleElements[0].textContent;
     }
     let post_id = cleanId(includedPageRelativeUrl);
     let content_div_id = `included_content_${post_id}`;
     var contentHtml;
-    var contentElements = $(responseHtml, virtualDocument).find("#post_content");
+    var contentElements = virtualDocJq.find("#post_content");
     let collapseStyle = getCollapseStyle(jsIncludeJqueryElement);
     // console.log($(responseHtml, virtualDocument), contentElements);
     let contentInnerHtml = responseHtml;
@@ -171,9 +172,10 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
         // console.debug(message);
         contentInnerHtml = responseHtml;
     } else {
-        // We don't want multiple post-content divs, hence we replace with an included-post-content div.
+        // We don't want multiple post_content divs, hence we replace with an included-post-content div.
         contentInnerHtml = contentElements[0].innerHTML;
     }
+    console.debug("contentInnerHtml", contentInnerHtml, contentElements);
     contentHtml = `<div class='included-post-content ${collapseStyle}' id="${content_div_id}">${contentInnerHtml}</div>`;
 
 
@@ -212,22 +214,22 @@ function markdownToHtml(markdownCode, includeElement) {
     let metadataSeparator = markdownCode.split("\n")[0].trim();
     // console.log(`metadataSeparator: ${metadataSeparator}`)
     let mdContent = markdownCode
-    let metadataText = ""
+    let metadataText = "";
     if (["---", "+++"].includes(metadataSeparator)) {
-        metadataText = markdownCode.split(metadataSeparator)[1]
+        metadataText = markdownCode.split(metadataSeparator)[1];
         mdContent = markdownCode.split(metadataSeparator).slice(2).join("+++");
     }
 
     let metadata = {"title": ""};
+    // console.debug(metadataText);
+    if (metadataSeparator == "---") {
+        metadata = YAML.parse(metadataText);
+    } else {
+        metadata = toml.parse(metadataText);
+        // console.debug(metadata);
+    }
     let fieldNames = includeElement.attr("fieldNames");
     if (fieldNames !== undefined) {
-        // console.debug(metadataText);
-        if (metadataSeparator == "---") {
-            metadata = YAML.parse(metadataText);
-        } else {
-            metadata = toml.parse(metadataText);
-            console.debug(metadata);
-        }
         let fieldData = fieldNames.split(",").map(fieldName => {
             // console.debug(fieldName, metadata);
             let data = metadata[fieldName];
@@ -239,7 +241,7 @@ function markdownToHtml(markdownCode, includeElement) {
         });
         mdContent = fieldData.join("\n\n") + "\n\n" + mdContent;
     }
-    let responseHtml = `<h1>${metadata["title"]}</h1>${showdownConverter.makeHtml(mdContent)}`;
+    let responseHtml = `<h1>${metadata["title"]}</h1><div id="post_content">${showdownConverter.makeHtml(mdContent)}</div>`;
     return responseHtml;
 }
 
@@ -291,7 +293,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         var titleHtml = "";
         var title = "Missing page.";
         titleHtml = "<h1 id='" + cleanId(title) + "'>" + title + "</h1>";
-        var elementToInclude = `${titleHtml}<p id="post_content">Could not get: <a href='${includedPageUrl}'> ${includedPageUrl}</a> . See debug messages in console for details.</p>`;
+        var elementToInclude = `${titleHtml}<div id="post_content">Could not get: <a href='${includedPageUrl}'> ${includedPageUrl}</a> . See debug messages in console for details.</div>`;
         // elementToInclude = `<html><body>${elementToInclude}</body></html>`;
         elementToInclude = await processAjaxResponseHtml(elementToInclude, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageUrl);
         console.debug(elementToInclude);
