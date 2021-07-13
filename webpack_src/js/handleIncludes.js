@@ -217,9 +217,9 @@ function markdownToHtml(markdownCode, includeElement) {
         mdContent = markdownCode.split(metadataSeparator).slice(2).join("+++");
     }
 
+    let metadata = {"title": "UNK_TITLE"};
     let fieldNames = includeElement.attr("fieldNames");
     if (fieldNames !== undefined) {
-        let metadata;
         // console.debug(metadataText);
         if (metadataSeparator == "---") {
             metadata = YAML.parse(metadataText);
@@ -238,7 +238,7 @@ function markdownToHtml(markdownCode, includeElement) {
         });
         mdContent = fieldData.join("\n\n") + "\n\n" + mdContent;
     }
-    let responseHtml = `${showdownConverter.makeHtml(mdContent)}`;
+    let responseHtml = `<h1>${metadata["title"]}</h1>${showdownConverter.makeHtml(mdContent)}`;
     return responseHtml;
 }
 
