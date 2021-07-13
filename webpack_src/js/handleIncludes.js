@@ -152,6 +152,7 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
     let addTitle = jsIncludeJqueryElement.attr("includeTitle") || jsIncludeJqueryElement.attr("title");
+    // console.debug(responseHtml);
     var titleElements = $(responseHtml, virtualDocument).find("h1");
     var title = jsIncludeJqueryElement.attr("title") || "";
     if (titleElements.length > 0) {
@@ -217,7 +218,7 @@ function markdownToHtml(markdownCode, includeElement) {
         mdContent = markdownCode.split(metadataSeparator).slice(2).join("+++");
     }
 
-    let metadata = {"title": "UNK_TITLE"};
+    let metadata = {"title": ""};
     let fieldNames = includeElement.attr("fieldNames");
     if (fieldNames !== undefined) {
         // console.debug(metadataText);
@@ -225,7 +226,7 @@ function markdownToHtml(markdownCode, includeElement) {
             metadata = YAML.parse(metadataText);
         } else {
             metadata = toml.parse(metadataText);
-            // console.debug(metadata);
+            console.debug(metadata);
         }
         let fieldData = fieldNames.split(",").map(fieldName => {
             // console.debug(fieldName, metadata);
@@ -286,14 +287,15 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         } else {
             return jsIncludeJqueryElement;
         }
-    }).catch(function (error) {
+    }).catch(async function (error) {
         var titleHtml = "";
         var title = "Missing page.";
-        if (jsIncludeJqueryElement.attr("includeTitle")) {
-            titleHtml = "<h1 id='" + cleanId(title) + "'>" + title + "</h1>";
-        }
-        var elementToInclude = titleHtml + `Could not get: <a href='${includedPageUrl}'> ${includedPageUrl}</a> . See debug messages in console for details.`;
-        fixIncludedHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
+        titleHtml = "<h1 id='" + cleanId(title) + "'>" + title + "</h1>";
+        var elementToInclude = `${titleHtml}<p id="post_content">Could not get: <a href='${includedPageUrl}'> ${includedPageUrl}</a> . See debug messages in console for details.</p>`;
+        // elementToInclude = `<html><body>${elementToInclude}</body></html>`;
+        elementToInclude = await processAjaxResponseHtml(elementToInclude, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageUrl);
+        console.debug(elementToInclude);
+        // fixIncludedHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
         jsIncludeJqueryElement.html(elementToInclude);
         console.warn("An error!", error);
         return jsIncludeJqueryElement;
