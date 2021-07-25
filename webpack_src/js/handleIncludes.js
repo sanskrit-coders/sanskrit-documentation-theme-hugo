@@ -222,11 +222,17 @@ function markdownToHtml(markdownCode, includeElement) {
 
     let metadata = {"title": ""};
     // console.debug(metadataText);
-    if (metadataSeparator == "---") {
-        metadata = YAML.parse(metadataText);
-    } else {
-        metadata = toml.parse(metadataText);
-        // console.debug(metadata);
+    try {
+        if (metadataSeparator == "---") {
+            metadata = YAML.parse(metadataText);
+        } else {
+            metadata = toml.parse(metadataText);
+            // console.debug(metadata);
+        }
+    } catch(err) {
+        let message = `Metadata parse error. Check <a href='${includedPageUrl}'>file.</a>`;
+        console.error(message);
+        return message;
     }
     let fieldNames = includeElement.attr("fieldNames");
     if (fieldNames !== undefined) {
