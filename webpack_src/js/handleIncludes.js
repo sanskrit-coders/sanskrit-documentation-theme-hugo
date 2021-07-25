@@ -4,7 +4,7 @@ Code to handle includes. handleIncludes() is the entry point.
 
 import * as main from "./main";
 import * as comments from "./comments";
-import YAML from 'yaml'
+const yaml = require('js-yaml');
 import toml from 'toml';
 
 import urljoin from 'url-join';
@@ -224,7 +224,7 @@ function markdownToHtml(markdownCode, includeElement) {
     // console.debug(metadataText);
     try {
         if (metadataSeparator == "---") {
-            metadata = YAML.parse(metadataText);
+            metadata = yaml.load(metadataText);
         } else {
             metadata = toml.parse(metadataText);
             // console.debug(metadata);
