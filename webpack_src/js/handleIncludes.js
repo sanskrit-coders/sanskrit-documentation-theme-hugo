@@ -230,9 +230,9 @@ function markdownToHtml(markdownCode, includeElement) {
             // console.debug(metadata);
         }
     } catch(err) {
-        let message = `Metadata parse error. Check <a href='${includedPageUrl}'>file.</a>`;
+        let message = `Metadata parse error. Check [file](${includedPageUrl}).`;
         console.error(message);
-        return message;
+        mdContent = `${message}\n\n${mdContent}`;
     }
     let fieldNames = includeElement.attr("fieldNames");
     if (fieldNames !== undefined) {
