@@ -225,7 +225,7 @@ export function insertNavItems(navbarId, items) {
     if (items === undefined) {
         return;
     }
-    // console.debug(items)
+    console.debug(items);
     if (pageVars.topnavId && !$(navbarId).attr("addedCustomItems")) {
         // console.debug(topnavDropdown);
         for (let item of items) {

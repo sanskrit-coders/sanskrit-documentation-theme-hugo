@@ -41,10 +41,10 @@ async function onDocumentReadyTasks() {
   dirTree.setAnchor(document.getElementsByName("previousPage")[0], previousPage, "<" );
 
   if (pageVars.topnavId) {
-    sidebar.insertNavItems("#top-bar-right-custom", sidebarsData[pageVars.topnavId]);
+    sidebar.insertNavItems("#top-bar-right-custom", sidebarsData[pageVars.topnavId].contents);
   }
   if (pageVars.footernavId) {
-    sidebar.insertNavItems("#footer-bar-right-custom", sidebarsData[pageVars.footernavId]);
+    sidebar.insertNavItems("#footer-bar-right-custom", sidebarsData[pageVars.footernavId].contents);
   }
   if (pageVars.unicodeScript) {
     $("#post_content").attr("unicode_script", pageVars.unicodeScript);
