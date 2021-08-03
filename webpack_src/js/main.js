@@ -43,7 +43,7 @@ async function onDocumentReadyTasks() {
   if (pageVars.topnavId && sidebarsData[pageVars.topnavId]) {
     sidebar.insertNavItems("#top-bar-right-custom", sidebarsData[pageVars.topnavId].contents);
   }
-  if (pageVars.footernavId) {
+  if (pageVars.footernavId && sidebarsData[pageVars.footernavId]) {
     sidebar.insertNavItems("#footer-bar-right-custom", sidebarsData[pageVars.footernavId].contents);
   }
   if (pageVars.unicodeScript) {
