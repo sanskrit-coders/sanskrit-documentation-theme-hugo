@@ -40,7 +40,7 @@ async function onDocumentReadyTasks() {
   let previousPage = module_dir_tree.getPreviousPage(pageVars.pageUrlMinusBasePath);
   dirTree.setAnchor(document.getElementsByName("previousPage")[0], previousPage, "<" );
 
-  if (pageVars.topnavId) {
+  if (pageVars.topnavId && sidebarsData[pageVars.topnavId]) {
     sidebar.insertNavItems("#top-bar-right-custom", sidebarsData[pageVars.topnavId].contents);
   }
   if (pageVars.footernavId) {
