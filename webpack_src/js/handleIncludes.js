@@ -153,7 +153,7 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
     let addTitle = jsIncludeJqueryElement.attr("includeTitle") || jsIncludeJqueryElement.attr("title");
     let virtualDocJq = $(`<div>${responseHtml}</div>`, virtualDocument);
-    console.debug("virtualDocJq", virtualDocJq, responseHtml);
+    // console.debug("virtualDocJq", virtualDocJq, responseHtml);
     var titleElements = virtualDocJq.find("h1");
     var title = jsIncludeJqueryElement.attr("title");
     if (!title && titleElements.length > 0) {
@@ -175,7 +175,7 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
         // We don't want multiple post_content divs, hence we replace with an included-post-content div.
         contentInnerHtml = contentElements[0].innerHTML;
     }
-    console.debug("contentInnerHtml", contentInnerHtml, contentElements);
+    // console.debug("contentInnerHtml", contentInnerHtml, contentElements);
     contentHtml = `<div class='included-post-content ${collapseStyle}' id="${content_div_id}">${contentInnerHtml}</div>`;
 
 
