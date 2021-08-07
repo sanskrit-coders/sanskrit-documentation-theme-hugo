@@ -180,9 +180,9 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
 
 
     var editLinkElements = $(responseHtml, virtualDocument).find("#editLink");
+    // console.debug("editLinkElements", editLinkElements);
     var editLinkHtml = "";
     if (editLinkElements.length > 0) {
-        // console.debug(editLinkElements);
         editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
     }
     // console.debug(addTitle, title, cleanId(title));
@@ -208,6 +208,19 @@ function getRelativeIncludedPageUrl(jsIncludeJqueryElement) {
         includedPageUrl = includedPageUrl + "index.html";
     }
     return includedPageUrl;
+}
+
+function getStaticFileEditUrl(includeElement) {
+    var includedPageUrl = includeElement.attr("url");
+    if (siteParams.githubeditmepathbase.includes("github") && includedPageUrl.startsWith("/")) {
+        let editUrlParts = siteParams.githubeditmepathbase.match("(.+?github.com/.+?)/(.+?)");
+        let urlParts = includedPageUrl.match("/(.+?)/(.+)");
+        let repoName = urlParts[1];
+        let filePath = urlParts[2];
+        let editUrl = `${editUrlParts[1]}/${repoName}/edit/static_files/${filePath}`;
+        // console.debug("getStaticFileEditUrl", editUrl);
+        return editUrl;
+    }
 }
 
 function markdownToHtml(markdownCode, includeElement) {
@@ -247,7 +260,13 @@ function markdownToHtml(markdownCode, includeElement) {
         });
         mdContent = fieldData.join("\n\n") + "\n\n" + mdContent;
     }
-    let responseHtml = `<h1>${metadata["title"]}</h1><div id="post_content">${showdownConverter.makeHtml(mdContent)}</div>`;
+    let editUrl = getStaticFileEditUrl(includeElement);
+    let editLinkHtml = "";
+    if (editUrl) {
+        editLinkHtml = `<a id="editLink" href="${editUrl}"></a>`;
+    }
+    let responseHtml = `<header><h1>${metadata["title"]}</h1>${editLinkHtml}</header><div id="post_content">${showdownConverter.makeHtml(mdContent)}</div>`;
+    // console.debug(responseHtml);
     return responseHtml;
 }
 
