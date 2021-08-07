@@ -23,7 +23,7 @@ WARNING NOTE: won't work with say base = "http://google.com" since it does not e
  */
 function absoluteUrl(baseUrl, relative) {
     let baseUrlStr = baseUrl.toString();
-    console.debug(baseUrl, relative);
+    // console.debug(baseUrl, relative);
     // console.trace();
     if (relative.startsWith("http") || relative.startsWith("file") || relative.startsWith("/")) {
         return relative;
@@ -33,7 +33,7 @@ function absoluteUrl(baseUrl, relative) {
     var baseDirStack = baseWithoutIntraPageLink.toString().split("/");
     // console.debug(baseDirStack, urljoin(baseDirStack.join("/"), relative.toString()));
     baseDirStack.pop(); // remove current file name (or empty string)
-    console.debug(baseDirStack, urljoin(baseDirStack.join("/"), relative.toString()));
+    // console.debug(baseDirStack, urljoin(baseDirStack.join("/"), relative.toString()));
     // (omit if "base" is the current folder without trailing slash)
     if (baseDirStack.length === 0) {
         return relative;
@@ -103,7 +103,7 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
                 if(this.name == 'id') return; // Avoid someone (optional)
                 if(this.specified) newHeaderEl.attr(this.name, this.value);
             });
-            console.debug(headerElement, newHeaderEl);
+            // console.debug(headerElement, newHeaderEl);
             return newHeaderEl;
         });
     }
@@ -111,7 +111,7 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
 
     // Fix image urls.
     jqueryElement.find("img").each(function () {
-        console.log(includedPageRelativeUrl, $(this).attr("src"), absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
+        // console.log(includedPageRelativeUrl, $(this).attr("src"), absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
         // console.log($(this).attr("src"))
         $(this).attr("src", absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
         // console.log($(this).attr("src"))
@@ -185,7 +185,7 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
         // console.debug(editLinkElements);
         editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
     }
-    console.debug(addTitle, title, cleanId(title));
+    // console.debug(addTitle, title, cleanId(title));
     var titleHtml = "<div></div>";
     if (addTitle && addTitle != "false") {
         titleHtml = fixIncludedHtml(includedPageRelativeUrl, `<h1 id='${cleanId(title)}'  data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}">${title}</h1>`, includedPageNewLevelForH1);
@@ -302,7 +302,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         var elementToInclude = `${titleHtml}<div id="post_content">Could not get: <a href='${includedPageUrl}'> ${includedPageUrl}</a> . See debug messages in console for details.</div>`;
         // elementToInclude = `<html><body>${elementToInclude}</body></html>`;
         elementToInclude = await processAjaxResponseHtml(elementToInclude, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageUrl);
-        console.debug(elementToInclude);
+        // console.debug(elementToInclude);
         // fixIncludedHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
         jsIncludeJqueryElement.html(elementToInclude);
         console.warn("An error!", error);
