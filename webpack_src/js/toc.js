@@ -16,7 +16,7 @@ export function updateToc(options) {
     console.log(`Table of contents for ${document.location}`)
     // console.debug(settings);
     var headers = $(settings.headers);
-    // console.debug(headers.length);
+    console.debug("headers.length", headers.length);
     if (headers.length < settings.minimumHeaders) {
       console.log(`Too few headers ${headers.length} < ${settings.minimumHeaders}. Returning.`);
       $("#toc_card").hide();
@@ -59,7 +59,7 @@ export function updateToc(options) {
               html += `<li class="${liClass}">`;
           }
         }
-        console.debug("header is ", header);
+        // console.debug("header is ", header);
         html += `<a href='#${header.id}'>${header.innerText}</a>`;
       }
       level = this_level; // update for the next one
@@ -67,6 +67,7 @@ export function updateToc(options) {
     html += "</ul>";
     setUpNavigationLinks(headers);
     $("#toc_ul").html(html);
+    $("#toc_card").show();
     // console.log($("#toc_ul"));
     // resetNavgocoMenu();
     // Finally, set up navgoco options.
