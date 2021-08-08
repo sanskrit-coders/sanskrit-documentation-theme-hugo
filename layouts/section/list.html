@@ -22,7 +22,7 @@
             {{partial "article-params-card" .}}
             <!--This conditional ordering must be done more elegantly. Conditionally (re)assigning $pages within the if condition does not work.-->
             {{if eq .Params.order "reverseDate"}}
-            {{ $pages := .Pages.ByDate.Reverse }}
+            {{ $pages := .Pages.ByLastmod.Reverse }}
             {{ range $pages}}
             {{partial "article-params-card" .}}
             {{ end }}
