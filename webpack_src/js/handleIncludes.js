@@ -5,13 +5,14 @@ Code to handle includes. handleIncludes() is the entry point.
 import * as main from "./main";
 import * as comments from "./comments";
 const yaml = require('js-yaml');
+const footnotes = require('showdown-ghost-footnotes');
 import toml from 'toml';
 
 import urljoin from 'url-join';
 import showdown from "showdown";
 import {updateToc} from "./toc";
 
-var showdownConverter = new showdown.Converter();
+var showdownConverter = new showdown.Converter({ extensions: [footnotes] });
 
 function cleanId(x) {
     return x.replace(/[\p{P}\p{S}\s]+/gu, "_");
