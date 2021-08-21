@@ -147,12 +147,20 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
 - It fixes urls of images, links and includes to be relative to the includedPageUrl (which is inturn relative to the current page url), so that they work as expected when included in the given page.
 */
 
+async function fixFootnotes(responseHtml, post_id) {
+    responseHtml = responseHtml.replace(/("#?fnref-\d+)/, "$1-" + post_id);
+    responseHtml = responseHtml.replace(/("#?fn-\d+)/, "$1-" + post_id);
+    return responseHtml;
+}
+
 // An async function returns results wrapped in Promise objects.
 async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageRelativeUrl) {
     // We want to use jquery to parse html, but without loading images. Hence this.
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
     let addTitle = jsIncludeJqueryElement.attr("includeTitle") || jsIncludeJqueryElement.attr("title");
+    let post_id = cleanId(includedPageRelativeUrl);
+    responseHtml = fixFootnotes(responseHtml, post_id)
     let virtualDocJq = $(`<div>${responseHtml}</div>`, virtualDocument);
     // console.debug("virtualDocJq", virtualDocJq, responseHtml);
     var titleElements = virtualDocJq.find("h1");
@@ -161,7 +169,6 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
         // console.debug(titleElements[0]);
         title = titleElements[0].textContent;
     }
-    let post_id = cleanId(includedPageRelativeUrl);
     let content_div_id = `included_content_${post_id}`;
     var contentHtml;
     var contentElements = virtualDocJq.find("#post_content");
