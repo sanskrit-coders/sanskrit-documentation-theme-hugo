@@ -15,6 +15,10 @@ import {updateToc} from "./toc";
 var showdownConverter = new showdown.Converter({ extensions: [footnotes] });
 
 function cleanId(x) {
+    if(x === undefined) {
+        return "";
+    }
+    // console.debug(x);
     return x.replace(/[\p{P}\p{S}\s]+/gu, "_");
 }
 
@@ -147,7 +151,7 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
 - It fixes urls of images, links and includes to be relative to the includedPageUrl (which is inturn relative to the current page url), so that they work as expected when included in the given page.
 */
 
-async function fixFootnotes(responseHtml, post_id) {
+function fixFootnotes(responseHtml, post_id) {
     responseHtml = responseHtml.replace(/("#?fnref-\d+)/, "$1-" + post_id);
     responseHtml = responseHtml.replace(/("#?fn-\d+)/, "$1-" + post_id);
     return responseHtml;
@@ -159,14 +163,15 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
     let addTitle = jsIncludeJqueryElement.attr("includeTitle") || jsIncludeJqueryElement.attr("title");
+    // console.debug("processAjaxResponseHtml inputs", responseHtml, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageRelativeUrl);
     let post_id = cleanId(includedPageRelativeUrl);
     responseHtml = fixFootnotes(responseHtml, post_id)
     let virtualDocJq = $(`<div>${responseHtml}</div>`, virtualDocument);
     // console.debug("virtualDocJq", virtualDocJq, responseHtml);
     var titleElements = virtualDocJq.find("h1");
     var title = jsIncludeJqueryElement.attr("title");
+    // console.debug("title: " + title, titleElements[0]);
     if (!title && titleElements.length > 0) {
-        // console.debug(titleElements[0]);
         title = titleElements[0].textContent;
     }
     let content_div_id = `included_content_${post_id}`;
@@ -193,7 +198,7 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
     if (editLinkElements.length > 0) {
         editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
     }
-    // console.debug(addTitle, title, cleanId(title));
+    // console.debug(addTitle, title, cleanId(title), includedPageRelativeUrl);
     var titleHtml = "<div></div>";
     if (addTitle && addTitle != "false") {
         titleHtml = fixIncludedHtml(includedPageRelativeUrl, `<h1 id='${cleanId(title)}'  data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}">${title}</h1>`, includedPageNewLevelForH1);
@@ -304,6 +309,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         if (includedPageUrl.endsWith(".md")) {
             responseHtml = markdownToHtml(response, jsIncludeJqueryElement);
         }
+        // console.debug("responseHtml", responseHtml);
         return processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageUrl);
     }
 
