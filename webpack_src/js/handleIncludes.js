@@ -4,18 +4,19 @@ Code to handle includes. handleIncludes() is the entry point.
 
 import * as main from "./main";
 import * as comments from "./comments";
-const yaml = require('js-yaml');
-const footnotes = require('showdown-ghost-footnotes');
 import toml from 'toml';
 
 import urljoin from 'url-join';
 import showdown from "showdown";
 import {updateToc} from "./toc";
 
-var showdownConverter = new showdown.Converter({ extensions: [footnotes] });
+const yaml = require('js-yaml');
+const footnotes = require('showdown-ghost-footnotes');
+
+var showdownConverter = new showdown.Converter({extensions: [footnotes]});
 
 function cleanId(x) {
-    if(x === undefined) {
+    if (x === undefined) {
         return "";
     }
     // console.debug(x);
@@ -57,38 +58,20 @@ function getCollapseStyle(jsIncludeJqueryElement) {
     return collapseStyle;
 }
 
-// WHen you include html from one page within another, you need to fix image urls, anchor urls etc..
-function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
-    // We want to use jquery to parse html, but without loading images. Hence this.
-    // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
-    var virtualDocument = document.implementation.createHTMLDocument('virtual');
-    // The surrounding divs are eliminated when the jqueryElement is created.
-    var jqueryElement = $(comments.setInlineComments(`<div>${html}</div>`), virtualDocument);
-
-    // console.debug(jqueryElement.html());
-    // Remove some tags.
-    jqueryElement.find("script").remove();
-    jqueryElement.find("footer").remove();
-    jqueryElement.find("#disqus_thread").remove();
-    jqueryElement.find("#toc").remove();
-    jqueryElement.find("#toc_header").remove();
-    jqueryElement.find(".back-to-top").remove();
-
+function relativizeIncludeElements(jqueryElement, includedPageRelativeUrl, newLevelForH1) {
     jqueryElement.find('.js_include').each(function () {
         $(this).attr("url", absoluteUrl(includedPageRelativeUrl, $(this).attr("url")));
-        if (newLevelForH1 < 1) {
-            console.error("Ignoring invalid newLevelForH1: %d, using 6", newLevelForH1);
-            newLevelForH1 = 6;
+        var includedPageH1Level = parseInt($(this).attr("newLevelForH1"));
+        if (includedPageH1Level === undefined) {
+            includedPageH1Level = 6;
         }
-        var includedPageNewLevelForH2 = parseInt($(this).attr("newLevelForH1"));
-        if (includedPageNewLevelForH2 === undefined) {
-            includedPageNewLevelForH2 = 6;
-        }
-        includedPageNewLevelForH2 = Math.min(6, ((includedPageNewLevelForH2 - 2) + newLevelForH1));
-        $(this).attr("newLevelForH1", includedPageNewLevelForH2);
+        includedPageH1Level = Math.min(6, ((includedPageH1Level - 1) + newLevelForH1));
+        $(this).attr("newLevelForH1", includedPageH1Level);
+        // console.debug("Fixed include for %s with attributes:", includedPageRelativeUrl, $(this)[0].attributes);
     });
+}
 
-
+function relativizeHeaderElements(jqueryElement, includedPageRelativeUrl, newLevelForH1) {
     /*
     Fix headers in the included html so as to not mess up the table of contents
     of the including page.
@@ -104,24 +87,17 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
             var hLevelNew = Math.min(6, newLevelForH1 - 1 + hLevel);
             var newId = id_prefix + "_" + cleanId(headerElement[0].id);
             let newHeaderEl = $("<h" + hLevelNew + " id='" + newId + "'/>").append(headerElement.contents());
-            $.each(this.attributes, function() {
-                if(this.name == 'id') return; // Avoid someone (optional)
-                if(this.specified) newHeaderEl.attr(this.name, this.value);
+            $.each(this.attributes, function () {
+                if (this.name == 'id') return; // Avoid someone (optional)
+                if (this.specified) newHeaderEl.attr(this.name, this.value);
             });
             // console.debug(headerElement, newHeaderEl);
             return newHeaderEl;
         });
     }
+}
 
-
-    // Fix image urls.
-    jqueryElement.find("img").each(function () {
-        // console.log(includedPageRelativeUrl, $(this).attr("src"), absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
-        // console.log($(this).attr("src"))
-        $(this).attr("src", absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
-        // console.log($(this).attr("src"))
-    });
-
+function relativizeLinks(jqueryElement, includedPageRelativeUrl) {
     // Fix links.
     jqueryElement.find("a").each(function () {
         // console.debug($(this).html());
@@ -142,6 +118,55 @@ function fixIncludedHtml(includedPageRelativeUrl, html, newLevelForH1) {
             $(this).attr("href", absoluteUrl(includedPageRelativeUrl, href));
         }
     });
+}
+
+function removeNeedlessElements(jqueryElement) {
+    // Remove some tags.
+    jqueryElement.find("script").remove();
+    jqueryElement.find("footer").remove();
+    jqueryElement.find("#disqus_thread").remove();
+    jqueryElement.find("#toc").remove();
+    jqueryElement.find("#toc_header").remove();
+    jqueryElement.find(".back-to-top").remove();
+}
+
+/** When you include html from one page within another, you need to fix image urls, anchor urls etc..
+ * 
+ * @param includedPageRelativeUrl
+ * @param html
+ * @param newLevelForH1
+ * @returns {*}
+ */
+function relativizeHtml(includedPageRelativeUrl, html, newLevelForH1) {
+    let post_id = cleanId(includedPageRelativeUrl);
+    html = fixFootnotes(html, post_id)
+
+    // We want to use jquery to parse html, but without loading images. Hence this.
+    // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
+    var virtualDocument = document.implementation.createHTMLDocument('virtual');
+    // The surrounding divs are eliminated when the jqueryElement is created.
+    var jqueryElement = $(comments.setInlineComments(`<div>${html}</div>`), virtualDocument);
+
+    // console.debug(jqueryElement.html());
+    removeNeedlessElements(jqueryElement);
+
+    if (newLevelForH1 === undefined || newLevelForH1 < 1 || newLevelForH1 > 6) {
+        console.error("Ignoring invalid newLevelForH1: %d, using 6", newLevelForH1);
+        newLevelForH1 = 6;
+    }
+    // Fix js_includes
+    relativizeIncludeElements(jqueryElement, includedPageRelativeUrl, newLevelForH1);
+    relativizeHeaderElements(jqueryElement, includedPageRelativeUrl, newLevelForH1);
+
+
+    // Fix image urls.
+    jqueryElement.find("img").each(function () {
+        // console.log(includedPageRelativeUrl, $(this).attr("src"), absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
+        // console.log($(this).attr("src"))
+        $(this).attr("src", absoluteUrl(includedPageRelativeUrl, $(this).attr("src")));
+        // console.log($(this).attr("src"))
+    });
+    relativizeLinks(jqueryElement, includedPageRelativeUrl);
 
     return jqueryElement.html();
 }
@@ -158,14 +183,17 @@ function fixFootnotes(responseHtml, post_id) {
 }
 
 // An async function returns results wrapped in Promise objects.
-async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageRelativeUrl) {
+async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement) {
     // We want to use jquery to parse html, but without loading images. Hence this.
     // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
+    let includedPageNewLevelForH1 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
+    let includedPageRelativeUrl = getRelativeIncludedPageUrl(jsIncludeJqueryElement);
     var virtualDocument = document.implementation.createHTMLDocument('virtual');
+
+    // Setup title
     let addTitle = jsIncludeJqueryElement.attr("includeTitle") || jsIncludeJqueryElement.attr("title");
     // console.debug("processAjaxResponseHtml inputs", responseHtml, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageRelativeUrl);
     let post_id = cleanId(includedPageRelativeUrl);
-    responseHtml = fixFootnotes(responseHtml, post_id)
     let virtualDocJq = $(`<div>${responseHtml}</div>`, virtualDocument);
     // console.debug("virtualDocJq", virtualDocJq, responseHtml);
     var titleElements = virtualDocJq.find("h1");
@@ -174,8 +202,10 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
     if (!title && titleElements.length > 0) {
         title = titleElements[0].textContent;
     }
-    let content_div_id = `included_content_${post_id}`;
+
+    // Setup content
     var contentHtml;
+    let content_div_id = `included_content_${post_id}`;
     var contentElements = virtualDocJq.find("#post_content");
     let collapseStyle = getCollapseStyle(jsIncludeJqueryElement);
     // console.log($(responseHtml, virtualDocument), contentElements);
@@ -192,6 +222,7 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
     contentHtml = `<div class='included-post-content ${collapseStyle}' id="${content_div_id}">${contentInnerHtml}</div>`;
 
 
+    // Setup edit link
     var editLinkElements = $(responseHtml, virtualDocument).find("#editLink");
     // console.debug("editLinkElements", editLinkElements);
     var editLinkHtml = "";
@@ -201,13 +232,13 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, inc
     // console.debug(addTitle, title, cleanId(title), includedPageRelativeUrl);
     var titleHtml = "<div></div>";
     if (addTitle && addTitle != "false") {
-        titleHtml = fixIncludedHtml(includedPageRelativeUrl, `<h1 id='${cleanId(title)}'  data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}">${title}</h1>`, includedPageNewLevelForH1);
+        titleHtml = relativizeHtml(includedPageRelativeUrl, `<h1 id='${cleanId(title)}'  data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}">${title}</h1>`, includedPageNewLevelForH1);
     }
     var collapseLink = `<a id="collapser_${post_id}" class="btn" data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}"><i class="fas fa-caret-down"></i></a>`;
     let popoutLink = `<a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>`
     var titleRowHtml = `<div class='border d-flex justify-content-between' id="included_title_${post_id}">${titleHtml}<div class="section-nav row">${collapseLink}${popoutLink}${editLinkHtml}</div></div>`;
     var elementToInclude = $(`<div class='included-post border' id=\"included_post_${post_id}\"></div>`);
-    elementToInclude.html(titleRowHtml + fixIncludedHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));
+    elementToInclude.html(titleRowHtml + relativizeHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));
     return elementToInclude;
 }
 
@@ -255,7 +286,7 @@ function markdownToHtml(markdownCode, includeElement) {
             metadata = toml.parse(metadataText);
             // console.debug(metadata);
         }
-    } catch(err) {
+    } catch (err) {
         let message = `Metadata parse error. Check [file](${includedPageUrl}).`;
         console.error(message);
         mdContent = `${message}\n\n${mdContent}`;
@@ -283,25 +314,23 @@ function markdownToHtml(markdownCode, includeElement) {
     return responseHtml;
 }
 
-async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) {
+/**
+ * 
+ * @param jsIncludeJqueryElement
+ * @returns {Promise<string|*>}
+ */
+async function fillJsInclude(jsIncludeJqueryElement) {
     if (jsIncludeJqueryElement.html().trim() !== "") {
         console.warn("Refusing to refill element with non-empty html - ", jsIncludeJqueryElement);
         return "Already loaded";
     }
-    console.info("Inserting include for ", jsIncludeJqueryElement);
 
     let includedPageUrl = getRelativeIncludedPageUrl(jsIncludeJqueryElement);
     if (includedPageUrl == "") {
         console.error("Invalid url!", jsIncludeJqueryElement);
         return "Invalid url!"
     }
-    if (includedPageNewLevelForH1 === undefined) {
-        includedPageNewLevelForH1 = parseInt(jsIncludeJqueryElement.attr("newLevelForH1"));
-    }
-    if (includedPageNewLevelForH1 === undefined) {
-        includedPageNewLevelForH1 = 6;
-    }
-    // console.debug(includedPageNewLevelForH1);
+    console.info("Inserting include for %s with attributes:", includedPageUrl, jsIncludeJqueryElement[0].attributes);
     let getAjaxResponsePromise = $.ajax(includedPageUrl);
 
     function processingFn(response) {
@@ -310,7 +339,7 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
             responseHtml = markdownToHtml(response, jsIncludeJqueryElement);
         }
         // console.debug("responseHtml", responseHtml);
-        return processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageUrl);
+        return processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement);
     }
 
     return getAjaxResponsePromise.then(processingFn).then(function (contentElement) {
@@ -334,9 +363,9 @@ async function fillJsInclude(jsIncludeJqueryElement, includedPageNewLevelForH1) 
         titleHtml = "<h1 id='" + cleanId(title) + "'>" + title + "</h1>";
         var elementToInclude = `${titleHtml}<div id="post_content">Could not get: <a href='${includedPageUrl}'> ${includedPageUrl}</a> . See debug messages in console for details.</div>`;
         // elementToInclude = `<html><body>${elementToInclude}</body></html>`;
-        elementToInclude = await processAjaxResponseHtml(elementToInclude, jsIncludeJqueryElement, includedPageNewLevelForH1, includedPageUrl);
+        elementToInclude = await processAjaxResponseHtml(elementToInclude, jsIncludeJqueryElement);
         // console.debug(elementToInclude);
-        // fixIncludedHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
+        // relativizeHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
         jsIncludeJqueryElement.html(elementToInclude);
         console.warn("An error!", error);
         return jsIncludeJqueryElement;
@@ -354,7 +383,7 @@ export default function handleIncludes() {
     return Promise.allSettled($('.js_include').map(function () {
         var jsIncludeJqueryElement = $(this);
         // The actual filling happens in a separate thread!
-        return fillJsInclude(jsIncludeJqueryElement, undefined);
+        return fillJsInclude(jsIncludeJqueryElement);
     }))
         .then(function (values) {
             console.log("Done including.", values);
