@@ -18,6 +18,10 @@ export async function populateTree() {
             // console.debug(pageParams);
             pageParams["absUrl"] = baseURL + pageParams["relUrl"];
             addRelUrlToTree(pageParams["relUrl"], pageParams);
+            // if (pageParams["relUrl"].includes("piba-somam-mahAvairAjam")) {
+            //     console.debug(getChildTree(pageParams["relUrl"]));
+            // }
+            
         }
     });
 
@@ -27,7 +31,9 @@ export function getChildTree(relativeUrl) {
     var parts = relativeUrl.split("/").filter(x => x.length > 0);
     var cursor = pageRelUrlTree;
     parts.forEach(function(part){
-        if(!cursor[part]) cursor[part] = {};
+        if(!cursor[part]) {
+            cursor[part] = {};
+        }
         cursor = cursor[part];
     });
     return cursor;
@@ -104,16 +110,27 @@ function getNextPageFromTreePosition(tree, relUrl) {
     }
 }
 
+function getParentTree(relUrl) {
+    let parentDirPath = getParentDirPath(relUrl);
+    let tree = getChildTree(parentDirPath);
+    // The below is possible in case of test pages in directories without _index.md
+    while(tree[pageRelUrlTreeMETAkey] == undefined) {
+        parentDirPath = getParentDirPath(parentDirPath);
+        tree = getChildTree(parentDirPath);
+    }
+    return tree;
+}
+
 export function getNextPage(relUrl, startUrl) {
     var tree = getChildTree(relUrl);
-    // console.debug(relUrl, tree);
+    // console.debug(relUrl, startUrl, tree);
     if (getPageKeys(tree).length == 0) {
         let parentPath = getParentDirPath(relUrl);
         if (parentPath == relUrl) {
             console.log("No next page found!");
             return "";
         }
-        tree = getChildTree(parentPath);
+        tree = getParentTree(relUrl);
         return getNextPageFromTreePosition(tree, relUrl);
     } else {
         console.debug("We'll get a child page");
@@ -136,8 +153,8 @@ export function getLastPage(tree) {
 }
 
 export function getPreviousPage(relUrl) {
-    const tree = getChildTree(getParentDirPath(relUrl));
-    // console.debug(relUrl, tree);
+    let tree = getParentTree(relUrl);
+    // console.debug(relUrl, getParentDirPath(relUrl), tree);
     if (relUrl == "/") {
         return tree;
     }
@@ -160,6 +177,10 @@ export function getPreviousPage(relUrl) {
 
 export function setAnchor(element, tree, textPrefix="", maxLength = 10) {
     if (tree == "") {
+        return;
+    }
+    if (tree[pageRelUrlTreeMETAkey] == undefined) {
+        console.warn("Something is weird: cannot find %s in tree (eg. a directory without an _index.md)", pageRelUrlTreeMETAkey, tree);
         return;
     }
     element.setAttribute("href", tree[pageRelUrlTreeMETAkey].absUrl);
