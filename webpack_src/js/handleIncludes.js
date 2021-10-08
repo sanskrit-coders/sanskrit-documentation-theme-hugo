@@ -13,7 +13,7 @@ import {updateToc} from "./toc";
 const yaml = require('js-yaml');
 const footnotes = require('showdown-ghost-footnotes');
 
-var showdownConverter = new showdown.Converter({extensions: [footnotes]});
+var showdownConverter = new showdown.Converter({strikethrough: true, simplifiedAutoLink: true, extensions: [footnotes]});
 
 function cleanId(x) {
     if (x === undefined) {
