@@ -2,13 +2,13 @@
 Put this file in /layouts/shortcodes/gallery.html
 Originally from at https://github.com/liwenyip/hugo-easy-gallery/ , later modified.
 
-{{/*Usage: {{< gallery dir="naxatram/images/" figureClass="thumbnail">}} or {{< gallery dir="." figureClass="thumbnail">}} */}}}
+{{/*Usage: {{< gallery dir="naxatram/images/" figureClass="thumbnail" caption-effect="slide">}} or {{< gallery dir="." figureClass="thumbnail">}} */}}}
 -->
 <!-- count how many times we've called this shortcode; load the css if it's the first time -->
 {{- if not ($.Page.Scratch.Get "figurecount") }} <link rel="stylesheet" href="{{ relURL "css/hugo-easy-gallery.css" }}"/>{{ end }}
 {{- $.Page.Scratch.Add "figurecount" 1 }}
 {{ $baseURL := .Site.BaseURL }}
-<div class="gallery caption-position-{{ with .Get "caption-position" | default "bottom" }}{{.}}{{end}} caption-effect-{{ with .Get "caption-effect" | default "slide" }}{{.}}{{end}} hover-effect-{{ with .Get "hover-effect" | default "zoom" }}{{.}}{{end}} {{ if ne (.Get "hover-transition") "none" }}hover-transition{{end}}" itemscope itemtype="http://schema.org/ImageGallery">
+<div class="gallery caption-position-{{ with .Get "caption-position" | default "bottom" }}{{.}}{{end}} caption-effect-{{ with .Get "caption-effect" | default "none" }}{{.}}{{end}} hover-effect-{{ with .Get "hover-effect" | default "zoom" }}{{.}}{{end}} {{ if ne (.Get "hover-transition") "none" }}hover-transition{{end}}" itemscope itemtype="http://schema.org/ImageGallery">
 
 {{- $figureClass := $.Get "figureClass" | default "" }}
 
