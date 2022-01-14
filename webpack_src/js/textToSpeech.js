@@ -11,7 +11,7 @@ var speed = 1.0;
 
 
 
-var context = new AudioContext({sampleRate: 48000, latencyHint: "playback"});
+var context;
 
 var node;
 
@@ -20,7 +20,7 @@ export async function setup() {
     const audioWorkletUrl = new URL(non_webpack_js_base + "suvakworker.js");
     console.log(audioWorkletUrl.href);
     console.log('suvak2.js -> ' + location.href);
-
+    context = new AudioContext({sampleRate: 48000, latencyHint: "playback"});
     await context.audioWorklet.addModule(audioWorkletUrl);
 }
 
@@ -39,6 +39,7 @@ export function handleSpeakToggle() {
 }
 
 export async function speak(text) {
+    await context.resume();
     node = new AudioWorkletNode(context, 'suvak-processor');
     node.port.onmessage = (event) => {
         console.log('Message from audio processor received')
@@ -51,10 +52,11 @@ export async function speak(text) {
         udaattaadAnudaattasyaSvaritah, speed]);
 }
 
-export function speakAll() {
+export async function speakAll() {
     ttsOn = true;
     // speak("ब्रह्मा रुद्रः कुमारो हरिवरुणयमा वह्निरिन्द्रः");
     // return;
+    await setup();
     let transliterationSource = pageVars.unicodeScript || "devanagari";
     var textNodes = utils.textNodesUnder(document.getElementsByTagName("main")[0]);
     console.debug(textNodes);

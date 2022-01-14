@@ -55,7 +55,6 @@ async function onDocumentReadyTasks() {
   // Update table of contents (To be called whenever page contents are updated).
   updateToc();
   setupDisqus();
-  textToSpeech.setup();
 }
 
 // So that these can be used like module_main.default.redirectToPage(..).
