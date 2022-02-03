@@ -5,7 +5,28 @@ import 'tachyons/css/tachyons.min.css';
 // The below don't yield equally good results, so omitting.
 // import '@fortawesome/fontawesome-free/js/fontawesome';
 // import '@fortawesome/fontawesome-free/js/solid';
-
 // import "../css/fonts.css";
 import "../css/treeview.css";
 import "../css/class_styles.scss";
+
+import * as query from "./query";
+
+
+export function replaceWithQueryParam(queryFieldName, regexPattern){
+    let userId = module_ui_lib.default.getQueryVariable(queryFieldName);
+    if (userId) {
+        console.log(userId);
+        document.body.innerHTML = document.body.innerHTML.replace(regexPattern, userId);
+        let inputField = document.getElementById(`input_${queryFieldName}`);
+        if (inputField) {
+            inputField.value = userId;
+        }
+    }
+}
+
+// So that these can be used like module_ui_lib.default.getQueryVariable(..).
+export default {
+    getQueryVariable: query.getQueryVariable,
+    insertQueryParam: query.insertQueryParam,
+    replaceWithQueryParam
+}
