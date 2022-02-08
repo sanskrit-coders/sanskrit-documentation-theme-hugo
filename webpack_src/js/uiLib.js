@@ -46,10 +46,23 @@ export function setPrintLayoutFromQuery() {
 
 }
 
-
 export function updatePrintLayout() {
   let printButton = document.getElementById("printButton");
   query.insertQueryParam("printLayout", "on");
+}
+
+export function expandAllDetails() {
+  let expandAll = query.getQueryVariable("expandAll") || "false";
+  if(expandAll != "true") {
+    return;
+  }
+  document.getElementsByTagName("details").forEach(function (e) {
+    if (e.hasAttribute("open")) {
+      e.setAttribute("preOpened", "true");
+    } else {
+      e.setAttribute("open", "true");
+    }
+  });
 }
 
 // So that these can be used like module_ui_lib.default.getQueryVariable(..).

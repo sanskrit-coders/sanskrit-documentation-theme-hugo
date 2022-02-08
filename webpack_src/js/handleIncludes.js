@@ -9,11 +9,15 @@ import toml from 'toml';
 import urljoin from 'url-join';
 import showdown from "showdown";
 import {updateToc} from "./toc";
+import * as query from "./query";
 
 const yaml = require('js-yaml');
 const footnotes = require('showdown-ghost-footnotes');
 
 var showdownConverter = new showdown.Converter({strikethrough: true, simplifiedAutoLink: true, extensions: [footnotes]});
+
+let expandAll = query.getQueryVariable("expandAll") || "false";
+
 
 function cleanId(x) {
     if (x === undefined) {
@@ -49,8 +53,11 @@ function absoluteUrl(baseUrl, relative) {
 
 
 function getCollapseStyle(jsIncludeJqueryElement) {
-    var isCollapsed = jsIncludeJqueryElement.hasClass("collapsed");
     var collapseStyle = "collapse show";
+    if (expandAll) {
+        return collapseStyle;
+    }
+    var isCollapsed = jsIncludeJqueryElement.hasClass("collapsed");
     // console.debug(isCollapsed);
     if (isCollapsed) {
         collapseStyle = "collapse";

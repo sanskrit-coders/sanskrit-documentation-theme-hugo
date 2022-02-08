@@ -57,6 +57,7 @@ async function onDocumentReadyTasks() {
   // Update table of contents (To be called whenever page contents are updated).
   updateToc();
   setupDisqus();
+  uiLib.expandAllDetails();
   uiLib.setPrintLayoutFromQuery();
 }
 
