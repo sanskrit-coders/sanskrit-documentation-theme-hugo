@@ -46,11 +46,6 @@ export function setPrintLayoutFromQuery() {
 
 }
 
-export function updatePrintLayout() {
-  let printButton = document.getElementById("printButton");
-  query.insertQueryParam("printLayout", "on");
-}
-
 export function expandAllDetails() {
   let expandAll = query.getQueryVariable("expandAll") || "false";
   if(expandAll != "true") {

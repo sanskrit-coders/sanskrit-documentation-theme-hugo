@@ -11,7 +11,7 @@ import * as spreadsheets from "./spreadsheets";
 import {redirectToPage, redirectToRandomPage} from "./redirect";
 import * as dirTree from "./dirTree";
 import * as uiLib from "./uiLib";
-import {setPrintLayoutFromQuery} from "./uiLib";
+import * as query from "./query";
 
 export function relUrlOfCurrentPage() {
   return document.location.href.split("#")[0].replace(baseURL, "/");
@@ -69,6 +69,7 @@ export default {
   addRelUrlToTree: dirTree.addRelUrlToTree,
   sidebarToggleHandler: sidebar.sidebarToggleHandler,
   updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown,
-  handleSpeakToggle: textToSpeech.handleSpeakToggle
+  handleSpeakToggle: textToSpeech.handleSpeakToggle,
+  insertQueryParam: query.insertQueryParam,
 }
 
