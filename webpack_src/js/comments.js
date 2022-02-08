@@ -2,7 +2,7 @@ import * as query from "./query";
 
 export function setInlineComments(htmlIn) {
     let commentStyle = query.getQueryVariable("comment_style") || "on";
-    let commentStyleDropdown = document.getElementsByName("commentStyleDropdown")[0];
+    let commentStyleDropdown = document.getElementById("commentStyleDropdown");
     commentStyleDropdown.value = commentStyle;
     if (commentStyle === "hidden") {
         // console.debug(htmlIn);
@@ -17,7 +17,7 @@ export function setInlineComments(htmlIn) {
 }
 
 export function updateCommentStyleFromDropdown() {
-    let commentStyleDropdown = document.getElementsByName("commentStyleDropdown")[0];
+    let commentStyleDropdown = document.getElementById("commentStyleDropdown");
     var commentStyle = commentStyleDropdown.options[commentStyleDropdown.selectedIndex].value;
     query.insertQueryParam("comment_style", commentStyle);
 }

@@ -10,6 +10,8 @@ import * as comments from "./comments";
 import * as spreadsheets from "./spreadsheets";
 import {redirectToPage, redirectToRandomPage} from "./redirect";
 import * as dirTree from "./dirTree";
+import * as uiLib from "./uiLib";
+import {setPrintLayoutFromQuery} from "./uiLib";
 
 export function relUrlOfCurrentPage() {
   return document.location.href.split("#")[0].replace(baseURL, "/");
@@ -36,9 +38,9 @@ async function onDocumentReadyTasks() {
   sidebar.setupSidebarToggle();
   search.setupTitleSearch();
   let nextPage = module_dir_tree.getNextPage(pageVars.pageUrlMinusBasePath);
-  dirTree.setAnchor(document.getElementsByName("nextPage")[0], nextPage, ">" );
+  dirTree.setAnchor(document.getElementById("nextPage"), nextPage, ">" );
   let previousPage = module_dir_tree.getPreviousPage(pageVars.pageUrlMinusBasePath);
-  dirTree.setAnchor(document.getElementsByName("previousPage")[0], previousPage, "<" );
+  dirTree.setAnchor(document.getElementById("previousPage"), previousPage, "<" );
 
   if (pageVars.topnavId && sidebarsData[pageVars.topnavId]) {
     sidebar.insertNavItems("#top-bar-right-custom", sidebarsData[pageVars.topnavId]);
@@ -55,6 +57,7 @@ async function onDocumentReadyTasks() {
   // Update table of contents (To be called whenever page contents are updated).
   updateToc();
   setupDisqus();
+  uiLib.setPrintLayoutFromQuery();
 }
 
 // So that these can be used like module_main.default.redirectToPage(..).

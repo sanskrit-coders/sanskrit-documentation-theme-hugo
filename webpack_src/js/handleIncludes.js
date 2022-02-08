@@ -227,7 +227,7 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement) {
     // console.debug("editLinkElements", editLinkElements);
     var editLinkHtml = "";
     if (editLinkElements.length > 0) {
-        editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
+        editLinkHtml = `<a class="btn btn-secondary noPrint" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
     }
     // console.debug(addTitle, title, cleanId(title), includedPageRelativeUrl);
     var titleHtml = "<div></div>";
@@ -235,7 +235,7 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement) {
         titleHtml = relativizeHtml(includedPageRelativeUrl, `<h1 id='${cleanId(title)}'  data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}">${title}</h1>`, includedPageNewLevelForH1);
     }
     var collapseLink = `<a id="collapser_${post_id}" class="btn" data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}"><i class="fas fa-caret-down"></i></a>`;
-    let popoutLink = `<a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>`
+    let popoutLink = `<a class='btn btn-secondary noPrint' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>`
     var titleRowHtml = `<div class='border d-flex justify-content-between' id="included_title_${post_id}">${titleHtml}<div class="section-nav row">${collapseLink}${popoutLink}${editLinkHtml}</div></div>`;
     var elementToInclude = $(`<div class='included-post border' id=\"included_post_${post_id}\"></div>`);
     elementToInclude.html(titleRowHtml + relativizeHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));

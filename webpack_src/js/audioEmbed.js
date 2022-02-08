@@ -58,7 +58,7 @@ export function fillAudioEmbeds() {
             audios[currentAudioIndex + 1].play();
             audios[currentAudioIndex + 1].focus();
         } else {
-            let nextPageLinks = document.getElementsByName("nextPage");
+            let nextPageLinks = document.getElementById("nextPage");
             if (nextPageLinks.length > 0) {
                 nextPageLinks[0].focus();
             }

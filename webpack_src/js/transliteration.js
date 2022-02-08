@@ -14,7 +14,7 @@ function loadLipi() {
     if (!transliterationTarget) {
         transliterationTarget = utils.getCookie(LIPI_COOKIE) || LIPI_DEFAULT;
     }
-    var translitrationTargetDropdown = document.getElementsByName("transliterationDropdown")[0];
+    var translitrationTargetDropdown = document.getElementById("transliterationDropdown");
     translitrationTargetDropdown.value = transliterationTarget;
     console.log(transliterationTarget);
 }
@@ -51,7 +51,7 @@ export function transliterate() {
 }
 
 export function updateTransliteration() {
-    var translitrationTargetDropdown = document.getElementsByName("transliterationDropdown")[0];
+    var translitrationTargetDropdown = document.getElementById("transliterationDropdown");
     var translitrationTarget = translitrationTargetDropdown.options[translitrationTargetDropdown.selectedIndex].value;
     saveLipi(translitrationTarget);
     query.insertQueryParam("transliteration_target", translitrationTarget);

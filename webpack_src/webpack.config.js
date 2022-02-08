@@ -4,7 +4,7 @@ module.exports = {
     entry: {
         main: "./js/main.js",
         search: "./js/search.js",
-        ui_lib: "./js/ui-lib.js",
+        ui_lib: "./js/uiLib.js",
         dir_tree: "./js/dirTree.js",
         transliteration: "./js/transliteration.js"
     },

@@ -27,7 +27,7 @@ export async function setup() {
 let ttsOn = false;
 
 export function handleSpeakToggle() {
-    let speakerButton = document.getElementsByName("speakerButton")[0];
+    let speakerButton = document.getElementById("speakerButton");
     if (!ttsOn) {
         speakerButton.classList.add("red")
         speakAll();
