@@ -34,7 +34,11 @@ export function setPrintLayoutFromQuery() {
   });
 
   document.getElementsByTagName("summary").forEach(function (e) {
-    e.setAttribute("hidden", "true");
+    if (!e.parentNode.hasAttribute("open")) {
+      e.parentNode.setAttribute("hidden", "true");
+    } else {
+      e.setAttribute("hidden", "true");
+    }
   });
   document.getElementsByClassName("fa-external-link-square-alt").forEach(function (e) {
     e.parentNode.setAttribute("hidden", "true");
