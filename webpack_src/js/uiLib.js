@@ -13,7 +13,7 @@ import * as query from "./query";
 
 
 export function replaceWithQueryParam(queryFieldName, regexPattern) {
-  let userId = module_ui_lib.default.getQueryVariable(queryFieldName);
+  let userId = module_ui_lib.default.getParam(queryFieldName);
   if (userId) {
     console.log(userId);
     document.body.innerHTML = document.body.innerHTML.replace(regexPattern, userId);
@@ -25,7 +25,7 @@ export function replaceWithQueryParam(queryFieldName, regexPattern) {
 }
 
 export function setPrintLayoutFromQuery() {
-  let printLayout = query.getQueryVariable("printLayout") || "off";
+  let printLayout = query.getParam("printLayout") || "off";
   if(printLayout != "on") {
     return;
   }
@@ -47,7 +47,7 @@ export function setPrintLayoutFromQuery() {
 }
 
 export function expandAllDetails() {
-  let expandAll = query.getQueryVariable("expandAll") || "false";
+  let expandAll = query.getParam("expandAll") || "false";
   if(expandAll != "true") {
     return;
   }
@@ -58,10 +58,7 @@ export function expandAllDetails() {
       e.setAttribute("open", "true");
     }
   });
+  document.getElementById("expandAllButton").onclick = function () {query.deleteParamAndGo("expandAll");};
 }
 
-// So that these can be used like module_ui_lib.default.getQueryVariable(..).
-export default {
-  getQueryVariable: query.getQueryVariable,
-  insertQueryParam: query.insertQueryParam,
-}
+

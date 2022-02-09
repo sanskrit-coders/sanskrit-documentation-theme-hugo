@@ -16,7 +16,7 @@ const footnotes = require('showdown-ghost-footnotes');
 
 var showdownConverter = new showdown.Converter({strikethrough: true, simplifiedAutoLink: true, extensions: [footnotes]});
 
-let expandAll = query.getQueryVariable("expandAll") || "false";
+let expandAll = query.getParam("expandAll") || "false";
 
 
 function cleanId(x) {

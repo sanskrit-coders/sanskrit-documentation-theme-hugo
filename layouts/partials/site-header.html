@@ -46,8 +46,8 @@
             <option value="on">✔</option>
             <option value="hidden">✗</option>
           </select>
-          <div><a id="expandAllButton" class="btn btn-secondary" onclick="module_main.default.insertQueryParam('expandAll', 'true')">↕️️</a></div>
-          <div><a id="printButton" class="btn btn-secondary" onclick="module_main.default.insertQueryParam('printLayout', 'on')">🖨️️</a></div>
+          <div><a id="expandAllButton" class="btn btn-secondary" onclick="module_main.default.query.setParamAndGo('expandAll', 'true')">↕️️</a></div>
+          <div><a id="printButton" class="btn btn-secondary" onclick="module_main.default.query.setParamAndGo('printLayout', 'on')">🖨️️</a></div>
           <div><a id="speakerButton" class="btn btn-secondary" onclick="module_main.default.handleSpeakToggle()">🎧️</a></div>
         </div>
         <div class="row col  d-flex justify-content-center">

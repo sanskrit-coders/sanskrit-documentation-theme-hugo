@@ -70,6 +70,10 @@ export default {
   sidebarToggleHandler: sidebar.sidebarToggleHandler,
   updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown,
   handleSpeakToggle: textToSpeech.handleSpeakToggle,
-  insertQueryParam: query.insertQueryParam,
+  query: {
+    removeParamAndGo: query.deleteParamAndGo,
+    setParamAndGo: query.setParamAndGo,
+    getParam: query.getParam,
+  }
 }
 

@@ -1,7 +1,7 @@
 import * as query from "./query";
 
 export function setInlineComments(htmlIn) {
-    let commentStyle = query.getQueryVariable("comment_style") || "on";
+    let commentStyle = query.getParam("comment_style") || "on";
     let commentStyleDropdown = document.getElementById("commentStyleDropdown");
     commentStyleDropdown.value = commentStyle;
     if (commentStyle === "hidden") {
@@ -19,7 +19,7 @@ export function setInlineComments(htmlIn) {
 export function updateCommentStyleFromDropdown() {
     let commentStyleDropdown = document.getElementById("commentStyleDropdown");
     var commentStyle = commentStyleDropdown.options[commentStyleDropdown.selectedIndex].value;
-    query.insertQueryParam("comment_style", commentStyle);
+    query.setParamAndGo("comment_style", commentStyle);
 }
 
 export function setInlineCommentsInPostContent() {

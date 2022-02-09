@@ -10,7 +10,7 @@ let LIPI_EXPIRY = 30 * 24 * 3600 * 1000;  // 30 days
 
 function loadLipi() {
     let previousTransliterationTarget = transliterationTarget;
-    transliterationTarget = query.getQueryVariable("transliteration_target");
+    transliterationTarget = query.getParam("transliteration_target");
     if (!transliterationTarget) {
         transliterationTarget = utils.getCookie(LIPI_COOKIE) || LIPI_DEFAULT;
     }
@@ -54,6 +54,6 @@ export function updateTransliteration() {
     var translitrationTargetDropdown = document.getElementById("transliterationDropdown");
     var translitrationTarget = translitrationTargetDropdown.options[translitrationTargetDropdown.selectedIndex].value;
     saveLipi(translitrationTarget);
-    query.insertQueryParam("transliteration_target", translitrationTarget);
+    query.setParamAndGo("transliteration_target", translitrationTarget);
 }
 
