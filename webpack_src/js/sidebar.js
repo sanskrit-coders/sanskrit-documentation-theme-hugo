@@ -216,7 +216,7 @@ export function insertSidebarItems() {
     // this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page.
     let activeLeaf = document.querySelector("#sidebarBody li.active");
     while (activeLeaf) {
-        if(activeLeaf.tagName.toLowerCase() == "details") {
+        if(activeLeaf.tagName && activeLeaf.tagName.toLowerCase() == "details") {
             activeLeaf.setAttribute("open",  '');
             activeLeaf.querySelector("summary").setAttribute("class", "active underline");
         }

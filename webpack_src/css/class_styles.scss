@@ -80,9 +80,12 @@ audio {
 #sidebar {
   li {
     background-color: antiquewhite;
-    .active {
-      >a, >span {background-color: wheat;}
-    }
+  }
+  details {
+    margin: 3px 0px;
+  }
+  .active {
+    >a, >span {background-color: wheat;}
   }
 }
 
