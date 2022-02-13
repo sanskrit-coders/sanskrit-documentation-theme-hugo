@@ -15,7 +15,7 @@ export function setupSidebarToggle() {
 
 export function sidebarToggleHandler() {
     // Acual collapsing/ expanding happens elsewhere in some library function. 
-    let expanded = document.querySelector("[name='sidebarToggleLink']").getAttribute("aria-expanded") === "true";
+    let expanded = document.querySelector("[id='sidebarToggleLink']").hasAttribute("open");
     // console.debug(expanded);
     if(expanded) {
         document.querySelector("[name='contentRow']").setAttribute("class", "col");
