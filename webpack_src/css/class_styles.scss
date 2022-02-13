@@ -2,7 +2,7 @@ body {
   font-family: 'siddhanta', 'NotoSansDevanagari-Regular', 'NotoSansKannada-Regular', 'NotoSansTelugu-Regular', 'NotoSansTamil-Regular', 'NotoSansMalayalam-Regular', 'NotoSansOriya-Regular', 'NotoSansBengali-Regular', 'satisarSharada', 'Sampradaya', 'NotoSansGujarati-Regular', 'NotoSansGurmukhi-Regular', 'NotoSerifTibetan-Medium', 'NotoSansBrahmi-Regular', serif;
 }
 
-details {
+main details {
   margin: 3px 0px;
   border-bottom: 1px solid black;
 }
@@ -80,9 +80,6 @@ audio {
 #sidebar {
   li {
     background-color: antiquewhite;
-  }
-  details {
-    margin: 3px 0px;
   }
   .active {
     >a, >span {background-color: wheat;}

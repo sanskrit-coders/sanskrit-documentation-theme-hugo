@@ -9,13 +9,13 @@ export function setupSidebarToggle() {
     // console.debug(mainBounds, sidebarBounds);
 
     if (mainBounds.y > sidebarBounds.y + sidebarBounds.height) {
-        document.querySelector("[name='sidebarToggleLink']").click();
+        document.querySelector("[id='sidebarToggleLink']").parentNode.removeAttribute("open");
     }
 }
 
 export function sidebarToggleHandler() {
     // Acual collapsing/ expanding happens elsewhere in some library function. 
-    let expanded = document.querySelector("[id='sidebarToggleLink']").hasAttribute("open");
+    let expanded = document.querySelector("[id='sidebarToggleLink']").parentNode.hasAttribute("open");
     // console.debug(expanded);
     if(expanded) {
         document.querySelector("[name='contentRow']").setAttribute("class", "col");
@@ -87,7 +87,7 @@ function getHtmlForContentsProperty(sidebarItem, parentListIdIn, anchorClasses, 
         itemTitleHtml = `${title}`;
     }
     var itemHtml =
-        `<details class="${liClass}">` +
+        `<details class="sidebar">` +
         `<summary>${itemTitleHtml} </summary>` +
         "\n" +
         `<ul id='${listId}' class='${ulClass}'>${contentHtml}\n</ul>\n` +

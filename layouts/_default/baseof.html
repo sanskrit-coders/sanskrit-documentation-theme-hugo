@@ -141,8 +141,8 @@
           <div id="fastSearch">
               <input id="searchInput" placeholder="शीर्षिकान्विष्यताम्"  tabindex="0">
           </div>
-          <details id="sidebarToggleLink" onclick="module_main.default.sidebarToggleHandler()" open  class="bg-light-gray" >
-              <summary>
+          <details open  class="bg-light-gray" >
+              <summary id="sidebarToggleLink" onclick="module_main.default.sidebarToggleHandler()">
             {{ $.Param "sidebar_menu_title"  | default "Menu"}}
               </summary>
               <ul id="sidebarBody" class="list pl2 p-0 {{.Site.Params.background_color_class | default "bg-yellow" }}">
