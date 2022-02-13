@@ -4,7 +4,7 @@ import * as dirTree from "./dirTree";
 
 // This should be called whenever an element with potential to resize the main content column is loaded/ filled. Eg. Spreadsheets.
 export function setupSidebarToggle() {
-    let sidebarBounds = document.querySelector("#sidebar_body").getBoundingClientRect();
+    let sidebarBounds = document.querySelector("#sidebarBody").getBoundingClientRect();
     let mainBounds = document.querySelector("main").getBoundingClientRect();
     // console.debug(mainBounds, sidebarBounds);
 
@@ -84,15 +84,14 @@ function getHtmlForContentsProperty(sidebarItem, parentListIdIn, anchorClasses, 
     if (itemUrlStripped != "#") {
         itemTitleHtml = `<a href="${finalUrl}" class="${anchorClasses}"> ${title}</a>`;
     } else {
-        itemTitleHtml = `<a data-toggle="collapse" href="#${listId}" role="button" aria-expanded="false" aria-controls="${listId}"  class="${anchorClasses}"> ${title}</a>`;
+        itemTitleHtml = `${title}`;
     }
     var itemHtml =
-        `<li class="${liClass}"><span class="d-flex justify-content-between">` +
-        itemTitleHtml + "\n" +
-        `<a data-toggle="collapse" href="#${listId}" role="button" aria-expanded="false" aria-controls="${listId}"> <i class="fas fa-caret-down"></i></a>` +
-        "</span>\n" +
-        `<ul id='${listId}' class='${ulClass} collapse'>${contentHtml}\n</ul>\n` +
-        `</li>\n`;
+        `<details class="${liClass}">` +
+        `<summary>${itemTitleHtml} </summary>` +
+        "\n" +
+        `<ul id='${listId}' class='${ulClass}'>${contentHtml}\n</ul>\n` +
+        `</details>\n`;
     return itemHtml;
 }
 
@@ -206,19 +205,23 @@ export function insertSidebarItems() {
     }
     // $("#sidebarTitle a").html(sidebar.title);
     // console.debug(sidebar);
-    if ($("#displayed_sidebar li").length > 0) {
+    if ($("#sidebarBody li").length > 0) {
         console.warn("Exiting without reinserting items.");
         return;
     }
     for (let sidebarItem of sidebar.contents) {
-        $("#displayed_sidebar").append(getSidebarItemHtml(sidebarItem));
+        $("#sidebarBody").append(getSidebarItemHtml(sidebarItem));
     }
 
     // this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page.
-    $("li.active").parents('li').addClass("active");
-    $("li.active").parents('li').removeClass("inactive");
-    // console.debug($("li.active").parents('ul'));
-    $("li.active").parents('ul').removeClass("collapse");
+    let activeLeaf = document.querySelector("#sidebarBody li.active");
+    while (activeLeaf) {
+        if(activeLeaf.tagName.toLowerCase() == "details") {
+            activeLeaf.setAttribute("open",  '');
+            activeLeaf.querySelector("summary").setAttribute("class", "active underline");
+        }
+        activeLeaf = activeLeaf.parentNode;
+    }
 }
 
 export function insertNavItems(navbarId, items) {

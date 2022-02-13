@@ -145,10 +145,8 @@
               <summary>
             {{ $.Param "sidebar_menu_title"  | default "Menu"}}
               </summary>
-              <nav class="card-body p-0" id="sidebar_body">
-                  <ul id="displayed_sidebar" class="list pl2 p-2 {{.Site.Params.background_color_class | default "bg-yellow" }}">
-                  </ul>
-              </nav>
+              <ul id="sidebarBody" class="list pl2 p-0 {{.Site.Params.background_color_class | default "bg-yellow" }}">
+              </ul>
           </details>
       </aside>
       <main class="col p-3" role="main">
