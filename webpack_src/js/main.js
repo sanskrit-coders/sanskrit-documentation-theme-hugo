@@ -24,6 +24,8 @@ export function prepareContentWithoutIncludes() {
   audioEmbed.fillAudioEmbeds();
   videoEmbed.fillVideoEmbeds();
   spreadsheets.fillSheets();
+  uiLib.expandAllDetails();
+  uiLib.setPrintLayoutFromQuery();
 }
 
 
@@ -57,8 +59,6 @@ async function onDocumentReadyTasks() {
   // Update table of contents (To be called whenever page contents are updated).
   updateToc();
   setupDisqus();
-  uiLib.expandAllDetails();
-  uiLib.setPrintLayoutFromQuery();
 }
 
 // So that these can be used like module_main.default.redirectToPage(..).

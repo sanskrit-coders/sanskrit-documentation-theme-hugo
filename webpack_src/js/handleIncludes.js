@@ -16,7 +16,7 @@ const footnotes = require('showdown-ghost-footnotes');
 
 var showdownConverter = new showdown.Converter({strikethrough: true, simplifiedAutoLink: true, extensions: [footnotes]});
 
-let expandAll = query.getParam("expandAll") || "false";
+let expandAllParam = query.getParam("expandAll") || "false";
 
 
 function cleanId(x) {
@@ -53,15 +53,17 @@ function absoluteUrl(baseUrl, relative) {
 
 
 function getCollapseStyle(jsIncludeJqueryElement) {
-    var collapseStyle = "collapse show";
-    if (expandAll) {
+    var collapseStyle = "open";
+    // console.info("expandAllParam", expandAllParam, jsIncludeJqueryElement);
+    if (expandAllParam == "true") {
         return collapseStyle;
     }
     var isCollapsed = jsIncludeJqueryElement.hasClass("collapsed");
     // console.debug(isCollapsed);
     if (isCollapsed) {
-        collapseStyle = "collapse";
+        collapseStyle = "";
     }
+    // console.info("collapseStyle", collapseStyle, jsIncludeJqueryElement);
     return collapseStyle;
 }
 
@@ -225,8 +227,6 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement) {
         // We don't want multiple post_content divs, hence we replace with an included-post-content div.
         contentInnerHtml = contentElements[0].innerHTML;
     }
-    // console.debug("contentInnerHtml", contentInnerHtml, contentElements);
-    contentHtml = `<div class='included-post-content ${collapseStyle}' id="${content_div_id}">${contentInnerHtml}</div>`;
 
 
     // Setup edit link
@@ -237,16 +237,17 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement) {
         editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
     }
     // console.debug(addTitle, title, cleanId(title), includedPageRelativeUrl);
-    var titleHtml = "<div></div>";
+    var titleHtml = ".";
     if (addTitle && addTitle != "false") {
-        titleHtml = relativizeHtml(includedPageRelativeUrl, `<h1 id='${cleanId(title)}'  data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}">${title}</h1>`, includedPageNewLevelForH1);
+        titleHtml = `<h1 id='${cleanId(title)}'>${title}</h1>`;
     }
-    var collapseLink = `<a id="collapser_${post_id}" class="btn" data-toggle="collapse" href="#${content_div_id}" aria-expanded="true" aria-controls="${content_div_id}"><i class="fas fa-caret-down"></i></a>`;
     let popoutLink = `<a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>`
-    var titleRowHtml = `<div class='border d-flex justify-content-between' id="included_title_${post_id}">${titleHtml}<div class="section-nav row noPrint">${collapseLink}${popoutLink}${editLinkHtml}</div></div>`;
-    var elementToInclude = $(`<div class='included-post border' id=\"included_post_${post_id}\"></div>`);
-    elementToInclude.html(titleRowHtml + relativizeHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1));
-    return elementToInclude;
+    var titleRowHtml = `<div class='border d-flex justify-content-between'> ${titleHtml}<div class="section-nav row noPrint">${popoutLink}${editLinkHtml}</div></div>`;
+
+    // console.debug("contentInnerHtml", contentInnerHtml, contentElements);
+    contentHtml = `<details ${collapseStyle} class='included-post-content' id="${content_div_id}"><summary>${titleRowHtml}</summary>\n\n${contentInnerHtml}</details>`;
+
+    return relativizeHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1);
 }
 
 /*
