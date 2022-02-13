@@ -237,15 +237,15 @@ async function processAjaxResponseHtml(responseHtml, jsIncludeJqueryElement) {
         editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElements.attr("href")}"><i class="fas fa-edit"></i></a>`
     }
     // console.debug(addTitle, title, cleanId(title), includedPageRelativeUrl);
-    var titleHtml = ".";
+    var titleHtml = "";
     if (addTitle && addTitle != "false") {
         titleHtml = `<h1 id='${cleanId(title)}'>${title}</h1>`;
     }
     let popoutLink = `<a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>`
-    var titleRowHtml = `<div class='border d-flex justify-content-between'> ${titleHtml}<div class="section-nav row noPrint">${popoutLink}${editLinkHtml}</div></div>`;
+    var titleRowHtml = `<div class='d-flex justify-content-between'> ${titleHtml}<div class="section-nav row noPrint">${popoutLink}${editLinkHtml}</div></div>`;
 
     // console.debug("contentInnerHtml", contentInnerHtml, contentElements);
-    contentHtml = `<details ${collapseStyle} class='included-post-content' id="${content_div_id}"><summary>${titleRowHtml}</summary>\n\n${contentInnerHtml}</details>`;
+    contentHtml = `<details ${collapseStyle} class='included-post-content' id="${content_div_id}"><summary>🦅🦍…🐒🐍${titleRowHtml}</summary>\n\n${contentInnerHtml}</details>`;
 
     return relativizeHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1);
 }
