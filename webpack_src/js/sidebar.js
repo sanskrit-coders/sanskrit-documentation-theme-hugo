@@ -9,6 +9,7 @@ export function setupSidebarToggle() {
     // console.debug(mainBounds, sidebarBounds);
 
     if (mainBounds.y > sidebarBounds.y + sidebarBounds.height) {
+        // Main content box is way below the sidebar. Let's close it. 
         document.querySelector("[id='sidebarToggleLink']").parentNode.removeAttribute("open");
     }
 }
