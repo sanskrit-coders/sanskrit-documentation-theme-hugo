@@ -78,7 +78,7 @@ function returnToTopHandler(toc_item_id) {
     // First, set up the right selections in the table-of-contents menu.
     // So, the user can follow the trail of highlights menu items and expand the menu items till he reaches the appropriate level.
     var itemToActivate = undefined;
-    $("#toc_body").removeClass("collapse");
+    document.getElementById("toc_header").setAttribute("open", "");
     // console.debug(toc_item_id, $("#toc_ul").find("li"));
     $("#toc_ul").find("li").each(function (liIndex, liElement) {
         // console.debug(liIndex, liElement, toc_item_id);
