@@ -13,7 +13,7 @@ import * as query from "./query";
 
 
 export function replaceWithQueryParam(queryFieldName, regexPattern) {
-  let userId = module_ui_lib.default.getParam(queryFieldName);
+  let userId = query.getParam(queryFieldName);
   if (userId) {
     console.log(userId);
     document.body.innerHTML = document.body.innerHTML.replace(regexPattern, userId);

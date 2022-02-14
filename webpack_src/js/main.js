@@ -31,7 +31,7 @@ export function prepareContentWithoutIncludes() {
 
 async function onDocumentReadyTasks() {
   await dirTree.populateTree();
-  pageVars.pageParams = module_dir_tree.getPageParams(pageVars.pageUrlMinusBasePath);
+  pageVars.pageParams = dirTree.getPageParams(pageVars.pageUrlMinusBasePath);
   pageVars.sidebarId = pageVars.pageParams.sidebar || pageDefaults.sidebar;
   pageVars.topnavId = pageVars.pageParams.topnav || pageDefaults.topnav;
   pageVars.footernavId = pageVars.pageParams.footernav || pageDefaults.footernav;
@@ -39,9 +39,9 @@ async function onDocumentReadyTasks() {
   sidebar.insertSidebarItems();
   sidebar.setupSidebarToggle();
   search.setupTitleSearch();
-  let nextPage = module_dir_tree.getNextPage(pageVars.pageUrlMinusBasePath);
+  let nextPage = dirTree.getNextPage(pageVars.pageUrlMinusBasePath);
   dirTree.setAnchor(document.getElementById("nextPage"), nextPage, ">" );
-  let previousPage = module_dir_tree.getPreviousPage(pageVars.pageUrlMinusBasePath);
+  let previousPage = dirTree.getPreviousPage(pageVars.pageUrlMinusBasePath);
   dirTree.setAnchor(document.getElementById("previousPage"), previousPage, "<" );
 
   if (pageVars.topnavId && sidebarsData[pageVars.topnavId]) {
