@@ -232,7 +232,8 @@ async function processAjaxResponseHtml(responseHtml, jsInclude) {
     editLinkHtml = `<a class="btn btn-secondary" href="${editLinkElement.getAttribute("href")}"><i class="fas fa-edit"></i></a>`
   }
   // console.debug(addTitle, title, cleanId(title), includedPageRelativeUrl);
-  var titleHtml = "";
+  // Default value below is for layout sanity.
+  var titleHtml = "<div></div>";
   if (addTitle && addTitle != "false") {
     titleHtml = `<h1 id='${cleanId(title)}'>${title}</h1>`;
   }
