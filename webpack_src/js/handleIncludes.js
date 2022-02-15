@@ -328,6 +328,8 @@ async function fillJsInclude(jsInclude) {
     return "Already loaded";
   }
   jsInclude.removeAttribute("unfilled");
+  
+  jsInclude.firstChild.removeEventListener("toggle", detailsJsIncludeLoader);
   let includedPageUrl = getRelativeIncludedPageUrl(jsInclude);
   if (includedPageUrl == "") {
     console.error("Invalid url!", jsInclude);
@@ -375,14 +377,18 @@ async function fillJsInclude(jsInclude) {
   });
 }
 
+function detailsJsIncludeLoader(event) {
+  if (event.type == "toggle") {
+    fillJsInclude(event.target.parentNode)
+  }
+}
+
 async function addPlaceholderDetail(jsInclude) {
   let title = jsInclude.getAttribute("title") || "...{Loading}...";
   let contentHtml = `<details class='included-post-content'><summary>🦅🦍…🐒🐍<h1>${title}</h1></summary>\n\n"...{Loading}..."</details>`;
   jsInclude.innerHTML = await processAjaxResponseHtml(contentHtml, jsInclude);
   jsInclude.setAttribute("unfilled", "")
-  jsInclude.firstChild.addEventListener("toggle", function() {
-    fillJsInclude(jsInclude);
-  })
+  jsInclude.firstChild.addEventListener("toggle", detailsJsIncludeLoader);
 }
 
 // Process includes of the form:
