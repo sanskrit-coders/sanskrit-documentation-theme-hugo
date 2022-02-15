@@ -21,17 +21,20 @@ export function relUrlOfCurrentPage() {
 // No includes processing - or adding navigation bars.
 export function prepareContentWithoutIncludes(node) {
   if (!node) {
-    node = document.getElementsByTagName("body")[0];
+    node = document.body;
   }
   node.outerHTML = setInlineComments(node.outerHTML);
   transliteration.transliterate(node);
   audioEmbed.fillAudioEmbeds(node);
   videoEmbed.fillVideoEmbeds(node);
   spreadsheets.fillSheets(node);
-  uiLib.expandAllDetails(node);
-  uiLib.setPrintLayoutFromQuery(node);
 }
 
+export function prepareDocumentWithoutIncludes() {
+  uiLib.expandAllDetails(document.body);
+  uiLib.setPrintLayoutFromQuery(document.body);
+  updateToc();
+}
 
 async function onDocumentReadyTasks() {
   await dirTree.populateTree();
@@ -58,10 +61,10 @@ async function onDocumentReadyTasks() {
     $("#post_content").attr("unicode_script", pageVars.unicodeScript);
   }
   prepareContentWithoutIncludes();
-  // For unknown reasons, handleIncludes() called first does not work as well 201901 desktop.
-  handleIncludes();
-  // Update table of contents (To be called whenever page contents are updated).
-  updateToc();
+  if (!handleIncludes()) {
+    // handleIncludes spawns threads which independently call the below.
+    prepareDocumentWithoutIncludes();
+  }
   setupDisqus();
 }
 

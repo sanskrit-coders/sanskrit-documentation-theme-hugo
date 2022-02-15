@@ -375,9 +375,10 @@ async function fillJsInclude(jsInclude) {
   });
 }
 
-function addPlaceholderDetail(jsInclude) {
+async function addPlaceholderDetail(jsInclude) {
   let title = jsInclude.getAttribute("title") || "...{Loading}...";
-  jsInclude.innerHTML = `<details class='included-post-content'><summary>🦅🦍…🐒🐍<h3>${title}</h3></summary>\n\n"...{Loading}..."</details>`;
+  let contentHtml = `<details class='included-post-content'><summary>🦅🦍…🐒🐍<h1>${title}</h1></summary>\n\n"...{Loading}..."</details>`;
+  jsInclude.innerHTML = await processAjaxResponseHtml(contentHtml, jsInclude);
   jsInclude.setAttribute("unfilled", "")
   jsInclude.firstChild.addEventListener("toggle", function() {
     fillJsInclude(jsInclude);
@@ -390,34 +391,45 @@ function addPlaceholderDetail(jsInclude) {
 export default function handleIncludes() {
   console.log("Entering handleIncludes.");
   let jsIncludes = Array.from(document.getElementsByClassName("js_include"));
+  let progressBar = document.getElementById("progressLoading");
   if (jsIncludes.length === 0) {
+    progressBar.hidden = true;
     return;
   }
-  jsIncludes.forEach(addPlaceholderDetail);
   let filledIncludes = 0;
+  progressBar.setAttribute("max", jsIncludes.length.toString());
+  progressBar.setAttribute("value", filledIncludes.toString());
+  jsIncludes.forEach(addPlaceholderDetail);
   let openIncludes = jsIncludes.filter(x => getCollapseStyle(x) == "open");
   let collapsedIncludes = jsIncludes.filter(x => getCollapseStyle(x) == "");
+  
+  function postIncludeTasks() {
+    console.log("Done including.");
+    main.prepareDocumentWithoutIncludes()
+  }
+  
   var openIncludesLoadingIntervalId = window.setInterval(function () {
     let jsInclude = openIncludes.shift();
     if (jsInclude) {
       fillJsInclude(jsInclude).catch(reason => console.error(reason));
       filledIncludes = filledIncludes + 1;
+      progressBar.setAttribute("value", filledIncludes.toString());
     } else {
       clearInterval(openIncludesLoadingIntervalId);
-      console.log("Done including.");
-      updateToc();
+      postIncludeTasks();
     }
-  });
+  }, 1000);
   
   var closedIncludesLoadingIntervalId = window.setInterval(function () {
     let jsInclude = collapsedIncludes.shift();
     if (jsInclude) {
       fillJsInclude(jsInclude).catch(reason => console.error(reason));
       filledIncludes = filledIncludes + 1;
+      progressBar.setAttribute("value", filledIncludes.toString());
     } else {
       clearInterval(closedIncludesLoadingIntervalId);
-      console.log("Done including.");
-      updateToc();
+      postIncludeTasks();
     }
   }, 1000);
+  return jsIncludes.length;
 }

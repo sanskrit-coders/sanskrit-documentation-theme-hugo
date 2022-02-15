@@ -35,13 +35,13 @@ export function setPrintLayoutFromQuery(node) {
 
   node.getElementsByTagName("summary").forEach(function (e) {
     if (!e.parentNode.hasAttribute("open")) {
-      e.parentNode.setAttribute("hidden", "true");
+      e.parentNode.hidden = true;
     } else {
-      e.setAttribute("hidden", "true");
+      e.hidden = true;
     }
   });
   node.getElementsByClassName("fa-external-link-square-alt").forEach(function (e) {
-    e.parentNode.setAttribute("hidden", "true");
+    e.parentNode.hidden = true;
   });
 
 }
@@ -59,7 +59,7 @@ export function expandAllDetails(node) {
     }
   });
   if (node.tagName.toLocaleLowerCase() == "body") {
-    node.getElementById("expandAllButton").onclick = function () {query.deleteParamAndGo("expandAll");};
+    document.querySelector("#expandAllButton").onclick = function () {query.deleteParamAndGo("expandAll");};
   }
 }
 

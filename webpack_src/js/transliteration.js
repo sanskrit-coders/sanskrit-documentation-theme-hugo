@@ -34,7 +34,7 @@ export function transliterate(node) {
         return;
     }
     let transliterationSource = pageVars.unicodeScript || "devanagari";
-    console.debug(transliterationSource, transliterationTarget);
+    // console.debug(transliterationSource, transliterationTarget);
     var textNodes = utils.textNodesUnder(node);
     // console.debug(textNodes);
     textNodes.forEach(function (textNode) {
