@@ -324,6 +324,7 @@ function markdownToHtml(markdownCode, includeElement) {
  */
 async function fillJsInclude(jsInclude) {
   if (!jsInclude.hasAttribute("unfilled")) {
+    // console.trace();
     console.debug("Refusing to refill element", jsInclude);
     return "Already loaded";
   }
@@ -386,7 +387,9 @@ function detailsJsIncludeLoader(event) {
 async function addPlaceholderDetail(jsInclude) {
   let title = jsInclude.getAttribute("title") || "...{Loading}...";
   let contentHtml = `<details class='included-post-content'><summary>🦅🦍…🐒🐍<h1>${title}</h1></summary>\n\n"...{Loading}..."</details>`;
+  jsInclude.classList.add("collapsed");
   jsInclude.innerHTML = await processAjaxResponseHtml(contentHtml, jsInclude);
+  jsInclude.classList.remove("collapsed");
   jsInclude.setAttribute("unfilled", "")
   jsInclude.firstChild.addEventListener("toggle", detailsJsIncludeLoader);
 }
@@ -413,29 +416,25 @@ export default function handleIncludes() {
     console.log("Done including.");
     main.prepareDocumentWithoutIncludes()
   }
-  
-  var openIncludesLoadingIntervalId = window.setInterval(function () {
-    let jsInclude = openIncludes.shift();
+
+  function periodicIncludeLoader(jsIncludeList, intervalId) {
+    let jsInclude = jsIncludeList.shift();
     if (jsInclude) {
       fillJsInclude(jsInclude).catch(reason => console.error(reason));
       filledIncludes = filledIncludes + 1;
       progressBar.setAttribute("value", filledIncludes.toString());
     } else {
-      clearInterval(openIncludesLoadingIntervalId);
+      clearInterval(intervalId);
       postIncludeTasks();
     }
+    
+  }
+  var openIncludesLoadingIntervalId = window.setInterval(function () {
+    periodicIncludeLoader(openIncludes, openIncludesLoadingIntervalId)
   }, 1000);
   
   var closedIncludesLoadingIntervalId = window.setInterval(function () {
-    let jsInclude = collapsedIncludes.shift();
-    if (jsInclude) {
-      fillJsInclude(jsInclude).catch(reason => console.error(reason));
-      filledIncludes = filledIncludes + 1;
-      progressBar.setAttribute("value", filledIncludes.toString());
-    } else {
-      clearInterval(closedIncludesLoadingIntervalId);
-      postIncludeTasks();
-    }
+    periodicIncludeLoader(collapsedIncludes, closedIncludesLoadingIntervalId)
   }, 1000);
   return jsIncludes.length;
 }

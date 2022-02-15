@@ -6,6 +6,7 @@ module.exports = {
         search: "./js/search.js",
         ui_lib: "./js/uiLib.js",
         dir_tree: "./js/dirTree.js",
+        utils: "./js/utils.js",
         transliteration: "./js/transliteration.js"
     },
     output: {

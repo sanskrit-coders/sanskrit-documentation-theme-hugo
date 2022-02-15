@@ -17,6 +17,17 @@ export function textNodesUnder(node) {
   return all;
 }
 
+export function getAncestors(child) {
+  let ancestors = [];
+  let node = child.parentNode;
+  while (node) {
+    ancestors.push(node);
+    // Traverse up to the parent
+    node = node.parentNode;
+  }
+  return ancestors;
+};
+
 // Check if `child` is a descendant of `parent`
 export function isDescendant(parent, child) {
   let node = child.parentNode;
@@ -24,7 +35,6 @@ export function isDescendant(parent, child) {
     if (node === parent) {
       return true;
     }
-
     // Traverse up to the parent
     node = node.parentNode;
   }

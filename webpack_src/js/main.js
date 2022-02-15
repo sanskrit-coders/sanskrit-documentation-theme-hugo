@@ -22,8 +22,9 @@ export function relUrlOfCurrentPage() {
 export function prepareContentWithoutIncludes(node) {
   if (!node) {
     node = document.body;
+    transliteration.loadLipi();
   }
-  node.outerHTML = setInlineComments(node.outerHTML);
+  node.innerHTML = setInlineComments(node.innerHTML);
   transliteration.transliterate(node);
   audioEmbed.fillAudioEmbeds(node);
   videoEmbed.fillVideoEmbeds(node);
