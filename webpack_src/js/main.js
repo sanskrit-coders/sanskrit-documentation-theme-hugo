@@ -58,7 +58,7 @@ async function onDocumentReadyTasks() {
     sidebar.insertNavItems("#footer-bar-right-custom", sidebarsData[pageVars.footernavId]);
   }
   if (pageVars.unicodeScript) {
-    $("#post_content").attr("unicode_script", pageVars.unicodeScript);
+    document.querySelector("#post_content").setAttribute("unicode_script", pageVars.unicodeScript);
   }
   prepareContentWithoutIncludes();
   if (!handleIncludes()) {
