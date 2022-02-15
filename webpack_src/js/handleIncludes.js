@@ -15,6 +15,8 @@ import * as utils from "./utils";
 const yaml = require('js-yaml');
 const footnotes = require('showdown-ghost-footnotes');
 
+let jsIncludes = [];
+
 var showdownConverter = new showdown.Converter({
   strikethrough: true,
   simplifiedAutoLink: true,
@@ -353,16 +355,14 @@ async function fillJsInclude(jsInclude) {
     jsInclude.innerHTML = contentElement;
     main.prepareContentWithoutIncludes(jsInclude);
     let secondLevelIncludes = jsInclude.getElementsByClassName('js_include');
-    if (secondLevelIncludes.length > 0) {
-      return Promise.all(secondLevelIncludes.map(function (x) {
-        console.debug("Secondary include: ", x);
-        return fillJsInclude(x);
-      })).then(function () {
-        return jsInclude;
-      });
-    } else {
-      return jsInclude;
+    console.log(secondLevelIncludes);
+    jsIncludes.concat(secondLevelIncludes);
+    // Can't make the below global  - document needs to load first.
+    let progressBar = document.getElementById("progressLoading");
+    if (progressBar.getAttribute("max") == progressBar.getAttribute("value")) {
+      handleIncludes();
     }
+    return jsInclude;
   }).catch(async function (error) {
     var titleHtml = "";
     var title = "Missing page.";
@@ -399,7 +399,8 @@ async function addPlaceholderDetail(jsInclude) {
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
 export default function handleIncludes() {
   console.log("Entering handleIncludes.");
-  let jsIncludes = Array.from(document.getElementsByClassName("js_include"));
+  jsIncludes = Array.from(document.getElementsByClassName("js_include"));
+  // Can't make the below global  - document needs to load first.
   let progressBar = document.getElementById("progressLoading");
   if (jsIncludes.length === 0) {
     document.getElementById("progressBarDiv").hidden = true;
