@@ -22,7 +22,6 @@ var showdownConverter = new showdown.Converter({
 });
 
 let expandAllParam = query.getParam("expandAll") || "false";
-let jsIncludes = [];
 
 function cleanId(x) {
   if (!x) {
@@ -378,7 +377,7 @@ async function fillJsInclude(jsInclude) {
 
 function addPlaceholderDetail(jsInclude) {
   let title = jsInclude.getAttribute("title") || "...{Loading}...";
-  jsInclude.innerHTML = `<details class='included-post-content'><summary>🦅🦍…🐒🐍${title}</summary>\n\n"...{Loading}..."</details>`;
+  jsInclude.innerHTML = `<details class='included-post-content'><summary>🦅🦍…🐒🐍<h3>${title}</h3></summary>\n\n"...{Loading}..."</details>`;
   jsInclude.setAttribute("unfilled", "")
   jsInclude.firstChild.addEventListener("toggle", function() {
     fillJsInclude(jsInclude);
@@ -390,17 +389,33 @@ function addPlaceholderDetail(jsInclude) {
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
 export default function handleIncludes() {
   console.log("Entering handleIncludes.");
-  jsIncludes = Array.from(document.getElementsByClassName("js_include"));
+  let jsIncludes = Array.from(document.getElementsByClassName("js_include"));
   if (jsIncludes.length === 0) {
     return;
   }
   jsIncludes.forEach(addPlaceholderDetail);
-  var includeLoadingIntervalId = window.setInterval(function () {
-    let jsInclude = jsIncludes.shift();
+  let filledIncludes = 0;
+  let openIncludes = jsIncludes.filter(x => getCollapseStyle(x) == "open");
+  let collapsedIncludes = jsIncludes.filter(x => getCollapseStyle(x) == "");
+  var openIncludesLoadingIntervalId = window.setInterval(function () {
+    let jsInclude = openIncludes.shift();
     if (jsInclude) {
       fillJsInclude(jsInclude).catch(reason => console.error(reason));
+      filledIncludes = filledIncludes + 1;
     } else {
-      clearInterval(includeLoadingIntervalId);
+      clearInterval(openIncludesLoadingIntervalId);
+      console.log("Done including.");
+      updateToc();
+    }
+  });
+  
+  var closedIncludesLoadingIntervalId = window.setInterval(function () {
+    let jsInclude = collapsedIncludes.shift();
+    if (jsInclude) {
+      fillJsInclude(jsInclude).catch(reason => console.error(reason));
+      filledIncludes = filledIncludes + 1;
+    } else {
+      clearInterval(closedIncludesLoadingIntervalId);
       console.log("Done including.");
       updateToc();
     }
