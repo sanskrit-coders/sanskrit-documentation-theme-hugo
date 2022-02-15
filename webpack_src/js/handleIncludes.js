@@ -402,7 +402,7 @@ export default function handleIncludes() {
   let jsIncludes = Array.from(document.getElementsByClassName("js_include"));
   let progressBar = document.getElementById("progressLoading");
   if (jsIncludes.length === 0) {
-    progressBar.hidden = true;
+    document.getElementById("progressBarDiv").hidden = true;
     return;
   }
   let filledIncludes = 0;
@@ -413,8 +413,11 @@ export default function handleIncludes() {
   let collapsedIncludes = jsIncludes.filter(x => getCollapseStyle(x) == "");
   
   function postIncludeTasks() {
-    console.log("Done including.");
-    main.prepareDocumentWithoutIncludes()
+    console.log("Done including %d out of %d.", filledIncludes, jsIncludes.length);
+    if (filledIncludes == jsIncludes.length) {
+      document.getElementById("progressBarDiv").hidden = true;
+      main.prepareDocumentWithoutIncludes();
+    }
   }
 
   function periodicIncludeLoader(jsIncludeList, intervalId) {
