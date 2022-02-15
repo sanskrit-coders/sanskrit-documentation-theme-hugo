@@ -387,11 +387,11 @@ function detailsJsIncludeLoader(event) {
 async function addPlaceholderDetail(jsInclude) {
   let title = jsInclude.getAttribute("title") || "...{Loading}...";
   let contentHtml = `<details class='included-post-content'><summary>🦅🦍…🐒🐍<h1>${title}</h1></summary>\n\n"...{Loading}..."</details>`;
-  jsInclude.classList.add("collapsed");
   jsInclude.innerHTML = await processAjaxResponseHtml(contentHtml, jsInclude);
-  jsInclude.classList.remove("collapsed");
   jsInclude.setAttribute("unfilled", "")
-  jsInclude.firstChild.addEventListener("toggle", detailsJsIncludeLoader);
+  if(getCollapseStyle(jsInclude) == "") {
+    jsInclude.firstChild.addEventListener("toggle", detailsJsIncludeLoader);
+  }
 }
 
 // Process includes of the form:

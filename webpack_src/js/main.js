@@ -24,6 +24,7 @@ export function prepareContentWithoutIncludes(node) {
     node = document.body;
     transliteration.loadLipi();
   }
+  // setting node.outerHTML will cause later calls to fail!
   node.innerHTML = setInlineComments(node.innerHTML);
   transliteration.transliterate(node);
   audioEmbed.fillAudioEmbeds(node);
