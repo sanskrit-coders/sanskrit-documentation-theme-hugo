@@ -21,11 +21,3 @@ export function updateCommentStyleFromDropdown() {
     var commentStyle = commentStyleDropdown.options[commentStyleDropdown.selectedIndex].value;
     query.setParamAndGo("comment_style", commentStyle);
 }
-
-export function setInlineCommentsInPostContent() {
-    if ($("#post_content").length > 0) {
-        // console.debug( $("#post_content").html);
-        // console.log(setInlineComments($("#post_content").html()));
-        $("#post_content").html(setInlineComments($("#post_content").html()));
-    }
-}

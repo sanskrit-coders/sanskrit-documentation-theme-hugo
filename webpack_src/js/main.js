@@ -12,20 +12,24 @@ import {redirectToPage, redirectToRandomPage} from "./redirect";
 import * as dirTree from "./dirTree";
 import * as uiLib from "./uiLib";
 import * as query from "./query";
+import {setInlineComments} from "./comments";
 
 export function relUrlOfCurrentPage() {
   return document.location.href.split("#")[0].replace(baseURL, "/");
 }
 
 // No includes processing - or adding navigation bars.
-export function prepareContentWithoutIncludes() {
-  comments.setInlineCommentsInPostContent();
-  transliteration.transliterate();
-  audioEmbed.fillAudioEmbeds();
-  videoEmbed.fillVideoEmbeds();
-  spreadsheets.fillSheets();
-  uiLib.expandAllDetails();
-  uiLib.setPrintLayoutFromQuery();
+export function prepareContentWithoutIncludes(node) {
+  if (!node) {
+    node = document.getElementsByTagName("body")[0];
+  }
+  node.outerHTML = setInlineComments(node.outerHTML);
+  transliteration.transliterate(node);
+  audioEmbed.fillAudioEmbeds(node);
+  videoEmbed.fillVideoEmbeds(node);
+  spreadsheets.fillSheets(node);
+  uiLib.expandAllDetails(node);
+  uiLib.setPrintLayoutFromQuery(node);
 }
 
 

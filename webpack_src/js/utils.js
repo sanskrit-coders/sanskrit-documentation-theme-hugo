@@ -1,33 +1,56 @@
 export async function replaceAsync(str, regex, asyncFn) {
-    const promises = [];
-    str.replace(regex, (match, ...args) => {
-        const promise = asyncFn(match, ...args);
-        promises.push(promise);
-    });
-    const data = await Promise.all(promises);
-    return str.replace(regex, () => data.shift());
+  const promises = [];
+  str.replace(regex, (match, ...args) => {
+    const promise = asyncFn(match, ...args);
+    promises.push(promise);
+  });
+  const data = await Promise.all(promises);
+  return str.replace(regex, () => data.shift());
 }
-export function textNodesUnder(node){
-    var all = [];
-    for (node=node.firstChild;node;node=node.nextSibling){
-        if (node.nodeType==3) all.push(node);
-        else all = all.concat(textNodesUnder(node));
+
+export function textNodesUnder(node) {
+  var all = [];
+  for (node = node.firstChild; node; node = node.nextSibling) {
+    if (node.nodeType == 3) all.push(node);
+    else all = all.concat(textNodesUnder(node));
+  }
+  return all;
+}
+
+// Check if `child` is a descendant of `parent`
+export function isDescendant(parent, child) {
+  let node = child.parentNode;
+  while (node) {
+    if (node === parent) {
+      return true;
     }
-    return all;
+
+    // Traverse up to the parent
+    node = node.parentNode;
+  }
+
+  // Go up until the root but couldn't find the `parent`
+  return false;
+};
+
+export function getDescendentsByCss(parent, css, documentElement) {
+  var descendents = [].slice.call(documentElement.querySelectorAll(css));
+  descendents = descendents.filter(x => isDescendant(parent, x));
+  return descendents;
 }
 
 export function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
     }
-    return undefined;
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return undefined;
 }

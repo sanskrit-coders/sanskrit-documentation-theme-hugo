@@ -31,8 +31,8 @@ export function mp3Embed(audioEmbedTag) {
     }
 }
 
-export function fillAudioEmbeds() {
-    var audioEmbedTags = document.querySelectorAll('.audioEmbed');
+export function fillAudioEmbeds(node) {
+    var audioEmbedTags = node.querySelectorAll('.audioEmbed');
     audioEmbedTags.forEach(function (audioEmbedTag) {
         mp3Embed(audioEmbedTag);
     });

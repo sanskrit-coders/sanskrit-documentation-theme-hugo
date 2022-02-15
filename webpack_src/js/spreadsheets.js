@@ -150,8 +150,8 @@ function fillTable(sheetEmbedTag) {
     }
 }
 
-export function fillSheets() {
-    var sheetEmbedTags = document.querySelectorAll('.spreadsheet');
+export function fillSheets(node) {
+    var sheetEmbedTags = node.querySelectorAll('.spreadsheet');
     sheetEmbedTags.forEach(function (sheetEmbedTag) {
         fillTable(sheetEmbedTag);
     });

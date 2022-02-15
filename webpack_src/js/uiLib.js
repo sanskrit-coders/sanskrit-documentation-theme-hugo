@@ -24,41 +24,43 @@ export function replaceWithQueryParam(queryFieldName, regexPattern) {
   }
 }
 
-export function setPrintLayoutFromQuery() {
+export function setPrintLayoutFromQuery(node) {
   let printLayout = query.getParam("printLayout") || "off";
   if(printLayout != "on") {
     return;
   }
-  document.querySelectorAll(".noPrint").forEach(function (e) {
+  node.querySelectorAll(".noPrint").forEach(function (e) {
     e.setAttribute("hidden", "true");
   });
 
-  document.getElementsByTagName("summary").forEach(function (e) {
+  node.getElementsByTagName("summary").forEach(function (e) {
     if (!e.parentNode.hasAttribute("open")) {
       e.parentNode.setAttribute("hidden", "true");
     } else {
       e.setAttribute("hidden", "true");
     }
   });
-  document.getElementsByClassName("fa-external-link-square-alt").forEach(function (e) {
+  node.getElementsByClassName("fa-external-link-square-alt").forEach(function (e) {
     e.parentNode.setAttribute("hidden", "true");
   });
 
 }
 
-export function expandAllDetails() {
+export function expandAllDetails(node) {
   let expandAll = query.getParam("expandAll") || "false";
   if(expandAll != "true") {
     return;
   }
-  document.getElementsByTagName("details").forEach(function (e) {
+  node.getElementsByTagName("details").forEach(function (e) {
     if (e.hasAttribute("open")) {
       e.setAttribute("preOpened", "true");
     } else {
       e.setAttribute("open", "true");
     }
   });
-  document.getElementById("expandAllButton").onclick = function () {query.deleteParamAndGo("expandAll");};
+  if (node.tagName.toLocaleLowerCase() == "body") {
+    node.getElementById("expandAllButton").onclick = function () {query.deleteParamAndGo("expandAll");};
+  }
 }
 
 

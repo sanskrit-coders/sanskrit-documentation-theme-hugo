@@ -28,14 +28,14 @@ export function saveLipi(lipi) {
 }
 
 
-export function transliterate() {
+export function transliterate(node) {
     loadLipi();
     if (!transliterationTarget) {
         return;
     }
     let transliterationSource = pageVars.unicodeScript || "devanagari";
     console.debug(transliterationSource, transliterationTarget);
-    var textNodes = utils.textNodesUnder(document.getElementsByTagName("body")[0]);
+    var textNodes = utils.textNodesUnder(node);
     // console.debug(textNodes);
     textNodes.forEach(function (textNode) {
         if(textNode.parentNode.nodeName.toLowerCase() != "option") {

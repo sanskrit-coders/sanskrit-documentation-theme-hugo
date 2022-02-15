@@ -42,8 +42,8 @@ export function videoEmbed(videoEmbedTag) {
     }
 }
 
-export function fillVideoEmbeds() {
-    var videoEmbedTags = document.querySelectorAll('.videoEmbed');
+export function fillVideoEmbeds(node) {
+    var videoEmbedTags = node.querySelectorAll('.videoEmbed');
     videoEmbedTags.forEach(function (videoEmbedTag) {
         videoEmbed(videoEmbedTag);
     });
