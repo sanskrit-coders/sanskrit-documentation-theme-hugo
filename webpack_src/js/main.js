@@ -32,7 +32,7 @@ export function prepareContentWithoutIncludes(node) {
   spreadsheets.fillSheets(node);
 }
 
-export function prepareDocumentWithoutIncludes() {
+export function finalizePagePostInclusion() {
   uiLib.expandAllDetails(document.body);
   uiLib.setPrintLayoutFromQuery(document.body);
   updateToc();
@@ -65,7 +65,7 @@ async function onDocumentReadyTasks() {
   prepareContentWithoutIncludes();
   if (!handleIncludes()) {
     // handleIncludes spawns threads which independently call the below.
-    prepareDocumentWithoutIncludes();
+    finalizePagePostInclusion();
   }
   setupDisqus();
 }

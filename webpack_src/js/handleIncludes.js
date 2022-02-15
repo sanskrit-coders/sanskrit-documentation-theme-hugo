@@ -15,8 +15,6 @@ import * as utils from "./utils";
 const yaml = require('js-yaml');
 const footnotes = require('showdown-ghost-footnotes');
 
-let jsIncludes = [];
-
 var showdownConverter = new showdown.Converter({
   strikethrough: true,
   simplifiedAutoLink: true,
@@ -354,14 +352,9 @@ async function fillJsInclude(jsInclude) {
     // console.log(contentElement);
     jsInclude.innerHTML = contentElement;
     main.prepareContentWithoutIncludes(jsInclude);
+    // Second level includes will be handled by another handleIncludes() call. So, we don't worry about them here.
     let secondLevelIncludes = jsInclude.getElementsByClassName('js_include');
-    console.log(secondLevelIncludes);
-    jsIncludes.concat(secondLevelIncludes);
-    // Can't make the below global  - document needs to load first.
-    let progressBar = document.getElementById("progressLoading");
-    if (progressBar.getAttribute("max") == progressBar.getAttribute("value")) {
-      handleIncludes();
-    }
+    secondLevelIncludes.forEach(addPlaceholderDetail);
     return jsInclude;
   }).catch(async function (error) {
     var titleHtml = "";
@@ -385,6 +378,7 @@ function detailsJsIncludeLoader(event) {
 }
 
 async function addPlaceholderDetail(jsInclude) {
+  if (jsInclude.children.length > 0) {return 0;}
   let title = jsInclude.getAttribute("title") || "...{Loading}...";
   let contentHtml = `<details class='included-post-content'><summary>🦅🦍…🐒🐍<h1>${title}</h1></summary>\n\n"...{Loading}..."</details>`;
   jsInclude.innerHTML = await processAjaxResponseHtml(contentHtml, jsInclude);
@@ -392,6 +386,7 @@ async function addPlaceholderDetail(jsInclude) {
   if(getCollapseStyle(jsInclude) == "") {
     jsInclude.firstChild.addEventListener("toggle", detailsJsIncludeLoader);
   }
+  return 1;
 }
 
 // Process includes of the form:
@@ -399,7 +394,7 @@ async function addPlaceholderDetail(jsInclude) {
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
 export default function handleIncludes() {
   console.log("Entering handleIncludes.");
-  jsIncludes = Array.from(document.getElementsByClassName("js_include"));
+  let jsIncludes = Array.from(document.getElementsByClassName("js_include"));
   // Can't make the below global  - document needs to load first.
   let progressBar = document.getElementById("progressLoading");
   if (jsIncludes.length === 0) {
@@ -417,7 +412,14 @@ export default function handleIncludes() {
     console.log("Done including %d out of %d.", filledIncludes, jsIncludes.length);
     if (filledIncludes == jsIncludes.length) {
       document.getElementById("progressBarDiv").hidden = true;
-      main.prepareDocumentWithoutIncludes();
+      // Some included pages may have resulted in new jsInclude elements!
+      let newJsIncludes = Array.from(document.getElementsByClassName("js_include")).filter(x => x.hasAttribute("unfilled"));
+      if (newJsIncludes.length) {
+        console.log("Got jsIncludes within the included pages!");
+        handleIncludes();
+      } else {
+        main.finalizePagePostInclusion();
+      }
     }
   }
 
