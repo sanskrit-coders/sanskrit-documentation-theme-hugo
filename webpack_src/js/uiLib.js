@@ -13,13 +13,13 @@ import * as query from "./query";
 
 
 export function replaceWithQueryParam(queryFieldName, regexPattern) {
-  let userId = query.getParam(queryFieldName);
-  if (userId) {
-    console.log(userId);
-    document.body.innerHTML = document.body.innerHTML.replace(regexPattern, userId);
+  let value = query.getParam(queryFieldName);
+  if (value) {
+    console.log(value);
+    document.body.innerHTML = document.body.innerHTML.replace(regexPattern, value);
     let inputField = document.getElementById(`input_${queryFieldName}`);
     if (inputField) {
-      inputField.value = userId;
+      inputField.value = value;
     }
   }
 }
