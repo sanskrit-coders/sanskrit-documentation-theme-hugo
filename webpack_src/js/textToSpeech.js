@@ -34,6 +34,7 @@ export function handleSpeakToggle() {
     } else {
         speakerButton.classList.remove("red")
         ttsOn = false;
+        // console.log("speakToggle", ttsOn);
         // TODO: How to stop?
     }
 }
