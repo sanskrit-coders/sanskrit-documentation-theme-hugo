@@ -30,7 +30,7 @@
       {{ template "_internal/google_analytics_async.html" . }}
     {{ end }}
 
-    <script src="{{ relURL "webpack_dist/dir_tree-bundle.js" }}"></script>
+    <script src="{{ relURL "webpack_dist/dirTree-bundle.js" }}"></script>
     {{ partialCached "hugo-site-vars-to-js-general.html" .}}
     <script>
     // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds this partial just once and includes it everywhere.
@@ -50,7 +50,7 @@
     <script src="{{ relURL "webpack_dist/main-bundle.js" }}"></script>
     <script src="{{ relURL "webpack_dist/transliteration-bundle.js" }}"></script>
     <script src="{{ relURL "non_webpack_js/disqus.js" }}"></script>
-    <script src="{{ relURL "webpack_dist/ui_lib-bundle.js" }}"></script>
+    <script src="{{ relURL "webpack_dist/uiLib-bundle.js" }}"></script>
     <script src="{{ relURL "webpack_dist/search-bundle.js" }}"></script>
     <script src="{{ relURL "webpack_dist/utils-bundle.js" }}"></script>
     <script src="{{ relURL "webpack_dist/transliteration-bundle.js" }}"></script>

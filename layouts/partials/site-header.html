@@ -1,6 +1,6 @@
 <!-- p-1 is bootstrap padding class. bg-yellow is from tachyons.-->
 <header class="p-1 {{.Site.Params.background_color_class | default "bg-yellow" }} noPrint">
-    <nav role="navigation">
+    <nav role="navigation" class="col">
       <div id="div_top_bar" class="row">
         <div class="col-md-3 justify-content-start">
           <a  href="{{ "/" | relURL }}" class="btn col border">
@@ -48,7 +48,10 @@
           </select>
           <div><a id="expandAllButton" class="btn btn-secondary" onclick="module_main.default.query.setParamAndGo('expandAll', 'true')">↕️️</a></div>
           <div><a id="printButton" class="btn btn-secondary" onclick="module_main.default.query.setParamAndGo('printLayout', 'on')">🖨️️</a></div>
+        </div>
+        <div class="row col  d-flex justify-content-center">
           <div><a id="speakerButton" class="btn btn-secondary" onclick="module_main.default.handleSpeakToggle()">🎧️</a></div>
+          <button id="speakerPauseButton" class="btn btn-secondary">⏸</button>
         </div>
         <div class="row col  d-flex justify-content-center">
           <a href="{{ .Site.Params.FullSearchUrl  | default "full_search" }}"  class="btn btn-secondary">🥽🔦</a>
@@ -57,6 +60,24 @@
         </div>
         <ul id="top-bar-right-custom" class="list-group list-group-horizontal">
         </ul>
+      </div>
+      <div id="audioOptionsDiv" class="row justify-content-center" hidden>
+        <select id="voices" class="form-select bg-secondary text-light"></select>
+        <div>
+          <p class="lead">Vol</p>
+          <input type="range" min="0" max="1" value="1" step="0.1" id="volume" />
+          <span id="volume-label" class="ms-2">1</span>
+        </div>
+        <div class="mx-5">
+          <p class="lead">Rate</p>
+          <input type="range" min="0.1" max="10" value="1" id="rate" step="0.1" />
+          <span id="rate-label" class="ms-2">1</span>
+        </div>
+        <div>
+          <p class="lead">Pitch</p>
+          <input type="range" min="0" max="2" value="1" step="0.1" id="pitch" />
+          <span id="pitch-label" class="ms-2">1</span>
+        </div>
       </div>
     </nav>
 </header>
