@@ -78,11 +78,8 @@ audio {
 }
 
 #sidebar {
-  li {
-    background-color: antiquewhite;
-  }
   .active {
-    >a, >span {background-color: wheat;}
+    background-color: wheat;
   }
 }
 
