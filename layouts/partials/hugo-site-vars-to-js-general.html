@@ -5,7 +5,6 @@
     let siteParams = JSON.parse("{{.Site.Params | jsonify}}");
     let pageDefaultsList = JSON.parse("{{.Site.Data.page_defaults | jsonify}}");
     let sidebarsData = JSON.parse("{{$.Site.Data.sidebars | jsonify}}");
-    let autocompletePageUrl = "{{ "data/pages.tsv" | relURL }}";
     // For directory listing:
     var pageRelUrlTree = {};
 </script>

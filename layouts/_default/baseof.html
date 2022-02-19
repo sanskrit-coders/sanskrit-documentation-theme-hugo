@@ -141,7 +141,8 @@
        -->
       <aside class="col-md-3 card border noPrint " id="sidebar">
           <div id="fastSearch">
-              <input id="searchInput" placeholder="शीर्षिकान्विष्यताम्"  tabindex="0">
+              <datalist id="pageDataList"></datalist>
+              <input id="searchInput" placeholder="शीर्षिकान्विष्यताम्" list="pageDataList" oninput="module_search.pageLoader()">
           </div>
           <details open  class="bg-light-gray" >
               <summary id="sidebarToggleLink" onclick="module_main.default.sidebarToggleHandler()">
