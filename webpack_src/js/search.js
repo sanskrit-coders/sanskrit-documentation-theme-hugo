@@ -7,7 +7,8 @@ export function pageLoader() {
   if (pageSelected == "") {
     return;
   }
-  window.location = urljoin(baseURL, pageSelected);
+  let url = pageSelected.split(";;")[1];
+  window.location = urljoin(baseURL, url);
 }
 
 export function setupTitleSearch() {
@@ -21,7 +22,7 @@ export function setupTitleSearch() {
     let option = document.createElement('option');
     let text = document.createTextNode(autocompleteText);
     option.appendChild(text);
-    option.value = url;
+    // option.value = url;
     fragment.appendChild(option);
   });
   pageDataList.appendChild(fragment);
