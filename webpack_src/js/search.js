@@ -3,7 +3,7 @@ import urljoin from 'url-join';
 
 export function pageLoader() {
   let pageSelected = document.querySelector("#searchInput").value;
-  console.log("pageLoader for search input", pageSelected)
+  console.log("pageLoader for search input", pageSelected);
   if (pageSelected == "") {
     return;
   }
