@@ -3,11 +3,12 @@ import urljoin from 'url-join';
 
 export function pageLoader() {
   let pageSelected = document.querySelector("#searchInput").value;
-  console.log("pageLoader for search input", pageSelected)
+  console.log("pageLoader for search input", pageSelected);
   if (pageSelected == "") {
     return;
   }
-  window.location = urljoin(baseURL, pageSelected);
+  let url = pageSelected.split(";;")[1];
+  window.location = urljoin(baseURL, url);
 }
 
 export function setupTitleSearch() {
@@ -21,7 +22,8 @@ export function setupTitleSearch() {
     let option = document.createElement('option');
     let text = document.createTextNode(autocompleteText);
     option.appendChild(text);
-    option.value = url;
+    // Keep html size low - avoid the below.
+    // option.value = url;
     fragment.appendChild(option);
   });
   pageDataList.appendChild(fragment);
