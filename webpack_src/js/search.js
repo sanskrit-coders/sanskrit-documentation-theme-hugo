@@ -22,6 +22,7 @@ export function setupTitleSearch() {
     let option = document.createElement('option');
     let text = document.createTextNode(autocompleteText);
     option.appendChild(text);
+    // Keep html size low - avoid the below.
     // option.value = url;
     fragment.appendChild(option);
   });
