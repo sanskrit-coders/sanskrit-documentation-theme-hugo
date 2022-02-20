@@ -124,7 +124,8 @@ export function stopSpeech(ttsEngine) {
       window.speechSynthesis.cancel();
       break;
     case "suvaak":
-      // TODO: How to stop?
+      audioWorkletNode.disconnect();
+      audioWorkletNode = null;
       break;
   }
 }
@@ -137,7 +138,8 @@ export function pauseSpeech(ttsEngine) {
       window.speechSynthesis.pause();
       break;
     case "suvaak":
-      // TODO: How to stop?
+      // TODO: How to pause?
+      audioWorkletNode.disconnect();
       break;
   }
 }
