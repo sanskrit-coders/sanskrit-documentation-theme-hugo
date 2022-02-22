@@ -125,7 +125,7 @@ export function stopSpeech(ttsEngine) {
       break;
     case "suvaak":
       audioWorkletNode.disconnect();
-      audioWorkletNode = null;
+      // audioWorkletNode = null;
       break;
   }
 }
