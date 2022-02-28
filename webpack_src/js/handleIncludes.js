@@ -399,6 +399,7 @@ export default function handleIncludes() {
   // Can't make the below global  - document needs to load first.
   let progressBar = document.getElementById("progressLoading");
   if (jsIncludes.length === 0) {
+    // WARNING: Chrome 2022  - the below somehow does not work visually though the html is altered to say "hidden".
     document.getElementById("progressBarDiv").hidden = true;
     return;
   }
