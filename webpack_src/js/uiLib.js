@@ -15,11 +15,12 @@ import * as query from "./query";
 export function replaceWithQueryParam(queryFieldName, regexPattern) {
   let value = query.getParam(queryFieldName);
   if (value) {
-    console.log(value);
     document.body.innerHTML = document.body.innerHTML.replace(regexPattern, value);
     let inputField = document.getElementById(`input_${queryFieldName}`);
+    console.log("replaceWithQueryParam", queryFieldName, value, inputField, Boolean(inputField), document.getElementById(`input_${queryFieldName}`).value);
     if (inputField) {
       inputField.value = value;
+      // document.getElementById(`input_${queryFieldName}`).value = value;
     }
   }
 }
