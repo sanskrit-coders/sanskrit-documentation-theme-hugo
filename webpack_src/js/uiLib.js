@@ -16,6 +16,7 @@ export function replaceWithQueryParam(queryFieldName, regexPattern) {
   let value = query.getParam(queryFieldName);
   if (value) {
     document.body.innerHTML = document.body.innerHTML.replace(regexPattern, value);
+    // WARNING: Because of the above replacement(?), the below does not work as of 202202. Employ some other idea.
     let inputField = document.getElementById(`input_${queryFieldName}`);
     console.log("replaceWithQueryParam", queryFieldName, value, inputField, Boolean(inputField), document.getElementById(`input_${queryFieldName}`).value);
     if (inputField) {
