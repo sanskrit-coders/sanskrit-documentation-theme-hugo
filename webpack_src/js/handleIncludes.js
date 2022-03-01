@@ -301,7 +301,7 @@ function markdownToHtml(markdownCode, includeElement) {
       // console.debug(fieldName, metadata);
       let data = metadata[fieldName];
       if (data !== undefined) {
-        return data;
+        return `${fieldName} : ${data.toString()}`;
       } else {
         return "";
       }
