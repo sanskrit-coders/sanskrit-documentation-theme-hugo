@@ -1,0 +1,14 @@
+<script type="text/javascript">
+  let pageVars = {};
+  pageVars.pageUrlMinusBasePath = "{{.RelPermalink}}".replace(basePath, "/");
+  pageVars.pageParams = {};
+  pageVars.pageSource = "{{ with .File }}{{.Path}}{{ end }}";
+  console.log(pageVars.pageSource);
+  var pageDefaults;
+  for (let possiblePageDefaults of pageDefaultsList) {
+    if (pageVars.pageSource.startsWith(possiblePageDefaults.scope.pathPrefix)) {
+      pageDefaults = possiblePageDefaults.values
+    }
+  }
+    // console.debug(pageParams);
+</script>

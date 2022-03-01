@@ -34,7 +34,9 @@ export function setPrintLayoutFromQuery(node) {
   node.querySelectorAll(".noPrint").forEach(function (e) {
     e.setAttribute("hidden", "true");
   });
-
+  node.querySelectorAll("#disqus_thread").forEach(function (e) {
+    e.setAttribute("hidden", "true");
+  });
   node.getElementsByTagName("summary").forEach(function (e) {
     if (!e.parentNode.hasAttribute("open")) {
       e.parentNode.hidden = true;
