@@ -308,12 +308,15 @@ function markdownToHtml(markdownCode, includeElement) {
     });
     mdContent = fieldData.join("\n\n") + "\n\n" + mdContent;
   }
-  let printMetadata = includeElement.getAttribute("printMetadataDetail");
-  if (printMetadata) {
+  let metadataDetailName = includeElement.getAttribute("metadataDetailName");
+  if (metadataDetailName != null) {
+    if (metadataDetailName == "") {
+      metadataDetailName = "Metadata";
+    }
     let metadataJson = JSON.stringify(metadata, null, "  ");
     metadataJson = metadataJson.replace("\n", "  \n");
     // We'd rather not use pre tag here, to enable proper wrapping and readability.
-    let metadataJsonDetail = `<details><summary>Metadata</summary>\n\n${metadataJson}</details>\n<pre hidden class="metadataRaw">${metadataJson}</pre>`;
+    let metadataJsonDetail = `<details><summary>${metadataDetailName}</summary>\n\n${metadataJson}</details>\n<pre hidden class="metadataRaw">${metadataJson}</pre>`;
     mdContent = `${metadataJsonDetail}\n\n${mdContent}`;
   }
   let editUrl = getStaticFileEditUrl(includeElement);
