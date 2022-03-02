@@ -356,6 +356,8 @@ async function fillJsInclude(jsInclude) {
     // Second level includes will be handled by another handleIncludes() call. So, we don't worry about them here.
     let secondLevelIncludes = jsInclude.getElementsByClassName('js_include');
     secondLevelIncludes.forEach(addPlaceholderDetail);
+    const event = new CustomEvent('jsFill', { detail: "Success"});
+    jsInclude.dispatchEvent(event);
     return jsInclude;
   }).catch(async function (error) {
     var titleHtml = "";
@@ -368,6 +370,8 @@ async function fillJsInclude(jsInclude) {
     // relativizeHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
     jsInclude.innerHTML = elementToInclude;
     console.warn("An error!", error);
+    const event = new CustomEvent('jsFill', { detail: "Failure"});
+    jsInclude.dispatchEvent(event);
     return jsInclude;
   });
 }
@@ -425,7 +429,7 @@ export default function handleIncludes() {
     }
   }
 
-  function periodicIncludeLoader(jsIncludeList, intervalId) {
+  function loadFirstInclude(jsIncludeList, intervalId) {
     let jsInclude = jsIncludeList.shift();
     if (jsInclude) {
       fillJsInclude(jsInclude).catch(reason => console.error(reason));
@@ -438,11 +442,11 @@ export default function handleIncludes() {
     
   }
   var openIncludesLoadingIntervalId = window.setInterval(function () {
-    periodicIncludeLoader(openIncludes, openIncludesLoadingIntervalId)
+    loadFirstInclude(openIncludes, openIncludesLoadingIntervalId)
   }, 1000);
   
   var closedIncludesLoadingIntervalId = window.setInterval(function () {
-    periodicIncludeLoader(collapsedIncludes, closedIncludesLoadingIntervalId)
+    loadFirstInclude(collapsedIncludes, closedIncludesLoadingIntervalId)
   }, 1000);
   return jsIncludes.length;
 }
