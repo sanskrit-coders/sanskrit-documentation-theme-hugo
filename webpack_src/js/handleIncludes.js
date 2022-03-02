@@ -269,6 +269,15 @@ function getStaticFileEditUrl(includeElement) {
     // console.debug("getStaticFileEditUrl", editUrl);
     return editUrl;
   }
+  if (includedPageUrl.includes("githubusercontent")) {
+    // From  
+    // https://raw.githubusercontent.com/subhAShita/db_toml_md__sa__padya/master/main/s/y/A/d/e/syAdevatoy.md
+    // get 
+    // https://github.com/subhAShita/db_toml_md__sa__padya/edit/master/main/s/y/A/d/e/syAdevatoy.md
+    let branch = includedPageUrl.match("https://raw.githubusercontent.com/.+?/.+?/(.+?)/")[1];
+    let editUrl = includedPageUrl.replace("https://raw.githubusercontent.com/", "https://github.com/").replace(`/${branch}/`, `/edit/${branch}/`)
+    return editUrl;
+  }
 }
 
 function markdownToHtml(markdownCode, includeElement) {
