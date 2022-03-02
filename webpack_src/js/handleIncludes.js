@@ -315,9 +315,11 @@ function markdownToHtml(markdownCode, includeElement) {
     if (metadataDetailName == "") {
       metadataDetailName = "Metadata";
     }
-    metadataJson = metadataJson.replace("\n", "  \n");
+    let metadataJsonMd = metadataJson;
+    metadataJsonMd = metadataJsonMd.replace(/(\s*[\{\[\]\}])/g, "");
+    metadataJsonMd = metadataJsonMd.replace(/(\n +)/g, "$1- ");
     // We'd rather not use pre tag here, to enable proper wrapping and readability.
-    let metadataJsonDetail = `<details><summary>${metadataDetailName}</summary>\n\n${metadataJson}</details>`;
+    let metadataJsonDetail = `<details><summary>${metadataDetailName}</summary>\n\n${metadataJsonMd}</details>`;
     mdContent = `${metadataJsonDetail}\n\n${mdContent}`;
   }
   let editUrl = getStaticFileEditUrl(includeElement);

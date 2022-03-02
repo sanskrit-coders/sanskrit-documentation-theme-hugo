@@ -67,7 +67,6 @@ async function onDocumentReadyTasks() {
     // handleIncludes spawns threads which independently call the below.
     finalizePagePostInclusion();
   }
-  setupDisqus();
 }
 
 // So that these can be used like module_main.default.redirectToPage(..).
