@@ -13,7 +13,7 @@ Some notable things you get with this theme (in decreasing order of interest):
 - "Next and Previous" page navigation buttons.
 - A layout which automatically adjusts to the user's screen size.
 - An "Edit me" link on top of each page.
-- Basic ability to include contents from another page using the same theme within anoher.
+- Basic ability to include contents from another page using the same theme within another.
 - embedding audio and video items
 - inline annotation
 - search
@@ -22,9 +22,9 @@ Some notable things you get with this theme (in decreasing order of interest):
   - Search engine optimization and webmaster stuff - which you would use with various search engines.
 - Disqus for comments.
 - Special formatting consideration for fonts which need to be displayed bigger (eg: Devanagari for sanskrit.)
+- Transliteration dropdown: Substitute devanAgarI with other scripts!
 - Support for optionally enabling MathML.
   - See layouts/partials/mathjax_tex_commands.html for useful tex shortcuts.
-- Transliteration dropdown: Substitute devanAgarI with other scripts!
 - Portability
   - We try to minimize the use of liquid templating language in favor of accomplishing stuff (menus, tables of contents, page inclusions) with javascript. This makes it a bit easier to move to another static website generator like hugo in the future.
 
