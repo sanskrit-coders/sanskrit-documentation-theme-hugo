@@ -7,27 +7,31 @@ A wiki-like theme for managing and presenting your content in Hugo - with specia
 
 Some notable things you get with this theme (in decreasing order of interest):
 
-- A collapsible "accordion" sidebar
-  - automatic directory listing for use within sidebar
-- A collapsible "accordion" table-of-contents for each page.
-- "Next and Previous" page navigation buttons.
-- A layout which automatically adjusts to the user's screen size.
-- An "Edit me" link on top of each page.
-- Basic ability to include contents from another page using the same theme within another.
-- embedding audio and video items
-- inline annotation
-- search
-  - json based search
-  - support for google based search
-  - Search engine optimization and webmaster stuff - which you would use with various search engines.
-- Disqus for comments.
-- Special formatting consideration for fonts which need to be displayed bigger (eg: Devanagari for sanskrit.)
-- Transliteration dropdown: Substitute devanAgarI with other scripts!
-- Support for optionally enabling MathML.
-  - See layouts/partials/mathjax_tex_commands.html for useful tex shortcuts.
-- Portability
-  - We try to minimize the use of liquid templating language in favor of accomplishing stuff (menus, tables of contents, page inclusions) with javascript. This makes it a bit easier to move to another static website generator like hugo in the future.
+- Navigation
+  - Collapsible "accordion" sidebar with automated directory listing.
+  - Collapsible "accordion" table-of-contents for each page.
+  - "Next and Previous" page navigation buttons.
+- Search
+  - JSON based title/ url search
+  - Search engine optimization markup and indices - which you would use with various search engines.
+- Reading
+  - A layout which automatically adjusts to the user's screen size.
+  - Embedding audio and video items. Ability to sequentially play audio tracks within a page.
+  - Special formatting consideration for fonts which need to be displayed bigger (eg: Devanagari for sanskrit.)
+  - Transliteration dropdown: scripts ranging from devanāgarī to grantha, brāhmī to ISO-15919.
+  - Text to speech interface (under development).
+  - Disqus for comments.
+  - Collapsible detail sections.
+- Content management
+  - "Edit me" links.
+  - Basic ability to include contents from another page using the same theme within another.
+  - Inline annotation
+  - Version control when backed by a GitHub-type online repository.
+  - Support for optionally enabling MathML. [^mathml_note]
+- Portability: We try to minimize the use of any specific templating language in favor of accomplishing stuff (menus, tables of contents, page inclusions) with javascript. This makes it a bit easier to move to another static website generator like hugo in the future.
 
+
+[^mathml_note]: See layouts/partials/mathjax_tex_commands.html for useful tex shortcuts.
 
 ## Example sites
 
@@ -38,7 +42,6 @@ Some notable things you get with this theme (in decreasing order of interest):
 
 
 ## Usage
-
 ### Recommendations about config.toml
 #### Recommended settings
 disablePathToLower = true Since we assume mixed case to have special meaning.
@@ -46,8 +49,6 @@ disablePathToLower = true Since we assume mixed case to have special meaning.
 #### canonifyURLs
 canonifyURLs = True won't work well as of 20190304. .URL variable does will then not include the subdirectory portion of the basepath (ie kAvya/ bit in http://localhost:1313/kAvyam/), leading to urls like http://localhost:1313/TIkA/padya/kAlidAsa/raghuvaMsha/01/ instead of  http://localhost:1313/kAvyam/TIkA/padya/kAlidAsa/raghuvaMsha/01/.
 
-### Known problems
-- Bitbucket does not allow 
 
 ## Code Contributions
 ### JS and CSS
