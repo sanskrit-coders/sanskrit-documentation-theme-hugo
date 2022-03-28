@@ -2,7 +2,6 @@
 Code to handle includes. handleIncludes() is the entry point.
  */
 
-import * as main from "./main";
 import * as comments from "./comments";
 import toml from 'toml';
 
@@ -11,6 +10,7 @@ import showdown from "showdown";
 import {updateToc} from "./toc";
 import * as query from "./query";
 import * as utils from "./utils";
+import * as uiLib from "./uiLib";
 
 const yaml = require('js-yaml');
 const footnotes = require('showdown-ghost-footnotes');
@@ -375,7 +375,7 @@ async function fillJsInclude(jsInclude) {
   return getAjaxResponsePromise.then(processingFn).then(function (contentElement) {
     // console.log(contentElement);
     jsInclude.innerHTML = contentElement;
-    main.prepareContentWithoutIncludes(jsInclude);
+    uiLib.prepareContentWithoutIncludes(jsInclude);
     // Second level includes will be handled by another handleIncludes() call. So, we don't worry about them here.
     let secondLevelIncludes = jsInclude.getElementsByClassName('js_include');
     secondLevelIncludes.forEach(addPlaceholderDetail);
@@ -447,7 +447,7 @@ export default function handleIncludes() {
         console.log("Got jsIncludes within the included pages!");
         handleIncludes();
       } else {
-        main.finalizePagePostInclusion();
+        uiLib.finalizePagePostInclusion();
       }
     }
   }

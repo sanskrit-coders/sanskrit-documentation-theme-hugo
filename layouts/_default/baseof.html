@@ -32,7 +32,6 @@
       {{ template "_internal/google_analytics_async.html" . }}
     {{ end }}
 
-    <script src="{{ relURL "webpack_dist/dirTree-bundle.js" }}"></script>
     {{ partialCached "hugo-site-vars-to-js-general.html" .}}
     <!--      // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds partial-cached html just once and includes it everywhere. -->
     {{ partial "hugo-page-vars-to-js.html" .}}
@@ -54,10 +53,10 @@
       <aside class="col-md-3 card border noPrint " id="sidebar">
           <div id="fastSearch">
               <datalist id="pageDataList"></datalist>
-              <input id="searchInput" placeholder="शीर्षिकान्विष्यताम्" list="pageDataList" onchange="module_search.pageLoader()">
+              <input id="searchInput" placeholder="शीर्षिकान्विष्यताम्" list="pageDataList" onchange="module_uiLib.default.navigation.pageLoader()">
           </div>
           <details open  class="bg-light-gray" >
-              <summary id="sidebarToggleLink" onclick="module_main.default.sidebarToggleHandler()">
+              <summary id="sidebarToggleLink" onclick="module_uiLib.default.navigation.sidebarToggleHandler()">
             {{ $.Param "sidebar_menu_title"  | default "Menu"}}
               </summary>
               <ul id="sidebarBody" class="list pl2 p-0 {{.Site.Params.background_color_class | default "bg-yellow" }}">
@@ -76,7 +75,7 @@
     // Reasons for not invoking the below using $(document).ready():
     //  - Android webview faced handleInclude invocation problems.
     //  - Somehow $(document).ready() and $(window).on(load, ..) did not seem to get all the headers in case of updateToc!
-    module_main.default.onDocumentReadyTasks();
+    module_uiLib.onDocumentReadyTasks();
   </script>
   {{ block "final_js" . }}{{ end }}
 </html>

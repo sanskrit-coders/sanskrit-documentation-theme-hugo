@@ -1,9 +1,4 @@
-<script src="{{ relURL "webpack_dist/main-bundle.js" }}"></script>
-<script src="{{ relURL "webpack_dist/transliteration-bundle.js" }}"></script>
 <script src="{{ relURL "webpack_dist/uiLib-bundle.js" }}"></script>
-<script src="{{ relURL "webpack_dist/search-bundle.js" }}"></script>
-<script src="{{ relURL "webpack_dist/utils-bundle.js" }}"></script>
-<script src="{{ relURL "webpack_dist/transliteration-bundle.js" }}"></script>
 
 {{ if or .Params.math .Site.Params.math}}
 <script type="text/x-mathjax-config">
@@ -12,7 +7,7 @@
         TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } } },
         messageStyle: "none"
     });
-    </script>
+</script>
 <script type="text/javascript" id="MathJax-script" async
         src="{{ relURL "non_webpack_js/mathjax/es5/tex-chtml.js?config=TeX-AMS-MML_HTMLorMML" }}">
 </script>

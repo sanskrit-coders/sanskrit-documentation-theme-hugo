@@ -2,13 +2,8 @@ var webpack = require("webpack");
 const path = require('path');
 module.exports = {
     entry: {
-        main: "./js/main.js",
         search: "./js/search.js",
         uiLib: "./js/uiLib.js",
-        dirTree: "./js/dirTree.js",
-        utils: "./js/utils.js",
-        transliteration: "./js/transliteration.js",
-        textToSpeech: "./js/textToSpeech.js"
     },
     output: {
         filename: "[name]-bundle.js",
