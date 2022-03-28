@@ -2,7 +2,6 @@ var webpack = require("webpack");
 const path = require('path');
 module.exports = {
     entry: {
-        search: "./js/search.js",
         uiLib: "./js/uiLib.js",
     },
     output: {
