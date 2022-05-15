@@ -7,6 +7,19 @@ main details {
   border-bottom: 1px solid black;
 }
 
+table {
+  border: 1px solid black;
+}
+
+th tr {
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  
+}
+
+tr:hover {background-color: coral;}
+tr:nth-child(even) {background-color: #f2f2f2;}
+
 figure {
   align-content: center;
   text-align: center;
