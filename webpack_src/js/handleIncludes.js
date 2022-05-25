@@ -67,6 +67,9 @@ function absoluteUrl(baseUrl, relative) {
 
 function getCollapseStyle(jsInclude) {
   var collapseStyle = "open";
+  if (isDetailOpen(jsInclude)) {
+    return collapseStyle;
+  }
   // console.info("expandAllParam", expandAllParam, jsInclude);
   if (expandAllParam == "true") {
     return collapseStyle;
@@ -341,7 +344,7 @@ function markdownToHtml(markdownCode, includeElement) {
     if (isDetailOpen(jsInclude)) {
       detailsAttrs = " open";
     }
-    let metadataJsonDetail = `<details${detailsAttrs}><summary>${metadataDetailName}</summary>\n\n${metadataJsonMd}</details>`;
+    let metadataJsonDetail = `<details><summary>${metadataDetailName}</summary>\n\n${metadataJsonMd}</details>`;
     mdContent = `${metadataJsonDetail}\n\n${mdContent}`;
   }
   let editUrl = getStaticFileEditUrl(includeElement);
@@ -405,6 +408,7 @@ async function fillJsInclude(jsInclude) {
     // console.debug(elementToInclude);
     // relativizeHtml(includedPageUrl, elementToInclude, includedPageNewLevelForH1);
     jsInclude.innerHTML = elementToInclude;
+
     console.warn("An error!", error);
     const event = new CustomEvent('jsFill', { detail: "Failure"});
     jsInclude.dispatchEvent(event);
