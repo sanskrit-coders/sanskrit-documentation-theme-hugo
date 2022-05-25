@@ -31,6 +31,15 @@ function cleanId(x) {
   return x.replace(/[\p{P}\p{S}\s]+/gu, "_");
 }
 
+function isDetailOpen(jsInclude) {
+  let details = jsInclude.getElementsByTagName("details");
+  if (details.length > 0) {
+    return details[0].hasAttribute("open");
+  } else {
+    return false;
+  }
+}
+
 /*
 Example: absoluteUrl("../subfolder1/divaspari/", "../images/forest-fire.jpg") == "../subfolder1/images/forest-fire.jpg"
 WARNING NOTE: won't work with say base = "http://google.com" since it does not end with /. 
@@ -328,7 +337,11 @@ function markdownToHtml(markdownCode, includeElement) {
     metadataJsonMd = metadataJsonMd.replace(/(\s*[\{\[\]\}])/g, "");
     metadataJsonMd = metadataJsonMd.replace(/(\n +)/g, "$1- ");
     // We'd rather not use pre tag here, to enable proper wrapping and readability.
-    let metadataJsonDetail = `<details><summary>${metadataDetailName}</summary>\n\n${metadataJsonMd}</details>`;
+    let detailsAttrs = "";
+    if (isDetailOpen(jsInclude)) {
+      detailsAttrs = " open";
+    }
+    let metadataJsonDetail = `<details${detailsAttrs}><summary>${metadataDetailName}</summary>\n\n${metadataJsonMd}</details>`;
     mdContent = `${metadataJsonDetail}\n\n${mdContent}`;
   }
   let editUrl = getStaticFileEditUrl(includeElement);
