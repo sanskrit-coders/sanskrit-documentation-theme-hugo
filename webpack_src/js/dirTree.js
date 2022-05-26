@@ -13,6 +13,9 @@ export function addRelUrlToTree(item, pageParams) {
 }
 
 export async function populateTree() {
+    if (Object.keys(pageRelUrlTree).length > 0) {
+        return;
+    }
     await $.getJSON(baseURL + "/index.json", function(data) {
         for (let pageParams of data) {
             // console.debug(pageParams);
@@ -78,11 +81,13 @@ export function getAllPaths(tree, prefix_in) {
     var prefix = prefix_in  || "/";
     console.assert(prefix.endsWith("/"));
     let nonDirPageKeys = getNonDirPageKeys(tree);
+    // console.debug(nonDirPageKeys);
     let paths = nonDirPageKeys.map(x => `${prefix}${x}/`);
     let childDirKeys = getChildDirKeys(tree);
     childDirKeys.forEach(childDirKey => {
         paths = paths.concat(getAllPaths(tree[childDirKey], `${prefix}${childDirKey}/`));
     });
+    // console.debug("paths - ", paths, tree);
     return paths;
 }
 

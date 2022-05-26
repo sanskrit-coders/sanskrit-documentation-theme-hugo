@@ -48,13 +48,18 @@ export function finalizePagePostInclusion() {
   updateToc();
 }
 
-export async function onDocumentReadyTasks() {
+export async function preLoadTasks() {
+  console.log("preLoadTasks");
   await dirTree.populateTree();
   pageVars.pageParams = dirTree.getPageParams(pageVars.pageUrlMinusBasePath);
   pageVars.sidebarId = pageVars.pageParams.sidebar || pageDefaults.sidebar;
   pageVars.topnavId = pageVars.pageParams.topnav || pageDefaults.topnav;
   pageVars.footernavId = pageVars.pageParams.footernav || pageDefaults.footernav;
   pageVars.unicodeScript = pageVars.pageParams.unicode_script || pageDefaults.unicode_script;
+}
+
+export async function onDocumentReadyTasks() {
+  await preLoadTasks();
   sidebar.insertSidebarItems();
   sidebar.setupSidebarToggle();
   search.setupTitleSearch();
@@ -147,6 +152,7 @@ export default {
     updateTransliteration: transliteration.updateTransliteration,
     handleSpeakToggle: textToSpeech.handleSpeakToggle,
     updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown,
+    getPageParams: dirTree.getPageParams,
   },
   query: {
     removeParamAndGo: query.deleteParamAndGo,

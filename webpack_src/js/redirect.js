@@ -34,9 +34,10 @@ export function redirectToPage(url, manualRedirectionDiv, dryRun, debugInfo="") 
 
 import * as dirTree from "./dirTree";
 
-export function redirectToRandomPage(weightingFn, manualRedirectionDiv, dryRun) {
+export async function redirectToRandomPage(weightingFn, manualRedirectionDiv, dryRun) {
+    await dirTree.populateTree();
     const urls = dirTree.getAllPaths(pageRelUrlTree);
-    console.debug(urls.filter(url => url.startsWith("/m")));
+    // console.debug("All urls", urls, pageRelUrlTree);
     const weights = urls.map(weightingFn);
     var urlWeights = [];
     urls.forEach((url, i) => urlWeights[i] = [url, weights[i]]);
