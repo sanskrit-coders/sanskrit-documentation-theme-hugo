@@ -1,7 +1,7 @@
 ## Intro
 A wiki-like theme for managing and presenting your content in Hugo - with special support for Sanskrit/ Indic languages (where mixed case words are common when Roman script is used).
 
-- Full Article [pdf](https://sanskrit-coders.github.io/content/wsc2022/indic-site-framework.pdf)
+- Full Article [pdf](https://sanskrit-coders.github.io/content/indic-site-framework-2022/indic-site-framework.pdf)
 
 
 ## Features
