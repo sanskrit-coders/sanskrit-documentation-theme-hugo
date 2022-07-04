@@ -4,9 +4,9 @@ import * as query from "./query";
 
 let transliterationTarget = "devanagari";
 /* ---- Cookies ---- */
-let LIPI_DEFAULT = "devanagari";
+let LIPI_DEFAULT = "??";
 let LIPI_COOKIE = "transliteration_target";
-let LIPI_EXPIRY = 30 * 24 * 3600 * 1000;  // 30 days
+let LIPI_EXPIRY = 7 * 24 * 3600 * 1000;  // 7 days
 
 export function loadLipi() {
   let previousTransliterationTarget = transliterationTarget;
@@ -30,7 +30,7 @@ export function saveLipi(lipi) {
 
 export function transliterate(node) {
   loadLipi();
-  if (!transliterationTarget) {
+  if (!transliterationTarget || transliterationTarget == LIPI_DEFAULT) {
     return;
   }
   let transliterationSource = pageVars.unicodeScript || "devanagari";
