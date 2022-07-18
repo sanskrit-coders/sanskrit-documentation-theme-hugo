@@ -245,15 +245,22 @@ async function processAjaxResponseHtml(responseHtml, jsInclude) {
   }
   // console.debug(addTitle, title, cleanId(title), includedPageRelativeUrl);
   // Default value below is for layout sanity.
-  var titleHtml = "<div></div>";
+  var titleHtml = "<span></span>";
   if (addTitle && addTitle != "false") {
-    titleHtml = `<h1 id='${cleanId(title)}'>${title}</h1>`;
+    if (addTitle != "plain") {
+      titleHtml = `<h1 id='${cleanId(title)}'>${title}</h1>`;
+    }
   }
   let popoutLink = `<a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>`
-  var titleRowHtml = `<div class='d-flex justify-content-between'> ${titleHtml}<div class="section-nav row noPrint">${popoutLink}${editLinkHtml}</div></div>`;
+  var titleRowHtml = `<span class='d-flex justify-content-between' style="white-space: pre-wrap;"> ${titleHtml}<div class="section-nav row noPrint">${popoutLink}${editLinkHtml}</div></span>`;
+  if (addTitle == "plain") {
+    titleRowHtml = `${title}${titleRowHtml}`;
+  } else {
+    titleRowHtml = `🦅🦍…🐒🐍${titleRowHtml}`;
+  }
 
   // console.debug("contentInnerHtml", contentInnerHtml, contentElements);
-  contentHtml = `<details ${collapseStyle} class='included-post-content' id="${content_div_id}"><summary>🦅🦍…🐒🐍${titleRowHtml}</summary>\n\n${contentInnerHtml}</details>`;
+  contentHtml = `<details ${collapseStyle} class='included-post-content' id="${content_div_id}"><summary>${titleRowHtml}</summary>\n\n${contentInnerHtml}</details>`;
 
   return relativizeHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1);
 }
