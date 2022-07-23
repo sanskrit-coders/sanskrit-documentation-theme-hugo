@@ -7,7 +7,7 @@ import 'tachyons/css/tachyons.min.css';
 // import '@fortawesome/fontawesome-free/js/solid';
 // import "../css/fonts.css";
 import "../css/treeview.css";
-import "../css/class_styles.scss";
+import "../css/class_styles.css";
 
 import * as query from "./query";
 import * as transliteration from "./transliteration";

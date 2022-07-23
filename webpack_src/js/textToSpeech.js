@@ -1,5 +1,5 @@
 import * as utils from "./utils";
-import Sanscript from "@sanskrit-coders/sanscript";
+import Sanscript from "@indic-transliteration/sanscript";
 
 var ekashrutiSvarah = 106.67, udaattaSvarah = 150;
 var svaritAnudaattah = ekashrutiSvarah;

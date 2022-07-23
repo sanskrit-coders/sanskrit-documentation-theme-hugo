@@ -1,23 +1,20 @@
 body {
   font-family: 'siddhanta', 'NotoSansDevanagari-Regular', 'NotoSansKannada-Regular', 'NotoSansTelugu-Regular', 'NotoSansTamil-Regular', 'NotoSansMalayalam-Regular', 'NotoSansOriya-Regular', 'NotoSansBengali-Regular', 'satisarSharada', 'Sampradaya', 'NotoSansGujarati-Regular', 'NotoSansGurmukhi-Regular', 'NotoSerifTibetan-Medium', 'NotoSansBrahmi-Regular', serif;
 }
-
 main details {
   margin: 3px 0px;
   border-bottom: 1px solid black;
 }
-
 table {
   border: 1px solid black;
 }
-
 th, td {
   border-bottom: 1px solid black;
   border-left: 1px solid black;
 }
-
-tr:hover {background-color: coral;}
-
+tr:hover {
+  background-color: coral;
+}
 figure {
   align-content: center;
   text-align: center;
@@ -32,68 +29,50 @@ figure {
 figure.thumbnail {
   width: 250px;
   height: 250px;
-  img {
-      max-width: 100%;
-      max-height: 100%;
-  }
 }
-
+figure.thumbnail img {
+  max-width: 100%;
+  max-height: 100%;
+}
 *[unicode_script="devanagari"] {
   font-size: 130%;
 }
-
 blockquote {
   padding-left: 2rem;
   border-left-style: solid;
-  border-width: .25rem;
+  border-width: 0.25rem;
 }
-
 .inline_comment {
   font-size: 70%;
   color: firebrick;
   display: inline;
   vertical-align: sub;
 }
-
 audio {
   width: 100%;
 }
-
 .handsontable th, .handsontable td {
   line-height: 1.2em;
 }
-
 .audioCaption {
   text-align: center;
   font-style: italic;
 }
-
 .proof:before {
-  content:"Proof:";
+  content: "Proof:";
 }
 .proof {
   color: #2a82a5;
 }
 .proof:after {
-  content:"∎";
+  content: "∎";
 }
-
-*[emphasis_as_inline_comments=true] {
-  em {
-    // Copied from inline_comments class above.
-    font-size: 80%;
-    color: firebrick;
-    display: inline;
-    vertical-align: sub;
-  }
+*[emphasis_as_inline_comments=true] em {
+  font-size: 80%;
+  color: firebrick;
+  display: inline;
+  vertical-align: sub;
 }
-
-#sidebar {
-  .active {
-    background-color: wheat;
-  }
-}
-
-#div_top_bar {
-  
+#sidebar .active {
+  background-color: wheat;
 }

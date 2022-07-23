@@ -1,4 +1,4 @@
-import Sanscript from "@sanskrit-coders/sanscript";
+import Sanscript from "@indic-transliteration/sanscript";
 import * as utils from "./utils";
 import * as query from "./query";
 
