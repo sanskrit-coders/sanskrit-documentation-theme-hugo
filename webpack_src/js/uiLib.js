@@ -103,20 +103,20 @@ export function setPrintLayoutFromQuery(node) {
   if(printLayout != "on") {
     return;
   }
-  node.querySelectorAll(".noPrint").forEach(function (e) {
+  [...node.querySelectorAll(".noPrint")].forEach(function (e) {
     e.setAttribute("hidden", "true");
   });
-  node.querySelectorAll("#disqus_thread").forEach(function (e) {
+  [...node.querySelectorAll("#disqus_thread")].forEach(function (e) {
     e.setAttribute("hidden", "true");
   });
-  node.getElementsByTagName("summary").forEach(function (e) {
+  [...node.getElementsByTagName("summary")].forEach(function (e) {
     if (!e.parentNode.hasAttribute("open")) {
       e.parentNode.hidden = true;
     } else {
       e.hidden = true;
     }
   });
-  node.getElementsByClassName("fa-external-link-square-alt").forEach(function (e) {
+  [...node.getElementsByClassName("fa-external-link-square-alt")].forEach(function (e) {
     e.parentNode.hidden = true;
   });
 
@@ -127,7 +127,7 @@ export function expandAllDetails(node) {
   if(expandAll != "true") {
     return;
   }
-  node.getElementsByTagName("details").forEach(function (e) {
+  [...node.getElementsByTagName("details")].forEach(function (e) {
     if (e.hasAttribute("open")) {
       e.setAttribute("preOpened", "true");
     } else {

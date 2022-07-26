@@ -84,7 +84,7 @@ function getCollapseStyle(jsInclude) {
 }
 
 function relativizeIncludeElements(documentElement, includedPageRelativeUrl, newLevelForH1) {
-  documentElement.body.getElementsByClassName('js_include').forEach(function (x) {
+  [...documentElement.body.getElementsByClassName('js_include')].forEach(function (x) {
     x.setAttribute("url", absoluteUrl(includedPageRelativeUrl,x.getAttribute("url")));
     var includedPageH1Level = parseInt(x.getAttribute("newLevelForH1"));
     if (includedPageH1Level === undefined) {
@@ -400,7 +400,7 @@ async function fillJsInclude(jsInclude) {
     jsInclude.innerHTML = contentElement;
     uiLib.prepareContentWithoutIncludes(jsInclude);
     // Second level includes will be handled by another handleIncludes() call. So, we don't worry about them here.
-    let secondLevelIncludes = jsInclude.getElementsByClassName('js_include');
+    let secondLevelIncludes = [...jsInclude.getElementsByClassName('js_include')];
     secondLevelIncludes.forEach(addPlaceholderDetail);
     const event = new CustomEvent('jsFill', { detail: "Success"});
     jsInclude.dispatchEvent(event);

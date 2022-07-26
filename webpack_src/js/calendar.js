@@ -11,7 +11,7 @@ function fillIcsCalendar(embedTag) {
 }
 
 export function fillCalendars() {
-    var sheetEmbedTags = document.querySelectorAll('.calendar');
+    var sheetEmbedTags = [...document.querySelectorAll('.calendar')];
     sheetEmbedTags.forEach(function (embedTag) {
         fillIcsCalendar(embedTag);
     });

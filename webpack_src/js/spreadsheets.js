@@ -151,7 +151,7 @@ function fillTable(sheetEmbedTag) {
 }
 
 export function fillSheets(node) {
-    var sheetEmbedTags = node.querySelectorAll('.spreadsheet');
+    var sheetEmbedTags = [...node.querySelectorAll('.spreadsheet')];
     sheetEmbedTags.forEach(function (sheetEmbedTag) {
         fillTable(sheetEmbedTag);
     });
