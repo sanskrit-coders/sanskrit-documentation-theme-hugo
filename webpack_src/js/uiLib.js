@@ -64,9 +64,9 @@ export async function onDocumentReadyTasks() {
   sidebar.setupSidebarToggle();
   search.setupTitleSearch();
   let nextPage = dirTree.getNextPage(pageVars.pageUrlMinusBasePath);
-  dirTree.setAnchor(document.getElementById("nextPage"), nextPage, ">" );
+  dirTree.setAnchor(document.getElementById("nextPage"), nextPage, ">");
   let previousPage = dirTree.getPreviousPage(pageVars.pageUrlMinusBasePath);
-  dirTree.setAnchor(document.getElementById("previousPage"), previousPage, "<" );
+  dirTree.setAnchor(document.getElementById("previousPage"), previousPage, "<");
 
   if (pageVars.topnavId && sidebarsData[pageVars.topnavId]) {
     sidebar.insertNavItems("#top-bar-right-custom", sidebarsData[pageVars.topnavId]);
@@ -100,7 +100,7 @@ export function replaceWithQueryParam(queryFieldName, regexPattern) {
 
 export function setPrintLayoutFromQuery(node) {
   let printLayout = query.getParam("printLayout") || "off";
-  if(printLayout != "on") {
+  if (printLayout != "on") {
     return;
   }
   [...node.querySelectorAll(".noPrint")].forEach(function (e) {
@@ -124,7 +124,7 @@ export function setPrintLayoutFromQuery(node) {
 
 export function expandAllDetails(node) {
   let expandAll = query.getParam("expandAll") || "false";
-  if(expandAll != "true") {
+  if (expandAll != "true") {
     return;
   }
   [...node.getElementsByTagName("details")].forEach(function (e) {
@@ -135,10 +135,28 @@ export function expandAllDetails(node) {
     }
   });
   if (node.tagName.toLocaleLowerCase() == "body") {
-    document.querySelector("#expandAllButton").onclick = function () {query.deleteParamAndGo("expandAll");};
+    document.querySelector("#expandAllButton").onclick = function () {
+      query.deleteParamAndGo("expandAll");
+    };
   }
 }
 
+export function getFontSize(element) {
+  let size = parseFloat(window.getComputedStyle(element, null).getPropertyValue('font-size'));
+  return size
+}
+
+
+export function changeTextSize(diff) {
+  let postContent = document.getElementById("post_content");
+  let size = getFontSize(postContent);
+  console.debug(size);
+  size = size + diff;
+  if (size <= 10) {
+    size = 10;
+  }
+  postContent.style.fontSize = size + "px";
+}
 
 // So that these can be used like module_uiLib.default.redirectToPage(..).
 export default {
@@ -153,6 +171,7 @@ export default {
     handleSpeakToggle: textToSpeech.handleSpeakToggle,
     updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown,
     getPageParams: dirTree.getPageParams,
+    changeTextSize: changeTextSize,
   },
   query: {
     removeParamAndGo: query.deleteParamAndGo,

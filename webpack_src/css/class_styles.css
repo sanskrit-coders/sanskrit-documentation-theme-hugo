@@ -37,6 +37,9 @@ figure.thumbnail img {
 *[unicode_script="devanagari"] {
   font-size: 130%;
 }
+*[unicode_script="kannada"] {
+  font-size: 130%;
+}
 blockquote {
   padding-left: 2rem;
   border-left-style: solid;
