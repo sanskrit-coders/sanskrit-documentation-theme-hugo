@@ -104,42 +104,43 @@ function relativizeHeaderElements(documentElement, includedPageRelativeUrl, newL
   getting the heading "under" which element falls seems non-trivial.
    */
   var headers = utils.getDescendentsByCss(documentElement.body, "h1, h2, h3, h4, h5, h6", documentElement);
-  var id_prefix = cleanId(includedPageRelativeUrl);
+  var idPrefix = cleanId(includedPageRelativeUrl);
   headers.forEach(function (headerElement) {
     var hLevel = parseInt(headerElement.tagName.substring(1));
     var hLevelNew = Math.min(6, newLevelForH1 - 1 + hLevel);
-    var newId = id_prefix + "_" + cleanId(headerElement.getAttribute("id"));
+    var newId = idPrefix + "_" + cleanId(headerElement.getAttribute("id"));
+    // console.debug("new header id", newId, idPrefix);
     let newTagName = `h${hLevelNew}`;
     let oldTagName = headerElement.tagName.toLowerCase();
+    
+    // Placing the below element after outerHTML rewrite was seen not to have any effect.
+    headerElement.setAttribute("id", newId);
     // console.log("header", headerElement, oldTagName, newTagName);
     headerElement.outerHTML = headerElement.outerHTML.replace(`<${oldTagName}`, `<${newTagName}`).replace(`</${oldTagName}`, `</${newTagName}`);
-    headerElement.setAttribute("id", newId);
   });
 }
 
 function relativizeIds(documentElement, includedPageRelativeUrl) {
-  var headers = utils.getDescendentsByCss(documentElement.body, "h1, h2, h3, h4, h5, h6", documentElement);
-  if (headers.length == 0) {
-    return;
-  }
-  let id_prefix = headers[0].id;
-  let id_elements = utils.getDescendentsByCss(documentElement.body, "[id]", documentElement);
-  id_elements.forEach(function (id_element) {
-    let id = id_element.getAttribute("id");
-    if (id.startsWith(id_prefix)) {
+  var idPrefix = cleanId(includedPageRelativeUrl);
+  // console.debug("idPrefix", idPrefix);
+  let idElements = utils.getDescendentsByCss(documentElement.body, "[id]", documentElement);
+  idElements.forEach(function (idElement) {
+    let id = idElement.getAttribute("id");
+    if (id.startsWith(idPrefix)) {
       return;
     }
-    if (id_element.tagName.toLowerCase().startsWith("h")) {
+    if (idElement.tagName.toLowerCase().startsWith("h")) {
       // Headers should already be relativized.
       return;
     }
-    let new_id = `${id_prefix}_${id}`;
+    let newId = `${idPrefix}_${id}`;
+    // console.debug("Fixing idElement", idElement, id, newId);
     // We fix ids whether or not it is referred to by a link. We want sane html.
-    id_element.setAttribute("id", new_id);
+    idElement.setAttribute("id", newId);
     let links = utils.getDescendentsByCss(documentElement.body, `[href='#${id}']`, documentElement);
 
     links.forEach(function (anchor) {
-      anchor.setAttribute("href", `#${new_id}`);
+      anchor.setAttribute("href", `#${newId}`);
         });
   });
 }
@@ -162,8 +163,6 @@ function removeNeedlessElements(documentElement) {
  * @returns {*}
  */
 function relativizeHtml(includedPageRelativeUrl, html, newLevelForH1) {
-  let post_id = cleanId(includedPageRelativeUrl);
-  html = fixFootnotes(html, post_id)
 
   // parse html, but without loading images. Hence this.
   // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
@@ -186,6 +185,7 @@ function relativizeHtml(includedPageRelativeUrl, html, newLevelForH1) {
   utils.getDescendentsByCss(virtualDocument.body, "[src]", virtualDocument).forEach(function (x) {
     x.setAttribute("src", absoluteUrl(includedPageRelativeUrl, x.getAttribute("src")));
   });
+  // The below also fixes footnotes.
   relativizeIds(virtualDocument, includedPageRelativeUrl);
 
   return virtualDocument.body.innerHTML;
@@ -195,12 +195,6 @@ function relativizeHtml(includedPageRelativeUrl, html, newLevelForH1) {
 - It fixes heading levels and figures out whether a title is needed.
 - It fixes urls of images, links and includes to be relative to the includedPageUrl (which is inturn relative to the current page url), so that they work as expected when included in the given page.
 */
-
-function fixFootnotes(responseHtml, post_id) {
-  responseHtml = responseHtml.replace(/("#?fnref-\d+)/, "$1-" + post_id);
-  responseHtml = responseHtml.replace(/("#?fn-\d+)/, "$1-" + post_id);
-  return responseHtml;
-}
 
 // An async function returns results wrapped in Promise objects.
 async function processAjaxResponseHtml(responseHtml, jsInclude) {
