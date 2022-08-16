@@ -117,26 +117,23 @@ function relativizeHeaderElements(documentElement, includedPageRelativeUrl, newL
   });
 }
 
-function relativizeLinks(documentElement, includedPageRelativeUrl) {
-  // Fix links.
-  let anchors = utils.getDescendentsByCss(documentElement.body, "[href]", documentElement)
-  anchors.forEach(function (anchor) {
-    var href = anchor.getAttribute("href");
-    if (href.startsWith("#")) {
-      var headers = utils.getDescendentsByCss(documentElement.body, "h1, h2, h3, h4, h5, h6", documentElement);
-      var new_href = href;
-      if (headers.length > 0) {
-        var id_prefix = headers[0].id;
-        new_href = id_prefix + "_" + href.substring(1);
-        // console.debug(new_href, id_prefix, href);
-        utils.getDescendentsByCss(documentElement.body, href, documentElement).forEach(function (x) {
-          x.setAttribute("id", new_href.substring(1));
+function relativizeIds(documentElement, includedPageRelativeUrl) {
+  var headers = utils.getDescendentsByCss(documentElement.body, "h1, h2, h3, h4, h5, h6", documentElement);
+  if (headers.length == 0) {
+    return;
+  }
+  let id_prefix = headers[0].id;
+  let id_elements = utils.getDescendentsByCss(documentElement.body, "[id]", documentElement);
+  id_elements.forEach(function (id_element) {
+    let id = id_element.getAttribute("id");
+    let new_id = `${id_prefix}_${id}`;
+    // We fix ids whether or not it is referred to by a link. We want sane html.
+    id_element.setAttribute("id", new_id);
+    let links = utils.getDescendentsByCss(documentElement.body, `[href='#${id}']`, documentElement);
+
+    links.forEach(function (anchor) {
+      anchor.setAttribute("href", `#${new_id}`);
         });
-      }
-      anchor.setAttribute("href", new_href);
-    } else {
-      anchor.setAttribute("href", absoluteUrl(includedPageRelativeUrl, href));
-    }
   });
 }
 
@@ -182,7 +179,7 @@ function relativizeHtml(includedPageRelativeUrl, html, newLevelForH1) {
   utils.getDescendentsByCss(virtualDocument.body, "[src]", virtualDocument).forEach(function (x) {
     x.setAttribute("src", absoluteUrl(includedPageRelativeUrl, x.getAttribute("src")));
   });
-  relativizeLinks(virtualDocument, includedPageRelativeUrl);
+  relativizeIds(virtualDocument, includedPageRelativeUrl);
 
   return virtualDocument.body.innerHTML;
 }
