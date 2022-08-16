@@ -49,6 +49,14 @@ export function getDescendentsByCss(parent, css, documentElement) {
   return descendents;
 }
 
+export function createDetailElement(documentElement, heading) {
+  let details = documentElement.createElement('details');
+  let summary = documentElement.createElement("summary");
+  summary.innerHTML = heading;
+  details.appendChild(summary);
+  return details;
+}
+
 export function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);

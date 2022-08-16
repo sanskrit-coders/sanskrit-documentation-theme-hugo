@@ -11,6 +11,7 @@ import {updateToc} from "./toc";
 import * as query from "./query";
 import * as utils from "./utils";
 import * as uiLib from "./uiLib";
+import {createDetailElement} from "./utils";
 
 const yaml = require('js-yaml');
 const footnotes = require('showdown-ghost-footnotes');
@@ -188,6 +189,14 @@ function relativizeHtml(includedPageRelativeUrl, html, newLevelForH1) {
   // The below also fixes footnotes.
   relativizeIds(virtualDocument, includedPageRelativeUrl);
 
+  virtualDocument.querySelectorAll("div.footnotes").forEach(function (divElement) {
+    if (divElement.parentElement.nodeName == "details") {
+      return;
+    }
+    let details = utils.createDetailElement(virtualDocument, "Footnotes");
+    divElement.parentNode.replaceChild(details, divElement);
+    details.appendChild(divElement);
+  });
   return virtualDocument.body.innerHTML;
 }
 
