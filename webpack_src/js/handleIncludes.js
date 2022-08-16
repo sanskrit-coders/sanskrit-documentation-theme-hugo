@@ -126,6 +126,13 @@ function relativizeIds(documentElement, includedPageRelativeUrl) {
   let id_elements = utils.getDescendentsByCss(documentElement.body, "[id]", documentElement);
   id_elements.forEach(function (id_element) {
     let id = id_element.getAttribute("id");
+    if (id.startsWith(id_prefix)) {
+      return;
+    }
+    if (id_element.tagName.toLowerCase().startsWith("h")) {
+      // Headers should already be relativized.
+      return;
+    }
     let new_id = `${id_prefix}_${id}`;
     // We fix ids whether or not it is referred to by a link. We want sane html.
     id_element.setAttribute("id", new_id);
