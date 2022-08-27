@@ -136,7 +136,7 @@ export function expandAllDetails(node) {
   });
   if (node.tagName.toLocaleLowerCase() == "body") {
     document.querySelector("#expandAllButton").onclick = function () {
-      query.deleteParamAndGo("expandAll");
+      query.deleteParamsAndGo(["expandAll"]);
     };
   }
 }
@@ -174,7 +174,7 @@ export default {
     changeTextSize: changeTextSize,
   },
   query: {
-    removeParamAndGo: query.deleteParamAndGo,
+    deleteParamsAndGo: query.deleteParamsAndGo,
     setParamsAndGo: query.setParamsAndGo,
     getParam: query.getParam,
   }

@@ -6,9 +6,11 @@ export function setParamsAndGo(paramValueDict) {
     document.location = url.href;
 }
 
-export function deleteParamAndGo(key) {
+export function deleteParamsAndGo(keys) {
     let url = new URL(document.URL)
-    url.searchParams.delete(key);
+    for (const key in keys) {
+        url.searchParams.delete(key);
+    }
     document.location = url.href;
 }
 
