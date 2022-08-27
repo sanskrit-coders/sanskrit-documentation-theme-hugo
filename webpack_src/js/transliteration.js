@@ -54,6 +54,6 @@ export function updateTransliteration() {
   var translitrationTargetDropdown = document.getElementById("transliterationDropdown");
   var translitrationTarget = translitrationTargetDropdown.options[translitrationTargetDropdown.selectedIndex].value;
   saveLipi(translitrationTarget);
-  query.setParamAndGo("transliteration_target", translitrationTarget);
+  query.setParamsAndGo({"transliteration_target": translitrationTarget});
 }
 

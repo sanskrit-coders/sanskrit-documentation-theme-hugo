@@ -19,5 +19,5 @@ export function setInlineComments(htmlIn) {
 export function updateCommentStyleFromDropdown() {
     let commentStyleDropdown = document.getElementById("commentStyleDropdown");
     var commentStyle = commentStyleDropdown.options[commentStyleDropdown.selectedIndex].value;
-    query.setParamAndGo("comment_style", commentStyle);
+    query.setParamsAndGo({"comment_style": commentStyle});
 }

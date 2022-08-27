@@ -175,7 +175,7 @@ export default {
   },
   query: {
     removeParamAndGo: query.deleteParamAndGo,
-    setParamAndGo: query.setParamAndGo,
+    setParamsAndGo: query.setParamsAndGo,
     getParam: query.getParam,
   }
 }

@@ -1,6 +1,8 @@
-export function setParamAndGo(key, value) {
-    let url = new URL(document.URL)
-    url.searchParams.set(key, value);
+export function setParamsAndGo(paramValueDict) {
+    let url = new URL(document.URL);
+    for (const param in paramValueDict) {
+        url.searchParams.set(param, paramValueDict[param]);
+    }
     document.location = url.href;
 }
 
