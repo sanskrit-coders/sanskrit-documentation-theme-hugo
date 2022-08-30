@@ -3,7 +3,11 @@ body {
 }
 main details {
   margin: 3px 0px;
+  border-top: 1px solid black;
   border-bottom: 1px solid black;
+}
+main summary {
+  border-bottom: 1px dashed black;
 }
 table {
   border: 1px solid black;
