@@ -38,7 +38,7 @@ Some notable things you get with this theme (in decreasing order of interest):
 
 ## Example sites
 
-- https://vishvAsa.github.io/devaH/AryaH/hindukaH/rogAH/padyAni/corona-virus/
+- [kirITa-kITAShTottara-shata-nAmAvalI](https://vishvAsa.github.io/kAvyam/laxyam/padyam/rAjArAmasuta-shankaraH/stotram/kirITa-kITAShTottara-shata-nAmAvalI/)
 - https://vishvAsa.github.io/notes/
 - https://sanskrit-coders.github.io/
 - https://sanskrit.github.io/
