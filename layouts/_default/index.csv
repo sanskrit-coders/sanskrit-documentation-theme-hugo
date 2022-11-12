@@ -1,0 +1,4 @@
+{{- range .Site.Pages -}}
+{{- $FileLogicalName := "" -}}
+{{println .Title "\t" (replace .Permalink .Site.BaseURL "")}}
+{{- end -}}
