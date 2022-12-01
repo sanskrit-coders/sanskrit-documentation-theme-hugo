@@ -9,6 +9,7 @@ main details {
 main summary {
   border-bottom: 1px dashed black;
   font-size: x-small;
+  color: blue;
 }
 table {
   border: 1px solid black;
