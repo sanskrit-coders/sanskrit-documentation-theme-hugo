@@ -2,6 +2,10 @@
     display: none;
 }
 
+header {
+    font-size: x-small;
+}
+
 div[name="contentRow"] {
   column-count: 2;
 }
