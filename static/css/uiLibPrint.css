@@ -1,0 +1,7 @@
+.noPrint {
+    display: none;
+}
+
+div[name="contentRow"] {
+  column-count: 2;
+}
