@@ -1,7 +1,13 @@
 var webpack = require("webpack");
 const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+
+
 module.exports = {
     entry: {
+        // uiLib.css is also produced.
         uiLib: "./js/uiLib.js",
     },
     output: {
@@ -18,13 +24,16 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
-        })
+        }),
+        new MiniCssExtractPlugin(),
     ],
     module: {
         rules: [
             {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
+                // MiniCssExtractPlugin for making css file. 
+                // Also essential for css import statements in js code.
+                test: /.css$/,
+                use: [MiniCssExtractPlugin.loader, "css-loader"],
             },
             {
                 test: /\.(png|jp(e*)g|svg)$/,
@@ -38,5 +47,12 @@ module.exports = {
             },
         ]
     },
-    
+    optimization: {
+        minimizer: [
+            // For webpack@5 you can use the `...` syntax to extend existing minimizers (i.e. `terser-webpack-plugin`), uncomment the next line
+            // `...`,
+            new CssMinimizerPlugin(),
+        ],
+    },
+
 };
