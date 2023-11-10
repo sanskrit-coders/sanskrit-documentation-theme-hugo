@@ -85,3 +85,6 @@ audio {
 #sidebar .active {
   background-color: wheat;
 }
+.header-nav a {
+  color: hotpink;
+}

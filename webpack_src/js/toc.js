@@ -127,7 +127,7 @@ function setUpNavigationLinks(headers) {
       if (index !== headers.length - 1) {
           // There is a javascript click listener (defined later in this file) for the below to scroll up.
           let nextHeader = headers[index + 1];
-          console.log(nextHeader);
+          // console.log(nextHeader);
           let nextHeading_id = nextHeader['id'];
           var goNextLink = $(`<div id="${next_button_id}" class="header-nav btn btn-secondary"><a href="#${nextHeading_id}">⤵</a>️</div>`);
           var toc_item_id = getTocItemId(header.attr('id'));
@@ -139,7 +139,7 @@ function setUpNavigationLinks(headers) {
       if (index !== 0) {
           // There is a javascript click listener (defined later in this file) for the below to scroll up.
           let prevHeader = headers[index - 1];
-          console.log(prevHeader);
+          // console.log(prevHeader);
           let prevHeading_id = prevHeader['id'];
           var goPrevLink = $(`<div id="${prev_button_id}" class="header-nav btn btn-secondary"><a href="#${prevHeading_id}">⤴</a>️</div>`);
           var toc_item_id = getTocItemId(header.attr('id'));

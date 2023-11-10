@@ -150,7 +150,9 @@ audio {
 #sidebar .active {
   background-color: wheat;
 }
-
+.header-nav a {
+  color: yellow;
+}
 /*!********************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/handsontable/dist/handsontable.full.css ***!
   \********************************************************************************************************/
