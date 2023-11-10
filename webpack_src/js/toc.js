@@ -1,5 +1,5 @@
 
-function get_toc_item_id(header_id) {
+function getTocItemId(header_id) {
     return "toc_item_" + header_id;
 }
 
@@ -41,7 +41,7 @@ export function updateToc(options) {
       if (!settings.noBackToTopLinks && this_level === highest_level) {
         $(header).addClass('top-level-header');
       }
-      var toc_item_id = get_toc_item_id(header.id);
+      var toc_item_id = getTocItemId(header.id);
       if (this_level === level) // same level as before; same indenting
         html += `<li id='${toc_item_id}' class="${liClass}"><a href='#${header.id}'>${header.innerText}</a>`;
       else if (this_level <= level){ // higher level than before; end parent ol
@@ -99,7 +99,7 @@ function returnToTopHandler(toc_item_id) {
 
 
 function setUpNavigationLinks(headers) {
-  headers.each(function () {
+  headers.each(function (index) {
     var header = $(this);
     let ancestorIncludedPost = header.closest(".included-post");
     var navDiv = header.next();
@@ -112,15 +112,43 @@ function setUpNavigationLinks(headers) {
         header.append(navDiv);
     }
     
-    let up_button_id = `toc_up_${header.attr('id')}`;
+
+      let up_button_id = `toc_up_${header.attr('id')}`;
     // console.debug($(`#${up_button_id}`).length, navDiv);
     if ($(`#${up_button_id}`).length == 0){
         // There is a javascript click listener (defined later in this file) for the below to scroll up.
-        var returnToTopLink = $(`<div id="${up_button_id}" class="icon-arrow-up back-to-top btn btn-secondary">Up↑</div>`);
-        var toc_item_id = get_toc_item_id(header.attr('id'));
+        var returnToTopLink = $(`<div id="${up_button_id}" class="header-nav back-to-top btn btn-secondary">↑</div>`);
+        var toc_item_id = getTocItemId(header.attr('id'));
         returnToTopLink.click(function() {returnToTopHandler(toc_item_id)});
         }
         navDiv.prepend(returnToTopLink);
+
+      let next_button_id = `toc_next_${header.attr('id')}`;
+      if (index !== headers.length - 1) {
+          // There is a javascript click listener (defined later in this file) for the below to scroll up.
+          let nextHeader = headers[index + 1];
+          console.log(nextHeader);
+          let nextHeading_id = nextHeader['id'];
+          var goNextLink = $(`<div id="${next_button_id}" class="header-nav btn btn-secondary"><a href="#${nextHeading_id}">⤵</a>️</div>`);
+          var toc_item_id = getTocItemId(header.attr('id'));
+          // goNextLink.click(function() {returnToTopHandler(toc_item_id)});
+      }
+      navDiv.prepend(goNextLink);
+
+      let prev_button_id = `toc_prev_${header.attr('id')}`;
+      if (index !== 0) {
+          // There is a javascript click listener (defined later in this file) for the below to scroll up.
+          let prevHeader = headers[index - 1];
+          console.log(prevHeader);
+          let prevHeading_id = prevHeader['id'];
+          var goPrevLink = $(`<div id="${prev_button_id}" class="header-nav btn btn-secondary"><a href="#${prevHeading_id}">⤴</a>️</div>`);
+          var toc_item_id = getTocItemId(header.attr('id'));
+          // goNextLink.click(function() {returnToTopHandler(toc_item_id)});
+      }
+      navDiv.prepend(goPrevLink);
+
     });
+
+    
 }
 
