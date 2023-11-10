@@ -86,5 +86,8 @@ audio {
   background-color: wheat;
 }
 .header-nav a {
-  color: hotpink;
+  color: yellow;
+}
+.header-nav a:active {
+  color: pink;
 }
