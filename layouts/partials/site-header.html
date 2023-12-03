@@ -51,7 +51,12 @@
             <option value="hidden">✗</option>
           </select>
           <div><a id="expandAllButton" class="btn btn-secondary" onclick="module_uiLib.default.query.setParamsAndGo({'expandAll': 'true'})">↕️️</a></div>
-          <div><a id="printButton" class="btn btn-secondary" onclick="module_uiLib.default.query.setParamsAndGo({'printLayout': 'on'})">🖨️️</a></div>
+          🖨:
+          <select id="printStyleDropdown" size="1" onchange="module_uiLib.default.content.updatePrintStyleFromDropdown()">
+            <option value="off">off</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
         </div>
         <div class="row col  d-flex justify-content-center">
           <div><a id="speakerButton" class="btn btn-secondary" onclick="module_uiLib.default.content.handleSpeakToggle()">🎧️</a></div>

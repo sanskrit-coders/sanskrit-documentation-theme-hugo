@@ -98,10 +98,23 @@ export function replaceWithQueryParam(queryFieldName, regexPattern) {
   }
 }
 
+
+export function updatePrintStyleFromDropdown() {
+  let styleDropdown = document.getElementById("printStyleDropdown");
+  var style = styleDropdown.options[styleDropdown.selectedIndex].value;
+  query.setParamsAndGo({"printLayout": style});
+}
+
 export function setPrintLayoutFromQuery(node) {
   let printLayout = query.getParam("printLayout") || "off";
-  if (printLayout != "on") {
+  if (printLayout == "off") {
     return;
+  }
+  const mainTag = document.querySelector('main');
+  if (printLayout == "2") {
+    mainTag.classList.add('print-two-col');    
+  } else {
+    mainTag.classList.remove('print-two-col');
   }
   [...node.querySelectorAll(".noPrint")].forEach(function (e) {
     e.setAttribute("hidden", "true");
@@ -119,7 +132,7 @@ export function setPrintLayoutFromQuery(node) {
   [...node.getElementsByClassName("fa-external-link-square-alt")].forEach(function (e) {
     e.parentNode.hidden = true;
   });
-
+  
 }
 
 export function expandAllDetails(node) {
@@ -170,6 +183,7 @@ export default {
     updateTransliteration: transliteration.updateTransliteration,
     handleSpeakToggle: textToSpeech.handleSpeakToggle,
     updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown,
+    updatePrintStyleFromDropdown: updatePrintStyleFromDropdown,
     getPageParams: dirTree.getPageParams,
     changeTextSize: changeTextSize,
   },
