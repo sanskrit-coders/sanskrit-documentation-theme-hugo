@@ -8,8 +8,10 @@
           </a>
         </div>
         <div id="div_top_bar_right" class="col-md-auto d-flex justify-content-center">
-          ✍
-          <select id="transliterationDropdown" size="1" onchange="module_uiLib.default.content.updateTransliteration()">
+          <button class="btn btn-light"  href="#transliterationDropdown" data-toggle="collapse">
+            ✍
+          </button>
+          <select id="transliterationDropdown" size="1" class="collapse" onchange="module_uiLib.default.content.updateTransliteration()">
             <optgroup label="🌍">
               <option value="iso">āISO</option>
               <option value="iso_vedic">āi-āu</option>
@@ -43,8 +45,11 @@
               <option value="balinese">ᬩᬮᬶ</option>
             </optgroup>
           </select>
+          <div>
+          <button class="btn btn-outline-secondary btn-sm"  href="#transliterationDropdownAlt" data-toggle="collapse">
           (✍)
-          <select id="transliterationDropdownAlt" size="1"  style="font-size:12px" onchange="module_uiLib.default.content.updateTransliteration()">
+          </button>
+          <select id="transliterationDropdownAlt" size="1"  style="font-size:12px" class="bg-light-yellow collapse" onchange="module_uiLib.default.content.updateTransliteration()">
             <optgroup label="🌍">
               <option value="iso">āISO</option>
               <option value="iso_vedic">āi-āu</option>
@@ -78,50 +83,66 @@
               <option value="balinese">ᬩᬮᬶ</option>
             </optgroup>
           </select>
-          <a class="btn btn-secondary" onclick="module_uiLib.changeTextSize(2)">A+</a>  
-          <a class="btn btn-secondary" onclick="module_uiLib.changeTextSize(-2)">A-</a>
-          🗨:
-          <select id="commentStyleDropdown" size="1" onchange="module_uiLib.default.content.updateCommentStyleFromDropdown()">
+          </div>
+          <div class="row col d-flex  dropdown">
+            <button class="btn btn-secondary-outline btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              A±
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="btn btn-secondary btn-sm" onclick="module_uiLib.changeTextSize(2)">A+</a>
+            <a class="btn btn-secondary btn-sm" onclick="module_uiLib.changeTextSize(-2)">A-</a>
+            </div>
+          </div>
+          <button class="btn btn-light btn-sm"  href="#commentStyleDropdown" data-toggle="collapse">
+            🗨
+          </button>
+          <select id="commentStyleDropdown" class="collapse" size="1" onchange="module_uiLib.default.content.updateCommentStyleFromDropdown()">
             <option value="on">✔</option>
             <option value="hidden">✗</option>
           </select>
           <div><a id="expandAllButton" class="btn btn-secondary" onclick="module_uiLib.default.query.setParamsAndGo({'expandAll': 'true'})">↕️️</a></div>
-          🖨:
-          <select id="printStyleDropdown" size="1" onchange="module_uiLib.default.content.updatePrintStyleFromDropdown()">
+          <button class="btn btn-light btn-sm"  href="#printStyleDropdown" data-toggle="collapse">
+            🖨
+          </button>
+          <select id="printStyleDropdown" class="collapse" size="1" onchange="module_uiLib.default.content.updatePrintStyleFromDropdown()">
             <option value="off">off</option>
             <option value="1">1</option>
             <option value="2">2</option>
           </select>
         </div>
-        <div class="row col  d-flex justify-content-center">
-          <div><a id="speakerButton" class="btn btn-secondary" onclick="module_uiLib.default.content.handleSpeakToggle()">🎧️</a></div>
-          <button id="speakerPauseButton" class="btn btn-secondary">⏸</button>
+        <div id="audioDiv" class="row col d-flex  dropdown">
+          <button class="btn btn-secondary-outline btn-sm dropdown-toggle" type="button" id="audioDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            🎧
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a id="speakerButton" class="btn btn-outline-secondary btn-sm" onclick="module_uiLib.default.content.handleSpeakToggle()">⏯</a>
+          <button id="speakerPauseButton" class="btn btn-outline-secondary btn-sm">⏸</button>
+            <div id="audioOptionsDiv" class="row justify-content-center" >
+              <div>
+                <p class="lead">Vol</p>
+                <input type="range" min="0" max="1" value="1" step="0.1" id="volume" />
+                <span id="volume-label" class="ms-2">1</span>
+              </div>
+              <div class="mx-5">
+                <p class="lead">Rate</p>
+                <input type="range" min="0.1" max="10" value="1" id="rate" step="0.1" />
+                <span id="rate-label" class="ms-2">1</span>
+              </div>
+              <div>
+                <p class="lead">Pitch</p>
+                <input type="range" min="0" max="2" value="1" step="0.1" id="pitch" />
+                <span id="pitch-label" class="ms-2">1</span>
+              </div>
+            </div>
+          </div>
         </div>
+        <a href="{{ .Site.Params.FullSearchUrl  | default "full_search" }}"  class="btn btn-light btn-sm">🥽🔦</a>
         <div class="row col  d-flex justify-content-center">
-          <a href="{{ .Site.Params.FullSearchUrl  | default "full_search" }}"  class="btn btn-secondary">🥽🔦</a>
           <div><a id="previousPage" href="" class="btn btn-secondary">###<i class="fas fa-caret-left"></i></a></div>
           <div ><a id="nextPage" href="" class="btn btn-secondary"><i class="fas fa-caret-right"></i> ### </a></div>
         </div>
         <ul id="top-bar-right-custom" class="list-group list-group-horizontal">
         </ul>
-      </div>
-      <div id="audioOptionsDiv" class="row justify-content-center" hidden>
-        <select id="voices" class="form-select bg-secondary text-light"></select>
-        <div>
-          <p class="lead">Vol</p>
-          <input type="range" min="0" max="1" value="1" step="0.1" id="volume" />
-          <span id="volume-label" class="ms-2">1</span>
-        </div>
-        <div class="mx-5">
-          <p class="lead">Rate</p>
-          <input type="range" min="0.1" max="10" value="1" id="rate" step="0.1" />
-          <span id="rate-label" class="ms-2">1</span>
-        </div>
-        <div>
-          <p class="lead">Pitch</p>
-          <input type="range" min="0" max="2" value="1" step="0.1" id="pitch" />
-          <span id="pitch-label" class="ms-2">1</span>
-        </div>
       </div>
     </nav>
 </header>
