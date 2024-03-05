@@ -7,7 +7,7 @@ header {
 }
 
 div[name="contentRow"] {
-  column-count: 2;
+    font-size: x-large;
 }
 
 .print-two-col {
