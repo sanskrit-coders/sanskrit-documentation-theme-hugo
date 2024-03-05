@@ -23,6 +23,7 @@ import handleIncludes from "./handleIncludes";
 import {redirectToPage, redirectToRandomPage} from "./redirect";
 import * as comments from "./comments";
 import * as textToSpeech from "./textToSpeech";
+import * as utils from "./utils";
 
 export function relUrlOfCurrentPage() {
   return document.location.href.split("#")[0].replace(baseURL, "/");
@@ -108,7 +109,7 @@ export function updatePrintStyleFromDropdown() {
   let styleDropdown = document.getElementById("printStyleDropdown");
   var style = styleDropdown.options[styleDropdown.selectedIndex].value;
   let [printStyle, includeStyle] = style.split(":")
-  query.setParamsAndGo({"printLayout": style, "includeStyle": includeStyle});
+  query.setParamsAndGo({"printLayout": printStyle, "includeStyle": includeStyle});
 }
 
 export function setPrintLayoutFromQuery(node) {
@@ -132,7 +133,11 @@ export function setPrintLayoutFromQuery(node) {
     if (!e.parentNode.hasAttribute("open")) {
       e.parentNode.hidden = true;
     } else {
-      e.hidden = true;
+      var headers = e.querySelectorAll("h1, h2, h3");
+      // console.debug(e, headers);
+      if(headers.length == 0)  {
+        e.hidden = true;
+      }
     }
   });
   [...node.getElementsByClassName("fa-external-link-square-alt")].forEach(function (e) {
