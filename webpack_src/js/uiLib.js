@@ -40,6 +40,11 @@ export function prepareContentWithoutIncludes(node) {
   audioEmbed.fillAudioEmbeds(node);
   videoEmbed.fillVideoEmbeds(node);
   spreadsheets.fillSheets(node);
+
+  // Doing the below before inclusion also -  
+  // so that unnecessary include processing can be avoided.
+  expandAllDetails(document.querySelector("body main"));
+  setPrintLayoutFromQuery(document.body);
 }
 
 export function finalizePagePostInclusion() {
@@ -102,7 +107,8 @@ export function replaceWithQueryParam(queryFieldName, regexPattern) {
 export function updatePrintStyleFromDropdown() {
   let styleDropdown = document.getElementById("printStyleDropdown");
   var style = styleDropdown.options[styleDropdown.selectedIndex].value;
-  query.setParamsAndGo({"printLayout": style});
+  let [printStyle, includeStyle] = style.split(":")
+  query.setParamsAndGo({"printLayout": style, "includeStyle": includeStyle});
 }
 
 export function setPrintLayoutFromQuery(node) {

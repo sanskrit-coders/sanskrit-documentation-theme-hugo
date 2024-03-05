@@ -453,6 +453,11 @@ async function addPlaceholderDetail(jsInclude) {
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
 export default function handleIncludes() {
   console.log("Entering handleIncludes.");
+  let includeStyle = query.getParam("includeStyle") || "on";
+  if (includeStyle != "on") {
+    console.log("Not filling includes.");
+    return;
+  }
   let jsIncludes = Array.from(document.getElementsByClassName("js_include"));
   // Can't make the below global  - document needs to load first.
   let progressBar = document.getElementById("progressLoading");
