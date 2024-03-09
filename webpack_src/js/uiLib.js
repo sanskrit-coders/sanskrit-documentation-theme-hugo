@@ -133,11 +133,12 @@ export function setPrintLayoutFromQuery(node) {
     if (!e.parentNode.hasAttribute("open")) {
       e.parentNode.hidden = true;
     } else {
-      var headers = e.querySelectorAll("h1, h2, h3");
-      // console.debug(e, headers);
-      if(headers.length == 0)  {
-        e.hidden = true;
-      }
+      // Hide select headers?
+      // var headers = e.querySelectorAll("h1, h2, h3");
+      // // console.debug(e, headers);
+      // if(headers.length == 0)  {
+      //   e.hidden = true;
+      // }
     }
   });
   [...node.getElementsByClassName("fa-external-link-square-alt")].forEach(function (e) {
