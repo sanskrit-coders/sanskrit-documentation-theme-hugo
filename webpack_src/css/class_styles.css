@@ -11,6 +11,24 @@ main summary {
   font-size: x-small;
   color: blue;
 }
+h1:before {
+  content: "①";
+}
+h2:before {
+  content: "②";
+}
+h3:before {
+  content: "③";
+}
+h4:before {
+  content: "④";
+}
+h5:before {
+  content: "⑤";
+}
+h6:before {
+  content: "⑥";
+}
 table {
   border: 1px solid black;
 }
