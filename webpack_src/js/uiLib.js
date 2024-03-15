@@ -117,7 +117,23 @@ export function setPrintLayoutFromQuery(node) {
   if (printLayout == "off") {
     return;
   }
+  let includeStyle = query.getParam("includeStyle") || "on";
   const mainTag = document.querySelector('main');
+
+  let infoTag = document.querySelector("#infoTag");
+  if (!infoTag) {
+    infoTag = document.createElement("small");
+    infoTag.setAttribute("id", "infoTag");
+    infoTag.innerHTML = `<a href='${document.location}'>Web</a>`
+    if (includeStyle != "on") {
+      infoTag.innerHTML += "\n(noInc)"
+    }
+    let titleTag = document.querySelector("h1");
+    if(titleTag) {
+      titleTag.parentNode.insertBefore(infoTag, titleTag);
+    }
+  }
+
   if (printLayout == "2") {
     mainTag.classList.add('print-two-col');    
   } else {
@@ -129,10 +145,21 @@ export function setPrintLayoutFromQuery(node) {
   [...node.querySelectorAll("#disqus_thread")].forEach(function (e) {
     e.setAttribute("hidden", "true");
   });
+  let expandAllParam = query.getParam("expandAll") || "false";
   [...node.getElementsByTagName("summary")].forEach(function (e) {
     if (!e.parentNode.hasAttribute("open")) {
       e.parentNode.hidden = true;
     } else {
+      if (expandAllParam == "false") {
+        if(e.text == "विश्वास-प्रस्तुतिः") {
+          e.hidden = true;
+        }
+        if (includeStyle != "on" && e.firstChild) {
+          e.firstChild.textContent = e.textContent.replace("...{Loading}...", "").trim();
+        }
+      }
+
+
       // Hide select headers?
       // var headers = e.querySelectorAll("h1, h2, h3");
       // // console.debug(e, headers);
@@ -144,7 +171,6 @@ export function setPrintLayoutFromQuery(node) {
   [...node.getElementsByClassName("fa-external-link-square-alt")].forEach(function (e) {
     e.parentNode.hidden = true;
   });
-  
 }
 
 export function expandAllDetails(node) {
