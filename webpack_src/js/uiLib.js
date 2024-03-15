@@ -155,7 +155,7 @@ export function setPrintLayoutFromQuery(node) {
           e.hidden = true;
         }
         if (includeStyle != "on" && e.firstChild) {
-          e.firstChild.textContent = e.textContent.replace("...{Loading}...", "").trim();
+          e.firstChild.textContent = e.firstChild.textContent.replace("...{Loading}...", "").trim();
         }
       }
 
