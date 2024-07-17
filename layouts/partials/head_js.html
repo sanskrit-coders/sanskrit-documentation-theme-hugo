@@ -4,16 +4,11 @@
 <script>
 // See https://docs.mathjax.org/en/latest/options/input/tex.html
 // https://docs.mathjax.org/en/latest/options/document.html
-window.MathJax = {
+MathJax = {
   tex: {
     inlineMath: [ ["@#", "#@"], ["\\(", "\\)"] ],
     displayMath: [ ["$$","$$"], ["\\[", "\\]"] ],
     processEscapes: true,  // use \$ to produce a literal dollar sign
-    noundefined: {
-      color: "red",
-      background: "#FFEEEE",
-      size: "90%"
-    },
   },
   svg: {
     fontCache: 'global'
