@@ -34,7 +34,7 @@ Some notable things you get with this theme (in decreasing order of interest):
 - Portability: We try to minimize the use of any specific templating language in favor of accomplishing stuff (menus, tables of contents, page inclusions) with javascript. This makes it a bit easier to move to another static website generator like hugo in the future.
 
 
-[^mathml_note]: See layouts/partials/mathjax_tex_commands.html for useful tex shortcuts.
+[^mathml_note]: See layouts/partials/mathjax_tex_commands.html for useful tex shortcuts, and layouts/partials/head_js.html for configuration.
 
 ## Example sites
 
