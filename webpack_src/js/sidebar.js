@@ -238,11 +238,15 @@ export function insertNavItems(navbarId, items) {
         return;
     }
     console.debug(items);
-    if (pageVars.topnavId && !$(navbarId).attr("addedCustomItems")) {
+    let isIterable = typeof items[Symbol.iterator] === 'function';
+    let element = document.getElementById(navbarId);
+
+    if (!element.getAttribute("addedCustomItems") && isIterable) {
         // console.debug(topnavDropdown);
         for (let item of items) {
-            $(navbarId).append(getSidebarItemHtml(item, null, "list-group-item list-group-item-dark"));
+            var sidebarItemHtml = getSidebarItemHtml(item, null, "list-group-item list-group-item-dark");
+            element.insertAdjacentHTML('beforeend', sidebarItemHtml);
         }
-        $(navbarId).attr("addedCustomItems", "true");
+        element.setAttribute("addedCustomItems", "true");
     }
 }
