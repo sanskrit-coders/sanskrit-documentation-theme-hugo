@@ -23,7 +23,7 @@ Some notable things you get with this theme (in decreasing order of interest):
   - Special formatting consideration for fonts which need to be displayed bigger (eg: Devanagari for sanskrit.)
   - Transliteration dropdown: scripts ranging from devanāgarī to grantha, brāhmī to ISO-15919.
   - Text to speech interface (under development).
-  - Disqus for comments.
+  - Disqus for comments (optional).
   - Collapsible detail sections.
 - Content management
   - "Edit me" links.

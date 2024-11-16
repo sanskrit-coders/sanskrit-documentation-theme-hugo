@@ -65,7 +65,9 @@
       </aside>
       <main class="col p-3" role="main">
         {{ block "main" . }}{{ end }}
-        {{ partialCached "disqus.html" . }}
+        {{ with .Site.Params.DisqusShortcode }}
+          {{ partialCached "disqus.html" . }}
+        {{ end }}
         {{partial "article-params-card" .}}
       </main>
     </div>
