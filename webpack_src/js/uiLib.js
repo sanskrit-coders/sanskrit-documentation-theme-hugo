@@ -75,10 +75,10 @@ export async function onDocumentReadyTasks() {
   dirTree.setAnchor(document.getElementById("previousPage"), previousPage, "<");
 
   if (pageVars.topnavId && sidebarsData[pageVars.topnavId]) {
-    sidebar.insertNavItems("#top-bar-right-custom", sidebarsData[pageVars.topnavId]);
+    sidebar.insertNavItems("top-bar-right-custom", sidebarsData[pageVars.topnavId]);
   }
   if (pageVars.footernavId && sidebarsData[pageVars.footernavId]) {
-    sidebar.insertNavItems("#footer-bar-right-custom", sidebarsData[pageVars.footernavId]);
+    sidebar.insertNavItems("footer-bar-right-custom", sidebarsData[pageVars.footernavId]);
   }
   if (pageVars.unicodeScript) {
     document.querySelector("#post_content").setAttribute("unicode_script", pageVars.unicodeScript);
