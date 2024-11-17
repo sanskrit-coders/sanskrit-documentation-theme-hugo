@@ -151,7 +151,7 @@ export function setPrintLayoutFromQuery(node) {
       e.parentNode.hidden = true;
     } else {
       if (expandAllParam == "false") {
-        if(e.text == "विश्वास-प्रस्तुतिः") {
+        if(e.text.includes("विश्वास-प्रस्तुतिः")) {
           e.hidden = true;
         }
         if (includeStyle != "on" && e.firstChild) {
