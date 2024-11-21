@@ -151,7 +151,8 @@ export function setPrintLayoutFromQuery(node) {
       e.parentNode.hidden = true;
     } else {
       if (expandAllParam == "false") {
-        if(e.text.includes("विश्वास-प्रस्तुतिः")) {
+        if(e.textContent.includes("विश्वास-प्रस्तुतिः")) {
+          // Just hide the summary tag.
           e.hidden = true;
         }
         if (includeStyle != "on" && e.firstChild) {
