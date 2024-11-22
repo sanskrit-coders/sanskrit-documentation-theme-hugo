@@ -15,10 +15,12 @@ ChandaH = "गायत्री"
 
 <details><summary>Vedaweb annotation</summary>
 
-### Strata
+_________
+**Strata**  
 Strophic on metrical evidence alone
 
-### Pāda-label
+_________
+**Pāda-label**  
 genre M  
 genre M  
 genre M
@@ -223,11 +225,13 @@ May we focus on the excellent radiance of the deva Savitṛ who will inspire our
 
 <details><summary>Wilson</summary>
 
-### English translation:
+_________
+**English translation:**  
 
 “We meditate on that desirable light of the divine **Savitā**, who influences our pious rites.”
 
-### Commentary by Sāyaṇa: Ṛgveda-bhāṣya
+_________
+**Commentary by Sāyaṇa: Ṛgveda-bhāṣya**  
 
 **Yajus**. 3.35;
 
@@ -292,7 +296,8 @@ Dass wir des Gottes Savitar begehrtes Licht erlangten doch, Der unsre Bitten fö
 
 <details><summary>मानसतरङ्गिणीकृत् - टिप्पनी</summary>
 
-### The mantra-s
+__________
+**The mantra-s**
 
 The Sāvitrī is the core mantra used in Savitrupāsanā. It also has other notable deployments, which will be described later. Its ṛṣi is Viśvāmitra of the clan of Gāthin, the chandas is nicṛd gāyatrī and the devatā is Savitṛ. It is from the 3_r__d_ maṇḍala of the Ṛgveda (RV 3.62.10). The meter is termed nicṛd gāyatrī because the syllable count is 23, one short of the usual 24 for a gāyatrī. This arises due to the intrinsic saṃdhi, which creates वरेण्यम् from वरेणियम् . The Sāvitrī goes thus:  
 
@@ -316,7 +321,8 @@ Thus, we get,
 
 May we focus on the excellent radiance of the deva Savitṛ who will inspire our insights.  
 
-### Adjuncts
+__________
+**Adjuncts**  
 The Sāvitrī is prefixed with the three vyāhṛti-s for the actual japa.  
 
 > भूर् भुवः सुवः ।  
@@ -373,7 +379,8 @@ A variant inverse deployment involves merely inverting the three feet.
 
 > धियो॒ यो नः॑ प्रचो॒दया॑त् । भर्गो॑ दे॒वस्य॑ धीमहि । तत् स॑वि॒तुर् वरे॑णि॒यों ॥
 
-### The mysteries
+__________
+**The mysteries**
 
 The śruti of the the Vājasaneyin-s provides a mystery teaching regarding the Sāvitrī, which associates the 3 feet of the core mantra with a triad of triads, which is summarized below.
 
