@@ -406,9 +406,9 @@ async function fillJsInclude(jsInclude) {
     // console.log(contentElement);
     jsInclude.innerHTML = contentElement;
     uiLib.prepareContentWithoutIncludes(jsInclude);
-    // Second level includes will be handled by another handleIncludes() call. So, we don't worry about them here.
+    // Second level includes will be handled by another handleIncludes() call. So, we don't worry about them here, beyond marking them unfilled.
     let secondLevelIncludes = [...jsInclude.getElementsByClassName('js_include')];
-    secondLevelIncludes.forEach(addPlaceholderDetail);
+    secondLevelIncludes.forEach(function (x) {x.setAttribute("unfilled", "")});
     const event = new CustomEvent('jsFill', { detail: "Success"});
     jsInclude.dispatchEvent(event);
     return jsInclude;
@@ -437,11 +437,13 @@ function detailsJsIncludeLoader(event) {
 }
 
 async function addPlaceholderDetail(jsInclude) {
-  if (jsInclude.children.length > 0) {return 0;}
+  jsInclude.setAttribute("unfilled", "");
+  if (jsInclude.children.length > 0) {
+    return 0;
+  }
   let title = jsInclude.getAttribute("title") || "...{Loading}...";
   let contentHtml = `<details class='included-post-content'><summary>🦅🦍…🐒🐍<h1>${title}</h1></summary>\n\n"...{Loading}..."</details>`;
   jsInclude.innerHTML = await processAjaxResponseHtml(contentHtml, jsInclude);
-  jsInclude.setAttribute("unfilled", "")
   if(getCollapseStyle(jsInclude) == "") {
     jsInclude.firstChild.addEventListener("toggle", detailsJsIncludeLoader);
   }
@@ -451,14 +453,18 @@ async function addPlaceholderDetail(jsInclude) {
 // Process includes of the form:
 // <div class="js_include" url="../xyz/"/>.
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
-export default function handleIncludes() {
+export default function handleIncludes(jsIncludesIn) {
   console.log("Entering handleIncludes.");
   let includeStyle = query.getParam("includeStyle") || "on";
   if (includeStyle != "on") {
     console.log("Not filling includes.");
     return;
   }
-  let jsIncludes = Array.from(document.getElementsByClassName("js_include"));
+  let jsIncludes = jsIncludesIn;
+  if (!jsIncludes) {
+    jsIncludes = Array.from(document.getElementsByClassName("js_include"));
+  }
+  console.log("Got includes", jsIncludes);
   // Can't make the below global  - document needs to load first.
   let progressBar = document.getElementById("progressLoading");
   if (jsIncludes.length === 0) {
@@ -480,8 +486,8 @@ export default function handleIncludes() {
       // Some included pages may have resulted in new jsInclude elements!
       let newJsIncludes = Array.from(document.getElementsByClassName("js_include")).filter(x => x.hasAttribute("unfilled"));
       if (newJsIncludes.length) {
-        console.log("Got jsIncludes within the included pages!");
-        handleIncludes();
+        console.warn("Got jsIncludes within the included pages!", newJsIncludes);
+        handleIncludes(newJsIncludes);
       } else {
         uiLib.finalizePagePostInclusion();
       }
