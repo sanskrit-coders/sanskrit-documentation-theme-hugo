@@ -475,6 +475,7 @@ export default function handleIncludes(jsIncludesIn) {
   let filledIncludes = 0;
   progressBar.setAttribute("max", jsIncludes.length.toString());
   progressBar.setAttribute("value", filledIncludes.toString());
+  // Every include tag is initially forced to have the attribute "unfilled" irrespective of whether the html has it.
   jsIncludes.forEach(addPlaceholderDetail);
   let openIncludes = jsIncludes.filter(x => getCollapseStyle(x) == "open");
   let collapsedIncludes = jsIncludes.filter(x => getCollapseStyle(x) == "");
