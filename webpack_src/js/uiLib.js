@@ -71,8 +71,10 @@ export async function onDocumentReadyTasks() {
   search.setupTitleSearch();
   let nextPage = dirTree.getNextPage(pageVars.pageUrlMinusBasePath);
   dirTree.setAnchor(document.getElementById("nextPage"), nextPage, ">");
+  dirTree.setAnchor(document.getElementById("nextPageFoot"), nextPage, ">");
   let previousPage = dirTree.getPreviousPage(pageVars.pageUrlMinusBasePath);
   dirTree.setAnchor(document.getElementById("previousPage"), previousPage, "<");
+  dirTree.setAnchor(document.getElementById("previousPageFoot"), previousPage, "<");
 
   if (pageVars.topnavId && sidebarsData[pageVars.topnavId]) {
     sidebar.insertNavItems("top-bar-right-custom", sidebarsData[pageVars.topnavId]);
