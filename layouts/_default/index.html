@@ -1,9 +1,0 @@
-{{ define "main" }}
-<header class='border d-flex justify-content-between'>
-    <h1 id="{{.Params.title}}">{{.Params.title}}</h1>
-    {{ with .File }}
-    <a id="editLink" class="btn btn-primary noPrint"  href="{{print $.Site.Params.githubEditMePathBase .Path }}"><i class="fas fa-edit"></i></a>
-    {{ end }}
-</header>
-{{partial "default-content" .}}
-{{ end }}
