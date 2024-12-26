@@ -9,21 +9,20 @@ export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x,
         const lines = data.split('\n');
 
         const dropdown = document.getElementById(dropdownId);
+        dropdown.innerHTML = ''; // Clear any existing options
         lines.forEach(line => {
             const values = line.split('\t');
             if (values[0]) {
                 const option = document.createElement('option');
-                option.value = valueMaker(line);
+                option.value = valueMaker(line.trim());
                 option.textContent = textMaker(line);
+                if (queryValue == option.value) {
+                    option.setAttribute('selected', "")
+                }
                 dropdown.appendChild(option);
             }
         });
-        if (queryValue) {
-            dropdown.value = queryValue;
-            console.log(`Set dropdown ${dropdownId} to ${queryValue}`);
-        } else {
-            console.log(`Not setting dropdown ${dropdownId} selection.`);
-        }
+        
         dropdown.addEventListener('change', async (event) => {
             const selectedValue = event.target.value;
             await handler(selectedValue);
