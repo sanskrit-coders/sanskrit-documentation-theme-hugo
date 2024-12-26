@@ -214,12 +214,13 @@ export function insertSidebarItems() {
     }
     // $("#sidebarTitle a").html(sidebar.title);
     // console.debug(sidebar);
-    if ($("#sidebarBody li").length > 0) {
+    if (document.querySelectorAll("#sidebarBody li").length > 0) {
         console.warn("Exiting without reinserting items.");
         return;
     }
+
     for (let sidebarItem of sidebar.contents) {
-        $("#sidebarBody").append(getSidebarItemHtml(sidebarItem));
+        document.getElementById("sidebarBody").insertAdjacentHTML('beforeend', getSidebarItemHtml(sidebarItem));
     }
 
     // this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page.
