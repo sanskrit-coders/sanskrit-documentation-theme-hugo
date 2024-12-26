@@ -1,4 +1,5 @@
-export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x)) {
+export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x), queryValue = null) {
+    console.log("Entering loadDropdownFromTSV");
     try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -17,6 +18,12 @@ export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x,
                 dropdown.appendChild(option);
             }
         });
+        if (queryValue) {
+            dropdown.value = queryValue;
+            console.log(`Set dropdown ${dropdownId} to ${queryValue}`);
+        } else {
+            console.log(`Not setting dropdown ${dropdownId} selection.`);
+        }
         dropdown.addEventListener('change', async (event) => {
             const selectedValue = event.target.value;
             await handler(selectedValue);

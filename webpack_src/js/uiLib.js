@@ -230,6 +230,7 @@ export default {
     updatePrintStyleFromDropdown: updatePrintStyleFromDropdown,
     getPageParams: dirTree.getPageParams,
     changeTextSize: changeTextSize,
+    handleIncludes: handleIncludes
   },
   query: {
     deleteParamsAndGo: query.deleteParamsAndGo,
