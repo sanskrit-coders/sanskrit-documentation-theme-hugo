@@ -207,7 +207,7 @@ function relativizeHtml(includedPageRelativeUrl, html, newLevelForH1) {
 
 // An async function returns results wrapped in Promise objects.
 async function processAjaxResponseHtml(responseHtml, jsInclude) {
-  // We want to use jquery to parse html, but without loading images. Hence this.
+  // We want to parse html, but without loading images. Hence this.
   // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
   let includedPageNewLevelForH1 = parseInt(jsInclude.getAttribute("newLevelForH1"));
   let includedPageRelativeUrl = getRelativeIncludedPageUrl(jsInclude);

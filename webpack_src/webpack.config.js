@@ -21,10 +21,6 @@ module.exports = {
         usedExports: true
     },
     plugins: [
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        }),
         new MiniCssExtractPlugin(),
     ],
     module: {
