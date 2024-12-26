@@ -18,12 +18,14 @@ import * as spreadsheets from "./spreadsheets";
 import {updateToc} from "./toc";
 import * as dirTree from "./dirTree";
 import * as sidebar from "./sidebar";
+import * as indexes from "./indexes";
 import * as search from "./search";
 import handleIncludes from "./handleIncludes";
 import {redirectToPage, redirectToRandomPage} from "./redirect";
 import * as comments from "./comments";
 import * as textToSpeech from "./textToSpeech";
 import * as utils from "./utils";
+import {loadDropdownFromTSV} from "./indexes";
 
 export function relUrlOfCurrentPage() {
   return document.location.href.split("#")[0].replace(baseURL, "/");
@@ -218,7 +220,8 @@ export default {
     sidebarToggleHandler: sidebar.sidebarToggleHandler,
     pageLoader: search.pageLoader,
     redirectToPage: redirectToPage,
-    redirectToRandomPage: redirectToRandomPage
+    redirectToRandomPage: redirectToRandomPage,
+    loadDropdownFromTSV: indexes.loadDropdownFromTSV
   },
   content: {
     updateTransliteration: transliteration.updateTransliteration,
