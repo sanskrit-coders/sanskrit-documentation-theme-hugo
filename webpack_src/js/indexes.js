@@ -12,7 +12,7 @@ export async function loadDropdownFromTSV(url, dropdownId, handler = (x) => cons
             const values = line.split('\t');
             if (values[0]) {
                 const option = document.createElement('option');
-                option.value = values;
+                option.value = line;
                 option.textContent = values[0];
                 dropdown.appendChild(option);
             }
