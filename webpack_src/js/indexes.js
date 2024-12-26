@@ -1,4 +1,4 @@
-export async function loadDropdownFromTSV(url, dropdownId, handler = (x) => console.log(x)) {
+export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x)) {
     try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -12,8 +12,8 @@ export async function loadDropdownFromTSV(url, dropdownId, handler = (x) => cons
             const values = line.split('\t');
             if (values[0]) {
                 const option = document.createElement('option');
-                option.value = line;
-                option.textContent = values[0];
+                option.value = valueMaker(line);
+                option.textContent = textMaker(line);
                 dropdown.appendChild(option);
             }
         });
