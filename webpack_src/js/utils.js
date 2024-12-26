@@ -72,3 +72,24 @@ export function getCookie(cname) {
   }
   return undefined;
 }
+
+export function getAjaxResponsePromise(url) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.responseText);
+      } else {
+        reject(new Error(`Request failed with status ${xhr.status}`));
+      }
+    };
+
+    xhr.onerror = function() {
+      reject(new Error('Network error'));
+    };
+
+    xhr.send();
+  });
+}

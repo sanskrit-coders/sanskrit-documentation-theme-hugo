@@ -19,7 +19,7 @@ export function updateToc(options) {
     console.debug("headers.length", headers.length);
     if (headers.length < settings.minimumHeaders) {
       console.log(`Too few headers ${headers.length} < ${settings.minimumHeaders}. Returning.`);
-      $("#toc_card").hide();
+    document.getElementById("toc_card").style.display = "none";
       return;
     }
 
@@ -39,7 +39,7 @@ export function updateToc(options) {
     .each(function(_, header) {
       this_level = get_level(header);
       if (!settings.noBackToTopLinks && this_level === highest_level) {
-        $(header).addClass('top-level-header');
+        header.classList.add('top-level-header');
       }
       var toc_item_id = getTocItemId(header.id);
       if (this_level === level) // same level as before; same indenting

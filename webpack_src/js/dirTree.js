@@ -16,7 +16,13 @@ export async function populateTree() {
     if (Object.keys(pageRelUrlTree).length > 0) {
         return;
     }
-    await $.getJSON(baseURL + "/index.json", function(data) {
+    try {
+        const response = await fetch(`${baseURL}/index.json`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+
         for (let pageParams of data) {
             // console.debug(pageParams);
             pageParams["absUrl"] = baseURL + pageParams["relUrl"];
@@ -24,9 +30,10 @@ export async function populateTree() {
             // if (pageParams["relUrl"].includes("piba-somam-mahAvairAjam")) {
             //     console.debug(getChildTree(pageParams["relUrl"]));
             // }
-            
         }
-    });
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
 
 }
 

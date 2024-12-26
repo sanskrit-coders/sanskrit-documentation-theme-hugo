@@ -70,81 +70,98 @@ function fillTableFromJsObject(data, sheetEmbedTag) {
     sidebar.setupSidebarToggle();
 }
 
-function fillJsonTable(sheetEmbedTag) {
+async function fillJsonTable(sheetEmbedTag) {
     let jsonUrl = sheetEmbedTag.getAttribute("src");
-    $.getJSON(jsonUrl, function (data) {
+    try {
+        const response = await fetch(jsonUrl);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+
         if (data.length > 0) {
             fillTableFromJsObject(data, sheetEmbedTag);
         }
-    });
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
 }
 
-function fillJson5Table(sheetEmbedTag) {
+async function fillJson5Table(sheetEmbedTag) {
     let tomlUrl = sheetEmbedTag.getAttribute("src");
-    $.ajax({
-        url: tomlUrl,
-        type: "GET",
-        dataType: "text",
-        mimeType: "text/plain",
-        success: function(data){
-            if (data.length > 0) {
-                // console.debug(data);
-                var jsonData = json5.parse(data);
-                fillTableFromJsObject(jsonData, sheetEmbedTag);
-            }
+    try {
+        const response = await fetch(tomlUrl);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    });
+        const data = await response.text();
+
+        if (data.length > 0) {
+            // console.debug(data);
+            const jsonData = JSON5.parse(data);
+            fillTableFromJsObject(jsonData, sheetEmbedTag);
+        }
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
 }
 
-function fillTomlTable(sheetEmbedTag) {
+async function fillTomlTable(sheetEmbedTag) {
     let tomlUrl = sheetEmbedTag.getAttribute("src");
-    $.ajax({
-        url: tomlUrl,
-        type: "GET",
-        dataType: "text",
-        mimeType: "text/plain",
-        success: function(data){
-            if (data.length > 0) {
-                // console.debug(data);
-                var jsObj = toml.parse(data);
-                fillTableFromJsObject(jsObj.data, sheetEmbedTag);
-            }
+    try {
+        const response = await fetch(tomlUrl);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    });
+        const data = await response.text();
+
+        if (data.length > 0) {
+            // console.debug(data);
+            const jsObj = toml.parse(data);
+            fillTableFromJsObject(jsObj.data, sheetEmbedTag);
+        }
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
 }
 
-function fillTsvTable(sheetEmbedTag) {
+async function fillTsvTable(sheetEmbedTag) {
     let tsvUrl = sheetEmbedTag.getAttribute("src");
     let separatorStr = sheetEmbedTag.getAttribute("separator") || "\t";
-    $.ajax({
-        url: tsvUrl,
-        type: "GET",
-        dataType: "text",
-        mimeType: "text/plain",
-        success: function(data){
-            if (data.length > 0) {
-                var lines = data.split("\n");
-                const tableData = [];             // The array to store JSON data.
-                $.each(lines, function (index, line) {
-                    var values = line.split(separatorStr);
-                    tableData.push(values);
-                });
-                fillTableFromJsObject(tableData, sheetEmbedTag);
-            }
+
+    try {
+        const response = await fetch(tsvUrl);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    });
+        const data = await response.text();
+
+        if (data.length > 0) {
+            const lines = data.split("\n");
+            const tableData = []; // The array to store parsed data.
+
+            lines.forEach(line => {
+                const values = line.split(separatorStr);
+                tableData.push(values);
+            });
+
+            fillTableFromJsObject(tableData, sheetEmbedTag);
+        }
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
 }
 
-function fillTable(sheetEmbedTag) {
+async function fillTable(sheetEmbedTag) {
     let srcUrl = sheetEmbedTag.getAttribute("src");
     if (srcUrl.endsWith("json")) {
-        fillJsonTable(sheetEmbedTag);
+        await fillJsonTable(sheetEmbedTag);
     } else if (srcUrl.endsWith("tsv") || srcUrl.endsWith("csv")) {
-        fillTsvTable(sheetEmbedTag);
+        await fillTsvTable(sheetEmbedTag);
     } else if (srcUrl.endsWith("json5")) {
-        fillJson5Table(sheetEmbedTag);
+        await fillJson5Table(sheetEmbedTag);
     } else if (srcUrl.endsWith("toml")) {
-        fillTomlTable(sheetEmbedTag);
+        await fillTomlTable(sheetEmbedTag);
     } else {
         console.error("Don't know how to deal with this file type: " + srcUrl)
     }

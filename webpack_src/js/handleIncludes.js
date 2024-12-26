@@ -284,8 +284,8 @@ function getRelativeIncludedPageUrl(jsInclude) {
   return includedPageUrl;
 }
 
-function getStaticFileEditUrl(includeElement) {
-  var includedPageUrl = includeElement.getAttribute("url");
+function getStaticFileEditUrl(jsInclude) {
+  var includedPageUrl = jsInclude.getAttribute("url");
   if (siteParams.githubeditmepathbase.includes("github") && includedPageUrl.startsWith("/")) {
     let editUrlParts = siteParams.githubeditmepathbase.match("(.+?github.com/.+?)/(.+?)");
     let urlParts = includedPageUrl.match("/(.+?)/(.+)");
@@ -306,7 +306,7 @@ function getStaticFileEditUrl(includeElement) {
   }
 }
 
-function markdownToHtml(markdownCode, includeElement) {
+function markdownToHtml(markdownCode, jsInclude) {
   let metadataSeparator = markdownCode.split("\n")[0].trim();
   // console.log(`metadataSeparator: ${metadataSeparator}`)
   let mdContent = markdownCode
@@ -332,7 +332,7 @@ function markdownToHtml(markdownCode, includeElement) {
   }
   let metadataJson = JSON.stringify(metadata, null, "  ");
   mdContent = `<pre hidden className="metadataRaw">${metadataJson}</pre>\n${mdContent}`
-  let fieldNames = includeElement.getAttribute("fieldNames");
+  let fieldNames = jsInclude.getAttribute("fieldNames");
   if (fieldNames) {
     let fieldData = fieldNames.split(",").map(fieldName => {
       // console.debug(fieldName, metadata);
@@ -345,7 +345,7 @@ function markdownToHtml(markdownCode, includeElement) {
     });
     mdContent = fieldData.join("\n\n") + "\n\n" + mdContent;
   }
-  let metadataDetailName = includeElement.getAttribute("metadataDetailName");
+  let metadataDetailName = jsInclude.getAttribute("metadataDetailName");
   if (metadataDetailName != null) {
     if (metadataDetailName == "") {
       metadataDetailName = "Metadata";
@@ -361,7 +361,7 @@ function markdownToHtml(markdownCode, includeElement) {
     let metadataJsonDetail = `<details><summary>${metadataDetailName}</summary>\n\n${metadataJsonMd}</details>`;
     mdContent = `${metadataJsonDetail}\n\n${mdContent}`;
   }
-  let editUrl = getStaticFileEditUrl(includeElement);
+  let editUrl = getStaticFileEditUrl(jsInclude);
   let editLinkHtml = "";
   if (editUrl) {
     editLinkHtml = `<a id="editLink" href="${editUrl}"></a>`;
@@ -391,7 +391,7 @@ async function fillJsInclude(jsInclude) {
     return "Invalid url!"
   }
   console.info("Inserting include for %s given tag:", includedPageUrl, jsInclude);
-  let getAjaxResponsePromise = $.ajax(includedPageUrl);
+  let getAjaxResponsePromise = utils.getAjaxResponsePromise(includedPageUrl);
 
   function processingFn(response) {
     let responseHtml = response;
