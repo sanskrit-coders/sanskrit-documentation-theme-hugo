@@ -331,7 +331,7 @@ function markdownToHtml(markdownCode, jsInclude) {
     mdContent = `${message}\n\n${mdContent}`;
   }
   let metadataJson = JSON.stringify(metadata, null, "  ");
-  mdContent = `<pre hidden className="metadataRaw">${metadataJson}</pre>\n${mdContent}`
+  jsInclude.dataset.metadataJson = metadataJson;
   let fieldNames = jsInclude.getAttribute("fieldNames");
   if (fieldNames) {
     let fieldData = fieldNames.split(",").map(fieldName => {
