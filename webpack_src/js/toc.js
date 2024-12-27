@@ -107,7 +107,7 @@ function setUpNavigationLinks(headers) {
     headers.forEach(function(header, index) {
         let ancestorIncludedPost = header.closest(".included-post");
         let navDiv = header.nextElementSibling;
-        if (!navDiv) return;
+        if (!navDiv || !["h1","h2","h3","h4","h5", "h6" ].includes(navDiv.tagName)) return;
         if (!navDiv.classList.contains("section-nav")) {
             navDiv = header.querySelector(".secion-nav:last-child");
             // console.debug("last child of header", navDiv);
