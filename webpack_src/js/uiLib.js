@@ -54,8 +54,8 @@ export function finalizePagePostInclusion() {
   expandAllDetails(document.querySelector("body main"));
   setPrintLayoutFromQuery(document.body);
   updateToc();
-  console.log("Dispatching sdThemeDoneEvent");
   const sdThemeDoneEvent = new CustomEvent('sdThemeDone', { detail: { someData: 'example' } });
+  console.log("Dispatching sdThemeDoneEvent", sdThemeDoneEvent);
   document.dispatchEvent(sdThemeDoneEvent);
 }
 
