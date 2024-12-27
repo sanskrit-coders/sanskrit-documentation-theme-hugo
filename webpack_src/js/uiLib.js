@@ -25,7 +25,7 @@ import {redirectToPage, redirectToRandomPage} from "./redirect";
 import * as comments from "./comments";
 import * as textToSpeech from "./textToSpeech";
 import * as utils from "./utils";
-import {loadDropdownFromTSV} from "./indexes";
+import {loadDataListFromTSV, loadDropdownFromTSV} from "./indexes";
 
 export function relUrlOfCurrentPage() {
   return document.location.href.split("#")[0].replace(baseURL, "/");
@@ -224,6 +224,7 @@ export default {
     pageLoader: search.pageLoader,
     redirectToPage: redirectToPage,
     redirectToRandomPage: redirectToRandomPage,
+    loadDataListFromTSV: indexes.loadDataListFromTSV,
     loadDropdownFromTSV: indexes.loadDropdownFromTSV
   },
   content: {
