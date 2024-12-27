@@ -486,6 +486,7 @@ export default function handleIncludes(jsIncludesIn) {
       document.getElementById("progressBarDiv").hidden = true;
       // Some included pages may have resulted in new jsInclude elements!
       let newJsIncludes = Array.from(document.getElementsByClassName("js_include")).filter(x => x.hasAttribute("unfilled"));
+      console.log("Checking subincludes", newJsIncludes.length);
       if (newJsIncludes.length) {
         console.warn("Got jsIncludes within the included pages!", newJsIncludes);
         handleIncludes(newJsIncludes);
