@@ -1,4 +1,4 @@
-export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x), queryValue = null) {
+export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x), queryValue = null, ignoreHeader=true) {
     console.log("Entering loadDropdownFromTSV");
     try {
         const response = await fetch(url);
@@ -6,7 +6,10 @@ export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x,
             throw new Error('Network response was not ok');
         }
         const data = await response.text();
-        const lines = data.split('\n');
+        let lines = data.split('\n');
+        if (ignoreHeader) {
+            lines = lines.slice(1);
+        }
 
         const dropdown = document.getElementById(dropdownId);
         dropdown.innerHTML = ''; // Clear any existing options
