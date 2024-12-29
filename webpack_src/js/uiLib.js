@@ -217,7 +217,8 @@ export function changeTextSize(diff) {
   postContent.style.fontSize = size + "px";
 }
 
-// So that these can be used like module_uiLib.default.redirectToPage(..).
+// Functions exported in this very file can be accessed like - module_uiLib.changeTextSize.  
+// But for others, we use the below, so that they may be accessed as module_uiLib.default.redirectToPage(..).
 export default {
   navigation: {
     sidebarToggleHandler: sidebar.sidebarToggleHandler,
