@@ -28,9 +28,6 @@
     <!--    An internal template for Twitter Cards, metadata used to attach rich media to Tweets linking to your site.-->
     {{- template "_internal/twitter_cards.html" . -}}
 
-    {{ if eq (getenv "HUGO_ENV") "production" | or (eq .Site.Params.env "production")  }}
-      {{ template "_internal/google_analytics_async.html" . }}
-    {{ end }}
 
     {{ partialCached "hugo-site-vars-to-js-general.html" .}}
     <!--      // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds partial-cached html just once and includes it everywhere. -->
