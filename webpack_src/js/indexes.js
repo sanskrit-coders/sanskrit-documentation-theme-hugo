@@ -1,4 +1,5 @@
-export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x,  valueMaker = (x) => x, handler = (x) => console.log(x), initValue = null, ignoreHeader=true) {
+export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x,  valueMaker = (x) => x, handler = (
+    x) => console.log(x), initValue = null, ignoreHeader=true) {
     console.log("Entering loadDataListFromTSV", dataListId);
     try {
         const response = await fetch(url);
