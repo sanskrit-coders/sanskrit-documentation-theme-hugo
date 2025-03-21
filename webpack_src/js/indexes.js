@@ -1,4 +1,4 @@
-export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x,  valueMaker = (x) => x, handler = (x) => console.log(x), initValue = null, ignoreHeader=true) {
+export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x), initValue = null, ignoreHeader = true) {
     console.log("Entering loadDataListFromTSV", dataListId);
     try {
         const response = await fetch(url);
@@ -14,7 +14,7 @@ export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x,
         const dataList = document.getElementById(dataListId);
 
         let fragment = document.createDocumentFragment();
-        
+
         lines.forEach(line => {
             const values = line.split('\t');
             if (values[0]) {
@@ -45,7 +45,7 @@ export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x,
 }
 
 
-export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x), initValue = null, ignoreHeader=true) {
+export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x), initValue = null, ignoreHeader = true) {
     console.log("Entering loadDropdownFromTSV");
     try {
         const response = await fetch(url);
@@ -72,7 +72,7 @@ export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x,
                 dropdown.appendChild(option);
             }
         });
-        
+
         dropdown.addEventListener('change', async (event) => {
             const selectedValue = event.target.value;
             await handler(selectedValue);
