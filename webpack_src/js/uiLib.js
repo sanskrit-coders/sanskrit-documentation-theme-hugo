@@ -112,11 +112,12 @@ export function replaceWithQueryParam(queryFieldName, regexPattern) {
 }
 
 
-export function updatePrintStyleFromDropdown() {
-  let styleDropdown = document.getElementById("printStyleDropdown");
-  var style = styleDropdown.options[styleDropdown.selectedIndex].value;
-  let [printStyle, includeStyle] = style.split(":")
-  query.setParamsAndGo({"printCols": printStyle, "includeStyle": includeStyle});
+export function updatePrintStyle() {
+  console.log("updatePrintStyle entered");
+  let bodyFontSize = document.getElementById("tbBodyFontSize").value;
+  let printCols = document.getElementById("tbColumns").value;
+  let includeStyle = document.getElementById("tbIncludeStyle").value;
+  query.setParamsAndGo({"printCols": printCols, "bodyFontSize": bodyFontSize, "includeStyle": includeStyle});
 }
 
 export function setPrintColsFromQuery(node) {
@@ -125,7 +126,7 @@ export function setPrintColsFromQuery(node) {
   if (printCols == "off") {
     return;
   }
-  let includeStyle = query.getParam("includeStyle") || "on";
+  let includeStyle = query.getParam("includeStyle") || "1";
   const mainTag = document.querySelector('main');
 
   let infoTag = document.querySelector("#infoTag");
@@ -133,7 +134,7 @@ export function setPrintColsFromQuery(node) {
     infoTag = document.createElement("small");
     infoTag.setAttribute("id", "infoTag");
     infoTag.innerHTML = `<a href='${document.location}'>Web</a>`
-    if (includeStyle != "on") {
+    if (includeStyle != "1") {
       infoTag.innerHTML += "\n(noInc)"
     }
     let titleTag = document.querySelector("h1");
@@ -166,7 +167,7 @@ export function setPrintColsFromQuery(node) {
           // Just hide the summary tag.
           e.hidden = true;
         }
-        if (includeStyle != "on" && e.firstChild) {
+        if (includeStyle != "1" && e.firstChild) {
           e.firstChild.textContent = e.firstChild.textContent.replace("...{Loading}...", "").trim();
         }
       }
@@ -237,7 +238,7 @@ export default {
     updateTransliteration: transliteration.updateTransliteration,
     handleSpeakToggle: textToSpeech.handleSpeakToggle,
     updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown,
-    updatePrintStyleFromDropdown: updatePrintStyleFromDropdown,
+    updatePrintStyle: updatePrintStyle,
     getPageParams: dirTree.getPageParams,
     changeTextSize: changeTextSize,
     handleIncludes: handleIncludes
