@@ -63,9 +63,6 @@
 /*!************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./css/class_styles.css ***!
   \************************************************************************/
-body {
-  font-family: 'siddhanta', 'NotoSansDevanagari-Regular', 'NotoSansKannada-Regular', 'NotoSansTelugu-Regular', 'NotoSansTamil-Regular', 'NotoSansMalayalam-Regular', 'NotoSansOriya-Regular', 'NotoSansBengali-Regular', 'satisarSharada', 'Sampradaya', 'NotoSansGujarati-Regular', 'NotoSansGurmukhi-Regular', 'NotoSerifTibetan-Medium', 'NotoSansBrahmi-Regular', serif;
-}
 main details {
   margin: 3px 0px;
   border-top: 1px solid black;
@@ -76,22 +73,22 @@ main summary {
   font-size: x-small;
   color: blue;
 }
-h1:before {
+h1:after {
   content: "①";
 }
-h2:before {
+h2:after {
   content: "②";
 }
-h3:before {
+h3:after {
   content: "③";
 }
-h4:before {
+h4:after {
   content: "④";
 }
-h5:before {
+h5:after {
   content: "⑤";
 }
-h6:before {
+h6:after {
   content: "⑥";
 }
 table {

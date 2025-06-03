@@ -123,22 +123,30 @@ body {
 
 h1 {
     font-size: 160%; /* 120% of body font size */
+    line-height: 100%;
 }
 h2 {
     font-size: 150%; /* 120% of body font size */
+    line-height: 100%;
 }
 h3 {
     font-size: 140%; /* 120% of body font size */
+    line-height: 100%;
 }
 h4 {
     font-size: 130%; /* 120% of body font size */
+    line-height: 100%;
 }
 h5 {
     font-size: 120%; /* 120% of body font size */
+    line-height: 100%;
 }
 h6 {
     font-size: 110%; /* 120% of body font size */
+    line-height: 100%;
 }
 
-
+details.headingDetail > summary {
+    line-height: 100%;
+}
 /************************************************************/

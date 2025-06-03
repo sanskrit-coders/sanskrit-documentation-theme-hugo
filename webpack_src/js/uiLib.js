@@ -54,6 +54,7 @@ export function finalizePagePostInclusion() {
   expandAllDetails(document.querySelector("body main"));
   setPrintColsFromQuery(document.body);
   updateToc();
+  collapsibleSections();
   const sdThemeDoneEvent = new CustomEvent('sdThemeDone', { detail: { someData: 'example' } });
   console.log("Dispatching sdThemeDoneEvent", sdThemeDoneEvent);
   document.dispatchEvent(sdThemeDoneEvent);
@@ -111,6 +112,50 @@ export function replaceWithQueryParam(queryFieldName, regexPattern) {
   }
 }
 
+export function collapsibleSections() {
+  for(let level = 2; level < 7; level++) {
+    const levelHs = Array.from(document.querySelectorAll(`h${level}`));
+
+    for (let i = 0; i < levelHs.length - 1; i++) {
+      const currentH = levelHs[i];
+
+      // Create <details> and <summary>
+      const details = document.createElement('details');
+      details.setAttribute("open", "true");
+      details.classList.add("headingDetail");
+      const summary = document.createElement('summary');
+      // summary.textContent = currentH.textContent;
+      summary.textContent = "🦅🦍…🐒🐍";
+      details.appendChild(summary);
+      
+      // The below leads to non-functional details.
+      // summary.appendChild(currentH);
+
+
+      // Collect all nodes between startH2 and endH2
+      let currentNode = currentH.nextSibling;
+      function isHigherHeading(node) {
+        return node && node.nodeName.toLowerCase().startsWith("h") &&  parseInt(node.nodeName.charAt(1)) <= level;
+      }
+      while (currentNode && !isHigherHeading(currentNode)) {
+        let nextNode = currentNode.nextSibling;
+        // Append _after_ finding nextSibling!
+        details.appendChild(currentNode);
+        currentNode = nextNode;
+      }
+      
+      let parent = currentH.parentNode;
+      const nextElem = currentH.nextElementSibling;
+      if (nextElem) {
+        parent.insertBefore(details, nextElem);
+      } else {
+        parent.appendChild(details);
+      }
+
+      
+    }
+  }
+}
 
 export function updatePrintStyle() {
   console.log("updatePrintStyle entered");
