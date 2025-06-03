@@ -11,12 +11,21 @@ header {
     font-size: x-small;
 }
 
-div[name="contentRow"] {
-    font-size: large;
+@page {
+    /*width: 150mm;*/
+    /*height: 300mm;*/
+    /*margin: 0.5em;*/
+    /*border: 1px solid black;*/
 }
 
-.print-two-col {
-    column-count: 2;
-    -webkit-column-count: 2;
-    -moz-column-count: 2;
+body {
+    border: 1px solid black;
 }
+
+main {
+    margin: 0em;
+    column-gap: 0.5em;
+    line-height: 110%;
+    column-rule: 1px solid black;
+}
+

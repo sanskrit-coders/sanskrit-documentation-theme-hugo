@@ -98,6 +98,43 @@
 code {
   font-size: 100%;
 }
+*[unicode_script="devanagari"] {
+    /*font-size: 130%;*/
+}
+*[unicode_script="kannada"] {
+    /*font-size: 130%;*/
+}
+.inline_comment {
+    font-size: 70%;
+    color: firebrick;
+    display: inline;
+    vertical-align: sub;
+}
+*[emphasis_as_inline_comments=true] em {
+    font-size: 80%;
+    color: firebrick;
+    display: inline;
+    vertical-align: sub;
+}
+
+h1 {
+    font-size: 160%; /* 120% of body font size */
+}
+h2 {
+    font-size: 150%; /* 120% of body font size */
+}
+h3 {
+    font-size: 140%; /* 120% of body font size */
+}
+h4 {
+    font-size: 130%; /* 120% of body font size */
+}
+h5 {
+    font-size: 120%; /* 120% of body font size */
+}
+h6 {
+    font-size: 110%; /* 120% of body font size */
+}
 
 
 /************************************************************/

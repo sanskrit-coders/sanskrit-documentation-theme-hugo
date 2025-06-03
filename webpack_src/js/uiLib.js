@@ -47,12 +47,12 @@ export function prepareContentWithoutIncludes(node) {
   // Doing the below before inclusion also -  
   // so that unnecessary include processing can be avoided.
   expandAllDetails(document.querySelector("body main"));
-  setPrintLayoutFromQuery(document.body);
+  setPrintColsFromQuery(document.body);
 }
 
 export function finalizePagePostInclusion() {
   expandAllDetails(document.querySelector("body main"));
-  setPrintLayoutFromQuery(document.body);
+  setPrintColsFromQuery(document.body);
   updateToc();
   const sdThemeDoneEvent = new CustomEvent('sdThemeDone', { detail: { someData: 'example' } });
   console.log("Dispatching sdThemeDoneEvent", sdThemeDoneEvent);
@@ -116,12 +116,13 @@ export function updatePrintStyleFromDropdown() {
   let styleDropdown = document.getElementById("printStyleDropdown");
   var style = styleDropdown.options[styleDropdown.selectedIndex].value;
   let [printStyle, includeStyle] = style.split(":")
-  query.setParamsAndGo({"printLayout": printStyle, "includeStyle": includeStyle});
+  query.setParamsAndGo({"printCols": printStyle, "includeStyle": includeStyle});
 }
 
-export function setPrintLayoutFromQuery(node) {
-  let printLayout = query.getParam("printLayout") || "off";
-  if (printLayout == "off") {
+export function setPrintColsFromQuery(node) {
+  console.log("Entering setprintColsFromQuery", node);
+  let printCols = query.getParam("printCols") || "off";
+  if (printCols == "off") {
     return;
   }
   let includeStyle = query.getParam("includeStyle") || "on";
@@ -141,11 +142,14 @@ export function setPrintLayoutFromQuery(node) {
     }
   }
 
-  if (printLayout == "2") {
-    mainTag.classList.add('print-two-col');    
-  } else {
-    mainTag.classList.remove('print-two-col');
+  console.log("setprintColsFromQuery", printCols, includeStyle);
+  mainTag.style.columnCount = printCols;
+
+  let bodyFontSize = query.getParam("bodyFontSize");
+  if (bodyFontSize) {
+    document.body.style.fontSize = bodyFontSize;
   }
+  
   [...node.querySelectorAll(".noPrint")].forEach(function (e) {
     e.setAttribute("hidden", "true");
   });
@@ -207,14 +211,15 @@ export function getFontSize(element) {
 
 
 export function changeTextSize(diff) {
-  let postContent = document.getElementById("post_content");
-  let size = getFontSize(postContent);
+  const mainTag = document.querySelector('main');
+
+  let size = getFontSize(mainTag);
   console.debug(size);
   size = size + diff;
-  if (size <= 10) {
-    size = 10;
-  }
-  postContent.style.fontSize = size + "px";
+  // if (size <= 10) {
+  //   size = 10;
+  // }
+  mainTag.style.fontSize = size + "px";
 }
 
 // Functions exported in this very file can be accessed like - module_uiLib.changeTextSize.  

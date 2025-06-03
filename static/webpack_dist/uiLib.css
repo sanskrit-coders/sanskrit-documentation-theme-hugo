@@ -123,22 +123,10 @@ figure.thumbnail img {
   max-width: 100%;
   max-height: 100%;
 }
-*[unicode_script="devanagari"] {
-  font-size: 130%;
-}
-*[unicode_script="kannada"] {
-  font-size: 130%;
-}
 blockquote {
   padding-left: 2rem;
   border-left-style: solid;
   border-width: 0.25rem;
-}
-.inline_comment {
-  font-size: 70%;
-  color: firebrick;
-  display: inline;
-  vertical-align: sub;
 }
 audio {
   width: 100%;
@@ -158,12 +146,6 @@ audio {
 }
 .proof:after {
   content: "∎";
-}
-*[emphasis_as_inline_comments=true] em {
-  font-size: 80%;
-  color: firebrick;
-  display: inline;
-  vertical-align: sub;
 }
 #sidebar .active {
   background-color: wheat;
