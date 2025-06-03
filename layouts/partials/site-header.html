@@ -105,12 +105,19 @@
           <button class="btn btn-light btn-sm dropdown-toggle"  href="#printStyleDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           🖨
           </button>
-            <div class="dropdown-menu" aria-labelledby="printStyleDropdown">
-            Cols: <input type="text" id="tbColumns" value="2"></input>
-            Font: <input type="text" id="tbBodyFontSize" value="0.4cm"></input>
-            Incl: <input type="text" id="tbIncludeStyle" value="1"></input>
-          <button id="btnStyleDropdown" onclick="module_uiLib.default.content.updatePrintStyle()">🖨
-          </button>
+            <div class="dropdown-menu col" aria-labelledby="printStyleDropdown">
+              <div class="row justify-content-center">
+                <p>Cols:</p>
+                <input type="number" min="1" max="10" value="2" step="1" id="tbColumns" style="width: 3ch;"  accesskey="c"/>
+              </div>
+              <div class="row justify-content-center">
+                <p>A±:</p> <input type="text" id="tbBodyFontSize" value="0.4cm" style="width: 6ch;"  accesskey="f"></input>
+              </div>
+              <div class="row justify-content-center">
+                <p>Incl:</p> <input checked type="checkbox" id="tbIncludeStyle" value="true"></input>
+                <button id="btnPrintStyle" onclick="module_uiLib.default.content.updatePrintStyle()">🖨
+                </button>
+              </div>
             </div>
         </div>
         </div>

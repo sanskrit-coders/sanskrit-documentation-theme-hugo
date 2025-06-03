@@ -117,6 +117,10 @@ code {
     vertical-align: sub;
 }
 
+body {
+    font-family: 'siddhanta', 'NotoSansDevanagari-Regular', 'NotoSansKannada-Regular', 'NotoSansTelugu-Regular', 'NotoSansTamil-Regular', 'NotoSansMalayalam-Regular', 'NotoSansOriya-Regular', 'NotoSansBengali-Regular', 'satisarSharada', 'Sampradaya', 'NotoSansGujarati-Regular', 'NotoSansGurmukhi-Regular', 'NotoSerifTibetan-Medium', 'NotoSansBrahmi-Regular', serif;
+}
+
 h1 {
     font-size: 160%; /* 120% of body font size */
 }

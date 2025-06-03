@@ -122,11 +122,11 @@ export function updatePrintStyle() {
 
 export function setPrintColsFromQuery(node) {
   console.log("Entering setprintColsFromQuery", node);
-  let printCols = query.getParam("printCols") || "off";
-  if (printCols == "off") {
+  let printCols = query.getParam("printCols") || "notPrintView";
+  if (printCols == "notPrintView") {
     return;
   }
-  let includeStyle = query.getParam("includeStyle") || "1";
+  let includeStyle = query.getParam("includeStyle") || "true";
   const mainTag = document.querySelector('main');
 
   let infoTag = document.querySelector("#infoTag");
@@ -134,7 +134,7 @@ export function setPrintColsFromQuery(node) {
     infoTag = document.createElement("small");
     infoTag.setAttribute("id", "infoTag");
     infoTag.innerHTML = `<a href='${document.location}'>Web</a>`
-    if (includeStyle != "1") {
+    if (includeStyle != "true") {
       infoTag.innerHTML += "\n(noInc)"
     }
     let titleTag = document.querySelector("h1");
