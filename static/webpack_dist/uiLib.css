@@ -63,16 +63,6 @@
 /*!************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./css/class_styles.css ***!
   \************************************************************************/
-main details {
-  margin: 3px 0px;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-}
-main summary {
-  border-bottom: 1px dashed black;
-  font-size: x-small;
-  color: blue;
-}
 h1:after {
   content: "①";
 }

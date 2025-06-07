@@ -95,30 +95,34 @@
 }
 /************************************************************/
 
-code {
-  font-size: 100%;
-}
-*[unicode_script="devanagari"] {
-    /*font-size: 130%;*/
-}
-*[unicode_script="kannada"] {
-    /*font-size: 130%;*/
-}
-.inline_comment {
-    font-size: 70%;
-    color: firebrick;
-    display: inline;
-    vertical-align: sub;
-}
-*[emphasis_as_inline_comments=true] em {
-    font-size: 80%;
-    color: firebrick;
-    display: inline;
-    vertical-align: sub;
-}
-
 body {
     font-family: 'siddhanta', 'NotoSansDevanagari-Regular', 'NotoSansKannada-Regular', 'NotoSansTelugu-Regular', 'NotoSansTamil-Regular', 'NotoSansMalayalam-Regular', 'NotoSansOriya-Regular', 'NotoSansBengali-Regular', 'satisarSharada', 'Sampradaya', 'NotoSansGujarati-Regular', 'NotoSansGurmukhi-Regular', 'NotoSerifTibetan-Medium', 'NotoSansBrahmi-Regular', serif;
+}
+
+
+code {
+    font-size: 100%;
+}
+
+main details {
+    margin: 3px 0px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+main summary {
+    border-bottom: 1px dashed black;
+    font-size: 90%;
+    font-weight: bold;
+    font-style: italic;
+    color: black;
+}
+
+.inline_comment {
+    font-size: 90%;
+    color: black;
+    font-style: italic;
+    vertical-align: sub;
 }
 
 h1 {
