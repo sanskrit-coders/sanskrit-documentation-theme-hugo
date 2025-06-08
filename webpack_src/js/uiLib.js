@@ -46,12 +46,12 @@ export function prepareContentWithoutIncludes(node) {
 
   // Doing the below before inclusion also -  
   // so that unnecessary include processing can be avoided.
-  expandAllDetails(document.querySelector("body main"));
+  expandDetails(document.querySelector("body main"));
   setPrintColsFromQuery(document.body);
 }
 
 export function finalizePagePostInclusion() {
-  expandAllDetails(document.querySelector("body main"));
+  expandDetails(document.querySelector("body main"));
   setPrintColsFromQuery(document.body);
   updateToc();
   collapsibleSections();
@@ -202,12 +202,12 @@ export function setPrintColsFromQuery(node) {
   [...node.querySelectorAll("#disqus_thread")].forEach(function (e) {
     e.setAttribute("hidden", "true");
   });
-  let expandAllParam = query.getParam("expandAll") || "false";
+  let expandDetailsParam = query.getParam("expandDetails") || "false";
   [...node.getElementsByTagName("summary")].forEach(function (e) {
     if (!e.parentNode.hasAttribute("open")) {
       e.parentNode.hidden = true;
     } else {
-      if (expandAllParam == "false") {
+      if (expandDetailsParam == "false") {
         if(e.textContent.includes("विश्वास-प्रस्तुतिः")) {
           // Just hide the summary tag.
           e.hidden = true;
@@ -231,21 +231,25 @@ export function setPrintColsFromQuery(node) {
   });
 }
 
-export function expandAllDetails(node) {
-  let expandAll = query.getParam("expandAll") || "false";
-  if (expandAll != "true") {
+export function expandDetails(node) {
+  let detailsPattern = query.getParam("expandDetails") || "false";
+  if (detailsPattern == "false") {
     return;
   }
   [...node.getElementsByTagName("details")].forEach(function (e) {
     if (e.hasAttribute("open")) {
       e.setAttribute("preOpened", "true");
     } else {
-      e.setAttribute("open", "true");
+      let titleMatch = e.querySelector("summary").textContent.match(detailsPattern);
+      // console.debug(titleMatch, e.querySelector("summary").textContent, expandDetails);
+      if (titleMatch) {
+        e.setAttribute("open", "true");
+      }
     }
   });
   if (node.tagName.toLocaleLowerCase() == "body") {
     document.querySelector("#expandAllButton").onclick = function () {
-      query.deleteParamsAndGo(["expandAll"]);
+      query.deleteParamsAndGo(["expandDetails"]);
     };
   }
 }
