@@ -63,6 +63,14 @@
 /*!************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./css/class_styles.css ***!
   \************************************************************************/
+
+main {
+  margin: 0em;
+  column-gap: 0.5em;
+  line-height: 110%;
+  column-rule: 1px solid black;
+}
+
 h1:after {
   content: "①";
 }

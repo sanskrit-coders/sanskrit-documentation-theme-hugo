@@ -21,11 +21,3 @@ header {
 body {
     border: 1px solid black;
 }
-
-main {
-    margin: 0em;
-    column-gap: 0.5em;
-    line-height: 110%;
-    column-rule: 1px solid black;
-}
-
