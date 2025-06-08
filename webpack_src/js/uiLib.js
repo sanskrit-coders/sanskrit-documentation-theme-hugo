@@ -118,6 +118,9 @@ export function collapsibleSections() {
 
     for (let i = 0; i < levelHs.length - 1; i++) {
       const currentH = levelHs[i];
+      if (currentH.hasAttribute("hasDetail")) {
+        continue;
+      }
 
       // Create <details> and <summary>
       const details = document.createElement('details');
@@ -151,7 +154,7 @@ export function collapsibleSections() {
       } else {
         parent.appendChild(details);
       }
-
+      currentH.setAttribute("hasDetail", "true");
       
     }
   }
