@@ -113,6 +113,10 @@ export function replaceWithQueryParam(queryFieldName, regexPattern) {
 }
 
 export function collapsibleSections() {
+  let printCols = query.getParam("printCols") || "notPrintView";
+  if (printCols != "notPrintView") {
+    return;
+  }
   for(let level = 2; level < 7; level++) {
     const levelHs = Array.from(document.querySelectorAll(`h${level}`));
 
