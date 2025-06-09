@@ -119,8 +119,8 @@ main summary {
 }
 
 .inline_comment {
-    font-size: 90%;
-    color: black;
+    font-size: 80%;
+    color: rgb(114, 47, 55);
     font-style: italic;
     vertical-align: sub;
 }
