@@ -214,6 +214,10 @@ export function setPrintColsFromQuery(node) {
     if (!e.parentNode.hasAttribute("open")) {
       e.parentNode.hidden = true;
     } else {
+      if(e.parentNode.classList.contains("headingDetail")) {
+        // Just hide the summary tag.
+        e.hidden = true;
+      }
       if (expandDetailsParam == "false") {
         if(e.textContent.includes("विश्वास-प्रस्तुतिः")) {
           // Just hide the summary tag.
