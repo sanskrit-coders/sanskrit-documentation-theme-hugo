@@ -121,7 +121,8 @@ export function collapsibleSections() {
     return;
   }
   for(let level = 2; level < 7; level++) {
-    const levelHs = Array.from(document.querySelectorAll(`h${level}`));
+    let levelHs = Array.from(document.querySelectorAll(`h${level}`));
+    levelHs = levelHs.filter(h2 => !h2.closest('summary'));
 
     for (let i = 0; i < levelHs.length - 1; i++) {
       const currentH = levelHs[i];
