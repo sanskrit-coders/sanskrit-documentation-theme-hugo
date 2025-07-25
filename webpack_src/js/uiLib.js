@@ -56,8 +56,7 @@ export function finalizePagePostInclusion() {
   setPrintColsFromQuery(document.body);
   updateToc();
   collapsibleSections();
-  document.querySelectorAll(".copyable")
-      .forEach(copyableDiv => copyButtons.createCopyButton(copyableDiv));
+  copyButtons.copyablePres();
   const sdThemeDoneEvent = new CustomEvent('sdThemeDone', { detail: { someData: 'example' } });
   console.log("Dispatching sdThemeDoneEvent", sdThemeDoneEvent);
   document.dispatchEvent(sdThemeDoneEvent);

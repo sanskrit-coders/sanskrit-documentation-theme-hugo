@@ -1,4 +1,18 @@
-export function createCopyButton(copyableDiv) {
+export function copyablePres() {
+    document.querySelectorAll("pre")
+        .forEach(copyableDiv => {
+            const content = copyableDiv.textContent || ''; // Get the text content, handle null/undefined
+            const lineCount = content.split('\n').length;
+            const charCount = content.length;
+
+            if (lineCount > 1 || charCount > 50) {
+                createCopyButton(copyableDiv);
+            }
+        });
+}
+
+
+function createCopyButton(copyableDiv) {
     const button = document.createElement("button");
     button.className = "copy-code-button";
     button.type = "button";
@@ -6,7 +20,15 @@ export function createCopyButton(copyableDiv) {
     button.addEventListener("click", () =>
         copyCodeToClipboard(button, copyableDiv)
     );
+    addCopyButtonToDom(button, copyableDiv);
+}
+
+function addCopyButtonToDom(button, copyableDiv) {
     copyableDiv.insertBefore(button, copyableDiv.firstChild);
+    const wrapper = document.createElement("div");
+    wrapper.className = "copyable-wrapper";
+    copyableDiv.parentNode.insertBefore(wrapper, copyableDiv);
+    wrapper.appendChild(copyableDiv);
 }
 
 async function copyCodeToClipboard(button, copyableDiv) {
