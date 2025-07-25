@@ -9,6 +9,7 @@ import 'tachyons/css/tachyons.min.css';
 import "../css/treeview.css";
 import "../css/class_styles.css";
 
+import * as copyButtons from "./copyButtons";
 import * as query from "./query";
 import * as transliteration from "./transliteration";
 import {setInlineComments} from "./comments";
@@ -55,6 +56,8 @@ export function finalizePagePostInclusion() {
   setPrintColsFromQuery(document.body);
   updateToc();
   collapsibleSections();
+  document.querySelectorAll(".copyable")
+      .forEach(copyableDiv => copyButtons.createCopyButton(copyableDiv));
   const sdThemeDoneEvent = new CustomEvent('sdThemeDone', { detail: { someData: 'example' } });
   console.log("Dispatching sdThemeDoneEvent", sdThemeDoneEvent);
   document.dispatchEvent(sdThemeDoneEvent);
