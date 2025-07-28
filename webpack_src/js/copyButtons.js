@@ -1,10 +1,14 @@
 export function copyablePres() {
     document.querySelectorAll("pre")
         .forEach(copyableDiv => {
+            // Ignore line number pre tags.
+            const parentTd = copyableDiv.closest('td');
+            const isFirstTd = parentTd && parentTd === parentTd.parentElement.querySelector('td');
+            if (isFirstTd) {return;}
+
             const content = copyableDiv.textContent || ''; // Get the text content, handle null/undefined
             const lineCount = content.split('\n').length;
             const charCount = content.length;
-
             if (lineCount > 1 || charCount > 50) {
                 createCopyButton(copyableDiv);
             }
