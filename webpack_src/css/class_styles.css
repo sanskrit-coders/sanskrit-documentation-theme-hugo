@@ -60,6 +60,11 @@ blockquote {
 audio {
   width: 100%;
 }
+
+pre {
+  white-space: break-spaces;
+}
+
 .handsontable th, .handsontable td {
   line-height: 1.2em;
 }
