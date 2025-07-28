@@ -128,7 +128,7 @@ audio {
 
 pre {
   white-space: break-spaces;
-  border: black solid;
+  border: thin black solid;
 }
 
 .handsontable th, .handsontable td {
