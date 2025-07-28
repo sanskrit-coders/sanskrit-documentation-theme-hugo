@@ -28,15 +28,34 @@ function createCopyButton(copyableDiv) {
 }
 
 function addCopyButtonToDom(button, copyableDiv) {
-    copyableDiv.insertBefore(button, copyableDiv.firstChild);
     const wrapper = document.createElement("div");
     wrapper.className = "copyable-wrapper";
-    copyableDiv.parentNode.insertBefore(wrapper, copyableDiv);
-    wrapper.appendChild(copyableDiv);
+    const parentTable = copyableDiv.closest('table');
+    // Sometimes, there is a table, with first column being line numbers.
+    if (parentTable) {
+        parentTable.parentNode.insertBefore(wrapper, parentTable);
+    } else {
+        copyableDiv.parentNode.insertBefore(wrapper, copyableDiv);
+    }
+    wrapper.appendChild(button);
+    addWrapButton(copyableDiv, wrapper);
+}
+
+function addWrapButton(copyableDiv, wrapper) {
+    const buttonWrap = document.createElement("button");
+    buttonWrap.textContent = "Wrap";
+    buttonWrap.addEventListener("click", () => {
+        if (copyableDiv.style.whiteSpace != 'pre') {
+            copyableDiv.style.whiteSpace = 'pre';
+        } else {
+            copyableDiv.style.whiteSpace = 'break-spaces';
+        }
+    });
+    wrapper.appendChild(buttonWrap);
 }
 
 async function copyCodeToClipboard(button, copyableDiv) {
-    const codeToCopy = button.nextElementSibling.textContent;
+    const codeToCopy = copyableDiv.textContent;
     try {
         const result = await navigator.permissions.query({ name: "clipboard-write" });
         if (result.state == "granted" || result.state == "prompt") {
