@@ -156,6 +156,9 @@ pre {
 .header-nav a:active {
   color: pink;
 }
+details.highlight  > *:not(summary) {
+  text-decoration: underline;
+}
 /*!********************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/handsontable/dist/handsontable.full.css ***!
   \********************************************************************************************************/

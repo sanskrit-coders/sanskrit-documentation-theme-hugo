@@ -91,3 +91,6 @@ pre {
 .header-nav a:active {
   color: pink;
 }
+details.highlight  > *:not(summary) {
+  text-decoration: underline;
+}

@@ -48,11 +48,13 @@ export function prepareContentWithoutIncludes(node) {
   // Doing the below before inclusion also -  
   // so that unnecessary include processing can be avoided.
   expandDetails(document.querySelector("body main"));
+  collectDetails(document.querySelector("body main"));
   setPrintColsFromQuery(document.body);
 }
 
 export function finalizePagePostInclusion() {
   expandDetails(document.querySelector("body main"));
+  collectDetails(document.querySelector("body main"));
   setPrintColsFromQuery(document.body);
   updateToc();
   collapsibleSections();
@@ -247,6 +249,7 @@ export function setPrintColsFromQuery(node) {
 
 export function expandDetails(node) {
   let detailsPattern = query.getParam("expandDetails") || "false";
+  let highlightPattern = query.getParam("highlightDetails") || "विश्वास-टिप्पनी.*";
   if (detailsPattern == "false") {
     return;
   }
@@ -254,11 +257,19 @@ export function expandDetails(node) {
     if (e.hasAttribute("open")) {
       e.setAttribute("preOpened", "true");
     } else {
-      let titleMatch = e.querySelector("summary").textContent.match(detailsPattern);
+      let summary = e.querySelector("summary");
+      let titleMatch = summary && summary.textContent.trim().match(detailsPattern);
       // console.debug(titleMatch, e.querySelector("summary").textContent, expandDetails);
       if (titleMatch) {
         e.setAttribute("open", "true");
       }
+    }
+  });
+  [...node.getElementsByTagName("details")].forEach(function (details) {
+    const summary = details.querySelector('summary');
+    let titleMatch = summary &&  summary.textContent.trim().match(highlightPattern);
+    if (titleMatch) {
+      details.classList.add('highlight');
     }
   });
   if (node.tagName.toLocaleLowerCase() == "body") {
@@ -266,6 +277,41 @@ export function expandDetails(node) {
       query.deleteParamsAndGo(["expandDetails"]);
     };
   }
+}
+
+export function collectDetails(node) {
+  let collectPattern = query.getParam("collectDetails") || null;
+  if (!collectPattern) {return;}
+
+  // Create a container for matched content
+  const collectedDetails = document.createElement('details');
+  collectedDetails.open = true; // Opened by default
+  const collectedSummary = document.createElement('summary');
+  collectedSummary.textContent = 'सङ्ग्रहः Collected Details';
+  collectedDetails.appendChild(collectedSummary);
+
+  // Container inside details to hold collected contents
+  const container = document.createElement('div');
+
+  [...node.getElementsByTagName("details")].forEach(function (details) {
+    const summary = details.querySelector('summary');
+    let titleMatch = summary &&  summary.textContent.trim().match(collectPattern);    
+    if (titleMatch) {
+      // Clone the content inside the details except summary
+      const cloneContent = Array.from(details.childNodes)
+          .filter(node => node !== summary)
+          .map(node => node.cloneNode(true));
+
+      // Append all cloned nodes to container
+      cloneContent.forEach(node => container.appendChild(node));
+    }
+    // Append container to the new details and then add to body
+    if (container.childNodes.length > 0) {
+      collectedDetails.appendChild(container);
+      document.body.appendChild(collectedDetails);
+    }
+
+  });
 }
 
 export function getFontSize(element) {
