@@ -295,7 +295,7 @@ export function collectDetails(node) {
 
   [...node.getElementsByTagName("details")].forEach(function (details) {
     const summary = details.querySelector('summary');
-    let titleMatch = summary &&  summary.textContent.trim().match(collectPattern);    
+    let titleMatch = summary &&  summary.textContent.trim().match(collectPattern) && summary.textContent.trim() != collectedSummary.textContent;    
     if (titleMatch) {
       // Clone the content inside the details except summary
       const cloneContent = Array.from(details.childNodes)
@@ -308,7 +308,7 @@ export function collectDetails(node) {
     // Append container to the new details and then add to body
     if (container.childNodes.length > 0) {
       collectedDetails.appendChild(container);
-      document.body.appendChild(collectedDetails);
+      document.querySelector("#post_content").appendChild(collectedDetails);
     }
 
   });
