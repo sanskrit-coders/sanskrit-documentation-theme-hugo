@@ -60,7 +60,7 @@
               </ul>
           </details>
       </aside>
-      <main class="col p-3" role="main">
+      <main class="col p-3" role="main" data-pagefind-body>
         {{ block "main" . }}{{ end }}
         {{ partialCached "disqus.html" . }}
         {{partial "article-params-card" .}}
