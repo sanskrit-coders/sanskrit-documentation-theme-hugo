@@ -287,7 +287,7 @@ export function collectDetails(node) {
   const collectedDetails = document.createElement('details');
   collectedDetails.open = true; // Opened by default
   const collectedSummary = document.createElement('summary');
-  collectedSummary.textContent = 'सङ्ग्रहः Collected Details';
+  collectedSummary.textContent = 'यन्त्र-सङ्ग्रहः Collected Details';
   collectedDetails.appendChild(collectedSummary);
 
   // Container inside details to hold collected contents
@@ -308,7 +308,9 @@ export function collectDetails(node) {
     // Append container to the new details and then add to body
     if (container.childNodes.length > 0) {
       collectedDetails.appendChild(container);
-      document.querySelector("#post_content").appendChild(collectedDetails);
+      let detailContainer = document.querySelector(`div.AutoCollection[target="${collectPattern}"]`) || document.querySelector("#post_content");
+      // console.debug(detailContainer);
+      detailContainer.prepend(collectedDetails);
     }
 
   });
