@@ -294,7 +294,7 @@ export function collectDetails(node) {
   collectedDetails.setAttribute("class", "AutoCollection");
   collectedDetails.setAttribute("target", collectPattern);
   const collectedSummary = document.createElement('summary');
-  collectedSummary.textContent = 'यन्त्र-सङ्ग्रहः Collected Details';
+  collectedSummary.textContent = `यन्त्र-सङ्ग्रहः (${collectPattern})`;
   collectedDetails.appendChild(collectedSummary);
 
   // Container inside details to hold collected contents
