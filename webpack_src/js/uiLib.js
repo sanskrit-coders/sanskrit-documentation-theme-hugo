@@ -283,9 +283,13 @@ export function collectDetails(node) {
   let collectPattern = query.getParam("collectDetails") || null;
   if (!collectPattern) {return;}
 
-  // Create a container for matched content
-  const collectedDetails = document.createElement('details');
-  collectedDetails.open = true; // Opened by default
+  let collectedDetails =
+      document.querySelector(`div.AutoCollection[target="${collectPattern}"]`);
+  if (collectedDetails) return;
+  collectedDetails = document.createElement('details');
+  collectedDetails.open = true;
+  collectedDetails.setAttribute("class", "AutoCollection");
+  collectedDetails.setAttribute("target", collectPattern);
   const collectedSummary = document.createElement('summary');
   collectedSummary.textContent = 'यन्त्र-सङ्ग्रहः Collected Details';
   collectedDetails.appendChild(collectedSummary);
