@@ -2,7 +2,7 @@
   {{ $contactUrl := .Site.Params.contactLink | default ""}}
 
   <div id="div_foot_nav_bar" class="row">
-    <a href="{{ .Site.Params.FullSearchUrl  | default "full_search" }}"  class="btn btn-light btn-sm">🥽🔦</a>
+    <a href="{{ .Site.Params.FullSearchUrl  | default (print .Site.BaseURL "search") }}"  class="btn btn-light btn-sm">🥽🔦</a>
     <div class="row col  d-flex justify-content-center">
       <div><a id="previousPageFoot" href="" class="btn btn-secondary">###<i class="fas fa-caret-left"></i></a></div>
       <div ><a id="nextPageFoot" href="" class="btn btn-secondary"><i class="fas fa-caret-right"></i> ### </a></div>
