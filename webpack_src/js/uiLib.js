@@ -284,8 +284,11 @@ export function collectDetails(node) {
   if (!collectPattern) {return;}
 
   let collectedDetails =
-      document.querySelector(`div.AutoCollection[target="${collectPattern}"]`);
-  if (collectedDetails) return;
+      document.querySelector(`details.AutoCollection[target="${collectPattern}"]`);
+  if (collectedDetails) {
+    console.info("collectDetails already exists - skipping.");
+    return;
+  }
   collectedDetails = document.createElement('details');
   collectedDetails.open = true;
   collectedDetails.setAttribute("class", "AutoCollection");
@@ -313,8 +316,9 @@ export function collectDetails(node) {
     if (container.childNodes.length > 0) {
       collectedDetails.appendChild(container);
       let detailContainer = document.querySelector(`div.AutoCollection[target="${collectPattern}"]`) || document.querySelector("#post_content");
-      // console.debug(detailContainer);
-      detailContainer.prepend(collectedDetails);
+      if (!document.querySelector(`details.AutoCollection[target="${collectPattern}"]`)) {
+        detailContainer.prepend(collectedDetails);
+      }
     }
 
   });
