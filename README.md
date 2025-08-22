@@ -17,6 +17,7 @@ Some notable things you get with this theme (in decreasing order of interest):
 - Search
   - JSON based title/ url search
   - Search engine optimization markup and indices - which you would use with various search engines.
+  - Local content pagefind-based search UI. (Can be overridden by another identically named file.)
 - Reading
   - A layout which automatically adjusts to the user's screen size.
   - Embedding audio and video items. Ability to sequentially play audio tracks within a page.
@@ -52,6 +53,17 @@ disablePathToLower = true Since we assume mixed case to have special meaning.
 #### canonifyURLs
 canonifyURLs = True won't work well as of 20190304. .URL variable does will then not include the subdirectory portion of the basepath (ie kAvyam/ bit in http://localhost:1313/kAvyam/), leading to urls like http://localhost:1313/XYZ/padya/kAlidAsa/raghuvaMsha/01/ instead of  http://localhost:1313/kAvyam/XYZ/padya/kAlidAsa/raghuvaMsha/01/.
 
+### Search
+By default pagefind is used.
+
+You can index a site by doing:
+
+```bash
+hugo
+npx pagefind --site build_github --output-path build_github/pagefind
+```
+
+The provided /search url path will have a content-esarch UI.
 
 ## Code Contributions
 ### JS and CSS
