@@ -27,17 +27,19 @@ export function sidebarToggleHandler() {
 
 function getTitle(sidebarItem) {
     var title = sidebarItem.title;
+
+    // console.debug(sidebarItem);
+    let itemUrlStripped = "#";
+    let isDirItem = false;
+    if (sidebarItem.url) {
+        itemUrlStripped = sidebarItem.url;
+    } else if (sidebarItem.contents && sidebarItem.contents[0].url) {
+        itemUrlStripped = sidebarItem.contents[0].url.replace("recdir://", "/").replace("dir://", "/");
+        isDirItem = true;
+    }
+    let pageParams = dirTree.getPageParams(itemUrlStripped);
+
     if (!title) {
-        // console.debug(sidebarItem);
-        let itemUrlStripped = "#";
-        let isDirItem = false;
-        if (sidebarItem.url) {
-            itemUrlStripped = sidebarItem.url;
-        } else if (sidebarItem.contents && sidebarItem.contents[0].url) {
-            itemUrlStripped = sidebarItem.contents[0].url.replace("recdir://", "/").replace("dir://", "/");
-            isDirItem = true;
-        }
-        let pageParams = dirTree.getPageParams(itemUrlStripped);
         // console.debug(sidebarItem, childTree);
         if ("title" in pageParams) {
             title = pageParams["title"];
@@ -59,6 +61,9 @@ function getTitle(sidebarItem) {
             console.error(itemUrlStripped, `${itemUrlStripped} not present in dir tree. Something is wrong with the sidebar definition. So can't figure out title.`, sidebarItem);
             title = "UNK";
         }
+    }
+    if (pageParams.lastmod) {
+        title = `${pageParams.lastmod.split('T')[0]} ${title}`;
     }
     return title;
 }
