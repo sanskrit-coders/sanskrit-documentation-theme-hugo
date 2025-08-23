@@ -1,0 +1,20 @@
+<figure class="{{ .Attributes.class | default "" }}">
+
+    <a href="{{ .Attributes.link | default .Destination }}" target="_blank" rel="noopener">
+        <img src="{{ .Destination }}" alt="{{ .Text }}" title="{{ .Title }}">
+    </a>
+
+    {{ if or .Title .Attributes.caption }}
+    <figcaption>
+        {{ .Attributes.caption | default .Title | markdownify }}
+        {{ if or .Attributes.attribution .Attributes.attribution_link }}
+        <p class="attribution">
+            {{ with .Attributes.attribution_link }}<a href="{{ . }}">{{ end }}
+                {{ .Attributes.attribution }}
+            {{ if .Attributes.attribution_link }}</a>{{ end }}
+        </p>
+        {{ end }}
+    </figcaption>
+    {{ end }}
+
+</figure>

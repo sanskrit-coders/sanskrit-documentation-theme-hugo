@@ -53,6 +53,12 @@ disablePathToLower = true Since we assume mixed case to have special meaning.
 #### canonifyURLs
 canonifyURLs = True won't work well as of 20190304. .URL variable does will then not include the subdirectory portion of the basepath (ie kAvyam/ bit in http://localhost:1313/kAvyam/), leading to urls like http://localhost:1313/XYZ/padya/kAlidAsa/raghuvaMsha/01/ instead of  http://localhost:1313/kAvyam/XYZ/padya/kAlidAsa/raghuvaMsha/01/.
 
+#### Optional js modules
+Some js modules are automatically included.  
+See webpack_src/package.json for a list of those (should be invoked in some webpack_src/js script to be bundled in static/webpack_dist/uiLib-bundle.js ).
+
+See layouts/partials/head_js.html for optional js modules and the config parameters controlling them. 
+
 ### Search
 By default pagefind is used.
 

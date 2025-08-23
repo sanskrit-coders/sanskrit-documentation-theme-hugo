@@ -1,6 +1,6 @@
 <script src="{{ relURL "webpack_dist/uiLib-bundle.js" }}"></script>
 
-{{ if or .Params.math .Site.Params.math}}
+{{ if or (in .Params.js_extras "mathjax") (in .Site.Params.js_extras "mathjax") }}
 <script>
 // See https://docs.mathjax.org/en/latest/options/input/tex.html
 // https://docs.mathjax.org/en/latest/options/document.html
@@ -19,6 +19,14 @@ MathJax = {
 };
 </script>
 <script type="text/javascript" id="MathJax-script" async
-        src="{{ relURL "non_webpack_js/mathjax/es5/tex-svg.js" }}">
+        src="{{ relURL "non_webpack_js/mathjax/tex-svg.js" }}">
+</script>
+{{end}}
+
+
+{{ if or (in .Params.js_extras "mermaid") (in .Site.Params.js_extras "mermaid") }}
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize({ startOnLoad: true });
 </script>
 {{end}}
