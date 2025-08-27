@@ -62,7 +62,13 @@ export function getNonMetaNodeKeys(tree) {
 export function getPageKeys(tree) {
     function titleSorter(a, b) {
         let titleA = tree[a][pageRelUrlTreeMETAkey].title;
+        if (tree[a][pageRelUrlTreeMETAkey].lastmod) {
+            titleA = `${tree[a][pageRelUrlTreeMETAkey].lastmod} ${titleA}`;
+        }
         let titleB = tree[b][pageRelUrlTreeMETAkey].title;
+        if (tree[a][pageRelUrlTreeMETAkey].lastmod) {
+            titleB = `${tree[a][pageRelUrlTreeMETAkey].lastmod} ${titleB}`;
+        }
         // console.debug(titleA, titleB, titleA.localeCompare(titleB));
         if (titleA === undefined || titleB === undefined) {
             return false;
