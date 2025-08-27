@@ -1,4 +1,4 @@
-{{ if or .Params.math .Site.Params.math}}
+{{ if or (in .Params.js_extras "mathjax") (in .Site.Params.js_extras "mathjax") }}
 \(
 % groupings of objects.
 \newcommand{\set}[1]{\left\{ #1 \right\}}
