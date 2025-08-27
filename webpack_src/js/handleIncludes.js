@@ -84,15 +84,27 @@ function getCollapseStyle(jsInclude) {
   return collapseStyle;
 }
 
+function getIntLevelForH1(newLevelForH1) {
+  let intLevelForH1 = parseInt(newLevelForH1);
+  if (newLevelForH1 === undefined || !isNaN(intLevelForH1)) {
+    if (intLevelForH1 < 1 || intLevelForH1 > 6) {
+      console.error("Ignoring invalid newLevelForH1: %d, using 6", intLevelForH1);
+      intLevelForH1 = 6;
+    }
+  }
+  return intLevelForH1;
+}
+
 function relativizeIncludeElements(documentElement, includedPageRelativeUrl, newLevelForH1) {
+  let intLevelForH1 = getIntLevelForH1(newLevelForH1);
+
   [...documentElement.body.getElementsByClassName('js_include')].forEach(function (x) {
     x.setAttribute("url", absoluteUrl(includedPageRelativeUrl,x.getAttribute("url")));
-    var includedPageH1Level = parseInt(x.getAttribute("newLevelForH1"));
-    if (includedPageH1Level === undefined) {
-      includedPageH1Level = 6;
+    let includedPageH1LevelInt = getIntLevelForH1(x.getAttribute("newLevelForH1"));
+    if (!isNaN(includedPageH1LevelInt)) {
+      includedPageH1LevelInt = Math.min(6, ((includedPageH1Level - 1) + intLevelForH1));
+      x.setAttribute("newLevelForH1", includedPageH1LevelInt.toString());
     }
-    includedPageH1Level = Math.min(6, ((includedPageH1Level - 1) + newLevelForH1));
-    x.setAttribute("newLevelForH1", includedPageH1Level);
     // console.debug("Fixed include for %s with attributes:", includedPageRelativeUrl, x.attributes);
   });
 }
@@ -105,19 +117,27 @@ function relativizeHeaderElements(documentElement, includedPageRelativeUrl, newL
   getting the heading "under" which element falls seems non-trivial.
    */
   var headers = utils.getDescendentsByCss(documentElement.body, "h1, h2, h3, h4, h5, h6", documentElement);
+  let intLevelForH1 = getIntLevelForH1(newLevelForH1);
+
   var idPrefix = cleanId(includedPageRelativeUrl);
   headers.forEach(function (headerElement) {
-    var hLevel = parseInt(headerElement.tagName.substring(1));
-    var hLevelNew = Math.min(6, newLevelForH1 - 1 + hLevel);
-    var newId = idPrefix + "_" + cleanId(headerElement.getAttribute("id"));
-    // console.debug("new header id", newId, idPrefix);
-    let newTagName = `h${hLevelNew}`;
     let oldTagName = headerElement.tagName.toLowerCase();
-    
-    // Placing the below element after outerHTML rewrite was seen not to have any effect.
-    headerElement.setAttribute("id", newId);
-    // console.log("header", headerElement, oldTagName, newTagName);
-    headerElement.outerHTML = headerElement.outerHTML.replace(`<${oldTagName}`, `<${newTagName}`).replace(`</${oldTagName}`, `</${newTagName}`);
+    if (!isNaN(intLevelForH1)) {
+      var hLevel = parseInt(headerElement.tagName.substring(1));
+      var hLevelNew = Math.min(6, intLevelForH1 - 1 + hLevel);
+      var newId = idPrefix + "_" + cleanId(headerElement.getAttribute("id"));
+      // console.debug("new header id", newId, idPrefix);
+      let newTagName = `h${hLevelNew}`;
+
+      // Placing the below element after outerHTML rewrite was seen not to have any effect.
+      headerElement.setAttribute("id", newId);
+      // console.log("header", headerElement, oldTagName, newTagName);
+      headerElement.outerHTML = headerElement.outerHTML.replace(`<${oldTagName}`, `<${newTagName}`).replace(`</${oldTagName}`, `</${newTagName}`);
+    } else if(newLevelForH1 == "b[]") {
+      headerElement.outerHTML = 
+          headerElement.outerHTML.replace(new RegExp(`<${oldTagName}([^>]*>)`), `<b$1[`).replace(new RegExp(`</${oldTagName}>`), `]</b><br>`);
+      console.debug(headerElement.outerHTML)
+    }
   });
 }
 
@@ -173,10 +193,6 @@ function relativizeHtml(includedPageRelativeUrl, html, newLevelForH1) {
   // console.debug(element.html());
   removeNeedlessElements(virtualDocument.body);
 
-  if (newLevelForH1 === undefined || newLevelForH1 < 1 || newLevelForH1 > 6) {
-    console.error("Ignoring invalid newLevelForH1: %d, using 6", newLevelForH1);
-    newLevelForH1 = 6;
-  }
   // Fix js_includes
   relativizeIncludeElements(virtualDocument, includedPageRelativeUrl, newLevelForH1);
   relativizeHeaderElements(virtualDocument, includedPageRelativeUrl, newLevelForH1);
@@ -209,7 +225,7 @@ function relativizeHtml(includedPageRelativeUrl, html, newLevelForH1) {
 async function processAjaxResponseHtml(responseHtml, jsInclude) {
   // We want to parse html, but without loading images. Hence this.
   // Tip from: https://stackoverflow.com/questions/15113910/jquery-parse-html-without-loading-images
-  let includedPageNewLevelForH1 = parseInt(jsInclude.getAttribute("newLevelForH1"));
+  let includedPageNewLevelForH1 = jsInclude.getAttribute("newLevelForH1");
   let includedPageRelativeUrl = getRelativeIncludedPageUrl(jsInclude);
   var virtualDocument = document.implementation.createHTMLDocument('virtual');
 
