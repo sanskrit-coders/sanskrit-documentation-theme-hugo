@@ -102,7 +102,7 @@ function relativizeIncludeElements(documentElement, includedPageRelativeUrl, new
     x.setAttribute("url", absoluteUrl(includedPageRelativeUrl,x.getAttribute("url")));
     let includedPageH1LevelInt = getIntLevelForH1(x.getAttribute("newLevelForH1"));
     if (!isNaN(includedPageH1LevelInt)) {
-      includedPageH1LevelInt = Math.min(6, ((includedPageH1Level - 1) + intLevelForH1));
+      includedPageH1LevelInt = Math.min(6, ((includedPageH1LevelInt - 1) + intLevelForH1));
       x.setAttribute("newLevelForH1", includedPageH1LevelInt.toString());
     }
     // console.debug("Fixed include for %s with attributes:", includedPageRelativeUrl, x.attributes);
