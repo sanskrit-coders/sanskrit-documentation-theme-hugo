@@ -272,18 +272,19 @@ async function processAjaxResponseHtml(responseHtml, jsInclude) {
   if (addTitle && addTitle != "false") {
     if (addTitle != "plain") {
       titleHtml = `<h1 id='${cleanId(title)}'>${title}</h1>`;
+    } else {
+      titleHtml = `<span>${title}</span>`;
     }
   }
   let popoutLink = `<a class='btn btn-secondary' href='${includedPageRelativeUrl}'><i class=\"fas fa-external-link-square-alt\"></i></a>`
   var titleRowHtml = `<span class='d-flex justify-content-between' style="white-space: pre-wrap;"> ${titleHtml}<div class="section-nav row noPrint">${popoutLink}${editLinkHtml}</div></span>`;
-  if (addTitle == "plain") {
-    titleRowHtml = `${title}${titleRowHtml}`;
-  } else {
-    titleRowHtml = `🦅🦍…🐒🐍${titleRowHtml}`;
-  }
 
   // console.debug("contentInnerHtml", contentInnerHtml, contentElements);
-  contentHtml = `<details ${collapseStyle} class='included-post-content' id="${content_div_id}"><summary>${titleRowHtml}</summary>\n\n${contentInnerHtml}</details>`;
+  if(collapseStyle == "") {
+    contentHtml = `<details ${collapseStyle} class='included-post-content' id="${content_div_id}"><summary>${titleRowHtml}</summary>\n\n${contentInnerHtml}</details>`;
+  } else {
+    contentHtml = `${titleRowHtml}\n\n${contentInnerHtml}`;
+  }
 
   return relativizeHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1);
 }
