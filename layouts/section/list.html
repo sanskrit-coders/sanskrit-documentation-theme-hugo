@@ -28,8 +28,14 @@
             {{ end }}
             {{ else }}
             {{$pages := .Pages.ByTitle}}
-            {{ range $pages}}
-            {{partial "article-params-card" .}}
+            {{ range $pages }}
+            {{/* 1. Check if the page has a file (safety).
+            2. Check if the directory path does NOT contain "private". */}}
+            {{ if and .File (not (strings.Contains .File.Dir "private")) }}
+            <li>
+                {{partial "article-params-card" .}}
+            </li>
+            {{ end }}
             {{ end }}
             {{ end }}
             

@@ -3,10 +3,14 @@
     {{partial "default-content" .}}
     <div class="css-treeview box">
         {{ range .Pages.ByDate.Reverse }}
+        {{/* 1. Check if the page has a file (safety).
+        2. Check if the directory path does NOT contain "private". */}}
+        {{ if and .File (not (strings.Contains .File.Dir "private")) }}
         <li>
             {{ if not .Date.IsZero }} | {{.Date.Format "2006-01-02"}}{{ end }} {{ partial "breadcrumb" .  }}
         </li>
         <hr>
+        {{ end }}
         {{ end }}
     </div>
 </main>
