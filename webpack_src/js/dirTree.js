@@ -1,4 +1,4 @@
-let pageRelUrlTreeMETAkey = "__meta";
+export let pageRelUrlTreeMETAkey = "__meta";
 
 export function addRelUrlToTree(item, pageParams) {
     // console.debug(item, pageParams);
