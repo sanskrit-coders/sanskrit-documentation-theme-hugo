@@ -28,7 +28,7 @@ export function redirectToPage(url, manualRedirectionDiv, dryRun, debugInfo="") 
         manualRedirectionDiv.innerHTML = `Redirecting <a href='${url}'>here</a>`;
     }
     if (url && !dryRun) {
-        window.location.replace(url + `?debugInfo=${debugInfo}`);
+        window.location.assign(url + `?debugInfo=${debugInfo}`);
     }
 }
 
