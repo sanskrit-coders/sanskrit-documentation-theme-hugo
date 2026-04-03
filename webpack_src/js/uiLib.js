@@ -178,7 +178,7 @@ export function updatePrintStyle() {
 }
 
 export function setPrintColsFromQuery(node) {
-  console.log("Entering setprintColsFromQuery", node);
+  // console.log("Entering setprintColsFromQuery", node);
   let printCols = query.getParam("printCols") || "notPrintView";
   if (printCols == "notPrintView") {
     return;

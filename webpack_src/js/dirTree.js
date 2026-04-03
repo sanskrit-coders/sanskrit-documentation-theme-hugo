@@ -59,23 +59,33 @@ export function getNonMetaNodeKeys(tree) {
 }
 
 
+function alphabeticalTitle(tree, a) {
+    let title = tree[a][pageRelUrlTreeMETAkey].title;
+    if (tree[a][pageRelUrlTreeMETAkey].lastmod) {
+        title = `${tree[a][pageRelUrlTreeMETAkey].lastmod} ${title}`;
+    }
+    title = title.replace(/^\+* */, "");
+    return title;
+}
+
+
 export function getPageKeys(tree) {
     function titleSorter(a, b) {
-        let titleA = tree[a][pageRelUrlTreeMETAkey].title;
-        if (tree[a][pageRelUrlTreeMETAkey].lastmod) {
-            titleA = `${tree[a][pageRelUrlTreeMETAkey].lastmod} ${titleA}`;
-        }
-        let titleB = tree[b][pageRelUrlTreeMETAkey].title;
-        if (tree[a][pageRelUrlTreeMETAkey].lastmod) {
-            titleB = `${tree[a][pageRelUrlTreeMETAkey].lastmod} ${titleB}`;
-        }
+        let titleA = alphabeticalTitle(tree, a);
+        let titleB = alphabeticalTitle(tree, b);
         // console.debug(titleA, titleB, titleA.localeCompare(titleB));
         if (titleA === undefined || titleB === undefined) {
             return false;
         }
         else return titleA.localeCompare(titleB);
     }
-    return getNonMetaNodeKeys(tree).filter(x => pageRelUrlTreeMETAkey in tree[x]).sort(titleSorter);
+    let keys = getNonMetaNodeKeys(tree);
+    // console.debug(keys);
+    keys = keys.filter(x => pageRelUrlTreeMETAkey in tree[x]);
+    // console.debug(keys);
+    keys = keys.sort(titleSorter)
+    // console.debug(keys);
+    return keys;
 }
 
 export function isDirKey(tree, key) {
@@ -114,7 +124,7 @@ export function getItemNameNoPath(relUrl) {
 
 function getNextPageFromTreePosition(tree, relUrl) {
     const pageKeys = getPageKeys(tree);
-    // console.log(pageKeys);
+    // console.debug(pageKeys);
     const currentItemPosition = pageKeys.indexOf(getItemNameNoPath(relUrl));
     if (currentItemPosition == pageKeys.length - 1) {
         console.debug("Moving a directory up.");
@@ -123,7 +133,7 @@ function getNextPageFromTreePosition(tree, relUrl) {
         return tree;
     } 
     else {
-        console.debug("We'll get a sibling page");
+        console.debug("We'll get a sibling page - ", pageKeys[currentItemPosition + 1], tree);
         return tree[pageKeys[currentItemPosition + 1]];
     }
 }
