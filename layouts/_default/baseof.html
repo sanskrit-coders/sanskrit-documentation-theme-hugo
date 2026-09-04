@@ -33,7 +33,7 @@
     <!--      // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds partial-cached html just once and includes it everywhere. -->
     {{ partial "hugo-page-vars-to-js.html" .}}
 
-    {{ partialCached "head_js.html" .}}
+    {{ partialCached "head_js.html" . .Params.js_extras}}
 
     {{ partial "head_links.html" .}}
   </head>

@@ -2,6 +2,7 @@
 
 {{ $jsExtras := .Params.js_extras | default .Site.Params.js_extras }}
 
+
 {{ if and $jsExtras (in $jsExtras "mathjax") }}
 <script>
     MathJax = {
