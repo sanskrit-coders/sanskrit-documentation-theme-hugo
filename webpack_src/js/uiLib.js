@@ -113,6 +113,7 @@ export async function onDocumentReadyTasks() {
     sidebar.setupSidebarToggle();
     search.setupTitleSearch();
     setPageNavigation();
+    textToSpeech.setupAudioControls();
 
     if (pageVars.topnavId && sidebarsData[pageVars.topnavId]) {
         sidebar.insertNavItems("top-bar-right-custom", sidebarsData[pageVars.topnavId]);
@@ -388,6 +389,7 @@ export default {
     content: {
         updateTransliteration: transliteration.updateTransliteration,
         handleSpeakToggle: textToSpeech.handleSpeakToggle,
+        handlePauseToggle: textToSpeech.handlePauseToggle,
         updateCommentStyleFromDropdown: comments.updateCommentStyleFromDropdown,
         updatePrintStyle: updatePrintStyle,
         getPageParams: dirTree.getPageParams,
