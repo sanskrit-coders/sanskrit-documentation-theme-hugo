@@ -48,15 +48,6 @@ let suvaakTimer = null;
 let suvaakPendingPauseMs = 0;
 let suvaakPausedInGap = false;
 
-// Options of the "detail prefix" dropdown (🎧 -> Prefix). When a prefix is
-// selected, only the text under <details> elements with that summary prefix
-// is read aloud (plus text outside any details).
-const ALL_DETAILS_PREFIX = "";
-const DEFAULT_DETAIL_PREFIX = "विश्वास-प्रस्तुतिः";
-// Last choice made in the dropdown, kept outside the DOM because the page
-// body is re-rendered (via innerHTML) while includes are being processed.
-let detailPrefixSelection = null;
-
 async function setupSuvaak() {
   if (audioContext) return;
   var audioWorkletUrl = new URL(baseURL + "non_webpack_js/suvakworker.js?v=" + SUVAK_WORKER_VERSION);
@@ -262,79 +253,17 @@ function splitIntoSpeechSegments(text) {
   return segments;
 }
 
-function summaryOfDetails(details) {
-  for (let child of details.children) {
-    if (child.tagName === "SUMMARY") return child;
+// Text is read aloud unless hidden: content inside a closed <details> and
+// summary labels (titles of the details below them) are skipped. Closed
+// outer details hide everything nested inside them.
+function isReadableTextNode(textNode) {
+  let node = textNode.parentElement;
+  if (node && node.closest("summary")) return false;
+  while (node) {
+    if (node.tagName === "DETAILS" && !node.open) return false;
+    node = node.parentElement;
   }
-  return null;
-}
-
-// Prefix (summary) of the closest content <details> around a text node,
-// skipping the <details> elements synthesised for collapsible headings.
-// Returns null for nodes not inside any content details.
-function detailPrefixOfTextNode(textNode) {
-  if (!textNode.parentElement) return null;
-  let details = textNode.parentElement.closest("details");
-  while (details) {
-    if (!details.classList.contains("headingDetail")) {
-      let summary = summaryOfDetails(details);
-      if (summary) return summary.textContent.trim();
-    }
-    details = details.parentElement ? details.parentElement.closest("details") : null;
-  }
-  return null;
-}
-
-// Summaries (prefixes) of the content <details> present on the page, in
-// document order.
-function collectDetailPrefixes() {
-  let prefixes = [];
-  let main = document.getElementsByTagName("main")[0];
-  if (!main) return prefixes;
-  main.querySelectorAll("details").forEach(function (details) {
-    if (details.classList.contains("headingDetail")) return;
-    let summary = summaryOfDetails(details);
-    let prefix = summary ? summary.textContent.trim() : "";
-    if (prefix && prefixes.indexOf(prefix) === -1) prefixes.push(prefix);
-  });
-  return prefixes;
-}
-
-// Fill the 🎧 -> Prefix dropdown with the detail prefixes found on the page.
-// Defaults to विश्वास-प्रस्तुतिः when present; a selection made earlier by
-// the user is kept. The control stays hidden when the page has no details.
-export function populateDetailPrefixDropdown() {
-  let select = document.getElementById("detailPrefixDropdown");
-  if (!select) return;
-  let container = document.getElementById("detailPrefixDiv");
-  let prefixes = collectDetailPrefixes();
-  if (!prefixes.length) {
-    if (container) container.hidden = true;
-    return;
-  }
-  if (container) container.hidden = false;
-  select.innerHTML = "";
-  let allOption = document.createElement("option");
-  allOption.value = ALL_DETAILS_PREFIX;
-  allOption.textContent = "सर्वम्";
-  select.appendChild(allOption);
-  prefixes.forEach(function (prefix) {
-    let option = document.createElement("option");
-    option.value = prefix;
-    option.textContent = prefix;
-    select.appendChild(option);
-  });
-  let values = Array.prototype.map.call(select.options, option => option.value);
-  if (detailPrefixSelection !== null && values.indexOf(detailPrefixSelection) !== -1) {
-    select.value = detailPrefixSelection;
-  } else if (prefixes.indexOf(DEFAULT_DETAIL_PREFIX) !== -1) {
-    select.value = DEFAULT_DETAIL_PREFIX;
-  }
-}
-
-function selectedDetailPrefix() {
-  let select = document.getElementById("detailPrefixDropdown");
-  return select ? select.value : ALL_DETAILS_PREFIX;
+  return true;
 }
 
 export async function startSpeech(ttsEngine) {
@@ -346,19 +275,12 @@ export async function startSpeech(ttsEngine) {
     setSpeakerLoading(false);
     return;
   }
-  populateDetailPrefixDropdown();
-  let detailPrefix = selectedDetailPrefix();
   let transliterationSource = pageVars.unicodeScript || "devanagari";
   var textNodes = utils.textNodesUnder(document.getElementsByTagName("main")[0]);
   let transliteratedText = "";
   textNodes.forEach(function (textNode) {
     if (textNode.parentNode.nodeName.toLowerCase() == "option") return;
-    // Summaries are labels for the details below them, not content to read.
-    if (textNode.parentElement && textNode.parentElement.closest("summary")) return;
-    let prefix = detailPrefixOfTextNode(textNode);
-    // Skip details not matching the chosen prefix; `null` means the text is
-    // outside any details and is always read.
-    if (detailPrefix !== ALL_DETAILS_PREFIX && prefix !== null && prefix !== detailPrefix) return;
+    if (!isReadableTextNode(textNode)) return;
     let text = textNode.textContent.trim();
     if (text != "") {
       transliteratedText += " " + Sanscript.t(text, transliterationSource, "devanagari");
@@ -442,13 +364,8 @@ let audioControlsReady = false;
 export function setupAudioControls() {
   if (audioControlsReady) return;
   audioControlsReady = true;
-  populateDetailPrefixDropdown();
   document.addEventListener("input", function (event) {
     let slider = event.target;
-    if (slider.id === "detailPrefixDropdown") {
-      detailPrefixSelection = slider.value;
-      return;
-    }
     let value = Number(slider.value);
     switch (slider.id) {
       case "volume":
