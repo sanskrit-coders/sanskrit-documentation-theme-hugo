@@ -228,6 +228,10 @@ export function speakWebSynth(text) {
   window.speechSynthesis.speak(speech);
 }
 
+// Dashes pause only when they stand alone between spaces (as in "पदम् - पदम्");
+// inside a word ("विश्वास-प्रस्तुतिः", "e-mail") they do not.
+const DASH_PAUSE_CHARS = "-–—";
+
 // Split `text` into segments ending at pause punctuation (see
 // PUNCTUATION_PAUSE_MS); `pauseMs` is the pause to take after each segment.
 // Letterless buffers (verse numbers like "२४.१", punctuation runs) carry no
@@ -235,8 +239,13 @@ export function speakWebSynth(text) {
 function splitIntoSpeechSegments(text) {
   let segments = [];
   let buffer = "";
-  for (let char of text) {
+  for (let i = 0; i < text.length; i++) {
+    let char = text[i];
     let pauseMs = PUNCTUATION_PAUSE_MS[char];
+    if (DASH_PAUSE_CHARS.includes(char) &&
+        !(/\s/.test(text[i - 1] || "") && /\s/.test(text[i + 1] || ""))) {
+      pauseMs = undefined;
+    }
     if (pauseMs === undefined) {
       buffer += char;
     } else if (/\p{L}/u.test(buffer)) {
