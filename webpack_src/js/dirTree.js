@@ -1,3 +1,5 @@
+import urljoin from 'url-join';
+
 export let pageRelUrlTreeMETAkey = "__meta";
 
 export function addRelUrlToTree(item, pageParams) {
@@ -17,7 +19,7 @@ export async function populateTree() {
         return;
     }
     try {
-        const response = await fetch(`${baseURL}/index.json`);
+        const response = await fetch(urljoin(baseURL, "index.json"));
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -60,7 +62,7 @@ export function getNonMetaNodeKeys(tree) {
 
 
 function alphabeticalTitle(tree, a) {
-    let title = tree[a][pageRelUrlTreeMETAkey].title;
+    let title = tree[a][pageRelUrlTreeMETAkey].title || "";
     if (tree[a][pageRelUrlTreeMETAkey].lastmod) {
         title = `${tree[a][pageRelUrlTreeMETAkey].lastmod} ${title}`;
     }
@@ -74,10 +76,7 @@ export function getPageKeys(tree) {
         let titleA = alphabeticalTitle(tree, a);
         let titleB = alphabeticalTitle(tree, b);
         // console.debug(titleA, titleB, titleA.localeCompare(titleB));
-        if (titleA === undefined || titleB === undefined) {
-            return false;
-        }
-        else return titleA.localeCompare(titleB);
+        return titleA.localeCompare(titleB);
     }
     let keys = getNonMetaNodeKeys(tree);
     // console.debug(keys);

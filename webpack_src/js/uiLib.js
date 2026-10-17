@@ -122,7 +122,9 @@ export async function onDocumentReadyTasks() {
         sidebar.insertNavItems("footer-bar-right-custom", sidebarsData[pageVars.footernavId]);
     }
     if (pageVars.unicodeScript) {
-        document.querySelector("#post_content").setAttribute("unicode_script", pageVars.unicodeScript);
+        // Some layouts (eg. 404.html) have no #post_content element.
+        let postContent = document.querySelector("#post_content");
+        if (postContent) postContent.setAttribute("unicode_script", pageVars.unicodeScript);
     }
     prepareContentWithoutIncludes();
     if (!handleIncludes()) {

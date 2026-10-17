@@ -31,11 +31,15 @@ export function mp3Embed(audioEmbedTag) {
     }
 }
 
-export function fillAudioEmbeds(node) {
-    var audioEmbedTags = [...node.querySelectorAll('.audioEmbed')];
-    audioEmbedTags.forEach(function (audioEmbedTag) {
-        mp3Embed(audioEmbedTag);
-    });
+// Registered once, no matter how many times fillAudioEmbeds() is called (eg.
+// once per included page).
+let audioPlaybackHandlersRegistered = false;
+
+function registerAudioPlaybackHandlers() {
+    if (audioPlaybackHandlersRegistered) {
+        return;
+    }
+    audioPlaybackHandlersRegistered = true;
     document.addEventListener('play', function(e){
         // Pause other audios if this one is playing.
         var audios = document.getElementsByTagName('audio');
@@ -58,10 +62,18 @@ export function fillAudioEmbeds(node) {
             audios[currentAudioIndex + 1].play();
             audios[currentAudioIndex + 1].focus();
         } else {
-            let nextPageLinks = document.getElementById("nextPage");
-            if (nextPageLinks.length > 0) {
-                nextPageLinks[0].focus();
+            let nextPageLink = document.getElementById("nextPage");
+            if (nextPageLink) {
+                nextPageLink.focus();
             }
         }
     }, true);
+}
+
+export function fillAudioEmbeds(node) {
+    var audioEmbedTags = [...node.querySelectorAll('.audioEmbed')];
+    audioEmbedTags.forEach(function (audioEmbedTag) {
+        mp3Embed(audioEmbedTag);
+    });
+    registerAudioPlaybackHandlers();
 }

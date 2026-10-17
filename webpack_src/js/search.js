@@ -8,6 +8,19 @@ export function pageLoader() {
     return;
   }
   let url = pageSelected.split(";;")[1];
+  if (!url) {
+    // The user typed text instead of choosing a datalist entry. If it
+    // matches exactly one page title, load that page.
+    let matches = Array.from(document.querySelectorAll("#pageDataList option"))
+      .filter(option => option.textContent.startsWith(pageSelected));
+    if (matches.length === 1) {
+      url = matches[0].textContent.split(";;")[1];
+    }
+  }
+  if (!url) {
+    console.warn("Could not determine a page URL from search input:", pageSelected);
+    return;
+  }
   window.location = urljoin(baseURL, url);
 }
 

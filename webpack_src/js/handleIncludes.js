@@ -303,7 +303,7 @@ function getRelativeIncludedPageUrl(jsInclude) {
 
 function getStaticFileEditUrl(jsInclude) {
   var includedPageUrl = jsInclude.getAttribute("url");
-  if (siteParams.githubeditmepathbase.includes("github") && includedPageUrl.startsWith("/")) {
+  if ((siteParams.githubeditmepathbase || "").includes("github") && includedPageUrl.startsWith("/")) {
     let editUrlParts = siteParams.githubeditmepathbase.match("(.+?github.com/.+?)/(.+?)");
     let urlParts = includedPageUrl.match("/(.+?)/(.+)");
     let repoName = urlParts[1];
@@ -323,7 +323,7 @@ function getStaticFileEditUrl(jsInclude) {
   }
 }
 
-function markdownToHtml(markdownCode, jsInclude) {
+function markdownToHtml(markdownCode, jsInclude, includedPageUrl) {
   let metadataSeparator = markdownCode.split("\n")[0].trim();
   // console.log(`metadataSeparator: ${metadataSeparator}`)
   let mdContent = markdownCode
@@ -413,7 +413,7 @@ async function fillJsInclude(jsInclude) {
   function processingFn(response) {
     let responseHtml = response;
     if (includedPageUrl.endsWith(".md")) {
-      responseHtml = markdownToHtml(response, jsInclude);
+      responseHtml = markdownToHtml(response, jsInclude, includedPageUrl);
     }
     // console.debug("responseHtml", responseHtml);
     return processAjaxResponseHtml(responseHtml, jsInclude);
@@ -467,6 +467,27 @@ async function addPlaceholderDetail(jsInclude) {
   return 1;
 }
 
+// Fill includes with a bounded number in flight at a time. (Previously a
+// setInterval started one include per second, so a page with N includes took
+// at least N seconds before all of them had even started loading.)
+const MAX_PARALLEL_INCLUDES = 4;
+
+async function fillIncludesWithLimit(jsIncludes, onProgress) {
+  let nextIndex = 0;
+  let completedIncludes = 0;
+  async function worker() {
+    while (nextIndex < jsIncludes.length) {
+      let jsInclude = jsIncludes[nextIndex];
+      nextIndex++;
+      await fillJsInclude(jsInclude).catch(reason => console.error(reason));
+      completedIncludes++;
+      onProgress(completedIncludes);
+    }
+  }
+  let workerCount = Math.min(MAX_PARALLEL_INCLUDES, jsIncludes.length);
+  await Promise.all(Array.from({ length: workerCount }, () => worker()));
+}
+
 // Process includes of the form:
 // <div class="js_include" url="../xyz/"/>.
 // can't easily use a worker - workers cannot access DOM (workaround: pass strings back and forth), cannot access jquery library.
@@ -483,54 +504,37 @@ export default function handleIncludes(jsIncludesIn) {
   }
   console.log("Got includes", jsIncludes);
   // Can't make the below global  - document needs to load first.
+  // Some layouts (eg. 404.html) have no progress bar element.
   let progressBar = document.getElementById("progressLoading");
+  let progressBarDiv = document.getElementById("progressBarDiv");
   if (jsIncludes.length === 0) {
-    // WARNING: Chrome 2022  - the below somehow does not work visually though the html is altered to say "hidden".
-    document.getElementById("progressBarDiv").hidden = true;
+    if (progressBarDiv) progressBarDiv.hidden = true;
     return;
   }
-  let filledIncludes = 0;
-  progressBar.setAttribute("max", jsIncludes.length.toString());
-  progressBar.setAttribute("value", filledIncludes.toString());
+  if (progressBar) {
+    progressBar.setAttribute("max", jsIncludes.length.toString());
+    progressBar.setAttribute("value", "0");
+  }
   // Every include tag is initially forced to have the attribute "unfilled" irrespective of whether the html has it.
   jsIncludes.forEach(addPlaceholderDetail);
-  let openIncludes = jsIncludes.filter(x => getCollapseStyle(x) == "open");
-  let collapsedIncludes = jsIncludes.filter(x => getCollapseStyle(x) == "");
-  
+
   function postIncludeTasks() {
-    console.log("Done including %d out of %d.", filledIncludes, jsIncludes.length);
-    if (filledIncludes == jsIncludes.length) {
-      document.getElementById("progressBarDiv").hidden = true;
-      // Some included pages may have resulted in new jsInclude elements!
-      let newJsIncludes = Array.from(document.getElementsByClassName("js_include")).filter(x => x.hasAttribute("unfilled"));
-      console.log("Checking subincludes", newJsIncludes.length);
-      if (newJsIncludes.length) {
-        console.warn("Got jsIncludes within the included pages!", newJsIncludes);
-        handleIncludes(newJsIncludes);
-      } else {
-        uiLib.finalizePagePostInclusion();
-      }
+    if (progressBarDiv) progressBarDiv.hidden = true;
+    // Some included pages may have resulted in new jsInclude elements!
+    let newJsIncludes = Array.from(document.getElementsByClassName("js_include")).filter(x => x.hasAttribute("unfilled"));
+    console.log("Checking subincludes", newJsIncludes.length);
+    if (newJsIncludes.length) {
+      console.warn("Got jsIncludes within the included pages!", newJsIncludes);
+      handleIncludes(newJsIncludes);
+    } else {
+      uiLib.finalizePagePostInclusion();
     }
   }
 
-  function loadFirstInclude(jsIncludeList, intervalId) {
-    let jsInclude = jsIncludeList.shift();
-    if (jsInclude) {
-      fillJsInclude(jsInclude).catch(reason => console.error(reason));
-      filledIncludes = filledIncludes + 1;
-      progressBar.setAttribute("value", filledIncludes.toString());
-    } else {
-      clearInterval(intervalId);
-      postIncludeTasks();
-    }
-    
-  }
-  var openIncludesLoadingIntervalId = window.setInterval(function () {
-    loadFirstInclude(openIncludes, openIncludesLoadingIntervalId)
-  }, 1000);
-  
-  var closedIncludesLoadingIntervalId = window.setInterval(function () {
-    loadFirstInclude(collapsedIncludes, closedIncludesLoadingIntervalId)
-  }, 1000);
+  console.log(`Filling ${jsIncludes.length} includes with up to ${MAX_PARALLEL_INCLUDES} in parallel.`);
+  fillIncludesWithLimit(jsIncludes, function (completedIncludes) {
+    console.log("Done including %d out of %d.", completedIncludes, jsIncludes.length);
+    if (progressBar) progressBar.setAttribute("value", completedIncludes.toString());
+  }).then(postIncludeTasks);
   return jsIncludes.length;
 }

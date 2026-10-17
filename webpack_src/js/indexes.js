@@ -1,3 +1,28 @@
+// `change` does not fire on <datalist> elements, only on the associated
+// <input>. Listen on `document` (delegated) because the theme re-renders the
+// body while processing includes, which replaces input elements and would
+// drop directly attached listeners.
+const dataListHandlers = new Map();
+let delegatedChangeHandlerAttached = false;
+
+function ensureDelegatedChangeHandler() {
+    if (delegatedChangeHandlerAttached) {
+        return;
+    }
+    delegatedChangeHandlerAttached = true;
+    document.addEventListener('change', async (event) => {
+        // Convention: datalist_x is used by input_x.
+        const inputId = event.target.id || "";
+        if (!inputId.startsWith("input_")) {
+            return;
+        }
+        const handler = dataListHandlers.get("datalist_" + inputId.substring("input_".length));
+        if (handler) {
+            await handler(event.target.value);
+        }
+    });
+}
+
 export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x), initValue = null, ignoreHeader = true) {
     console.log("Entering loadDataListFromTSV", dataListId);
     try {
@@ -12,6 +37,10 @@ export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x,
         }
 
         const dataList = document.getElementById(dataListId);
+        if (!dataList) {
+            console.error("No datalist element with id", dataListId);
+            return;
+        }
 
         let fragment = document.createDocumentFragment();
 
@@ -29,14 +58,16 @@ export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x,
         });
         dataList.appendChild(fragment);
         if (initValue) {
-            // TODO: This isn't working. Getting erased.
+            // Set the attribute as well: the value property alone is lost when
+            // the body html is re-written while processing includes.
             const input = document.getElementById(dataListId.replace("datalist_", "input_"));
-            input.value = initValue;
+            if (input) {
+                input.value = initValue;
+                input.setAttribute("value", initValue);
+            }
         }
-        dataList.addEventListener('change', async (event) => {
-            const selectedValue = event.target.value;
-            await handler(selectedValue);
-        });
+        dataListHandlers.set(dataListId, handler);
+        ensureDelegatedChangeHandler();
 
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
@@ -59,6 +90,10 @@ export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x,
         }
 
         const dropdown = document.getElementById(dropdownId);
+        if (!dropdown) {
+            console.error("No dropdown element with id", dropdownId);
+            return;
+        }
         dropdown.innerHTML = ''; // Clear any existing options
         lines.forEach(line => {
             const values = line.split('\t');

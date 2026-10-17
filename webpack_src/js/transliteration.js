@@ -34,7 +34,10 @@ export function saveLipi(lipi, lipiAlt) {
   transliterationTargetAlt = lipiAlt || LIPI_DEFAULT;
   var date = new Date();
   date.setTime(date.getTime() + LIPI_EXPIRY);
-  document.cookie = `${LIPI_COOKIE}=${transliterationTarget}; ${LIPI_COOKIE_ALT}=${transliterationTargetAlt}; expires=${date.toGMTString()}; path=/`;
+  // Each cookie must be set with its own assignment - multiple name=value
+  // pairs in one string are not valid cookie syntax.
+  document.cookie = `${LIPI_COOKIE}=${transliterationTarget}; expires=${date.toGMTString()}; path=/`;
+  document.cookie = `${LIPI_COOKIE_ALT}=${transliterationTargetAlt}; expires=${date.toGMTString()}; path=/`;
 }
 
 function wordPairsToText(wordPairs) {
@@ -93,7 +96,7 @@ export function updateTransliteration() {
   var translitrationTargetDropdown = document.getElementById("transliterationDropdown");
   var translitrationTarget = translitrationTargetDropdown.options[translitrationTargetDropdown.selectedIndex].value;
   var translitrationTargetDropdownAlt = document.getElementById("transliterationDropdownAlt");
-  var translitrationTargetAlt = translitrationTargetDropdown.options[translitrationTargetDropdownAlt.selectedIndex].value;
+  var translitrationTargetAlt = translitrationTargetDropdownAlt.options[translitrationTargetDropdownAlt.selectedIndex].value;
   saveLipi(translitrationTarget, translitrationTargetAlt);
   query.setParamsAndGo({"transliterationTarget": translitrationTarget, "transliterationTargetAlt": translitrationTargetAlt});
 }

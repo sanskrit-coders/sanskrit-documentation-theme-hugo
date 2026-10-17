@@ -19,7 +19,8 @@ export function updateToc(options) {
     console.debug("headers.length", headers.length);
     if (headers.length < settings.minimumHeaders) {
         console.log(`Too few headers ${headers.length} < ${settings.minimumHeaders}. Returning.`);
-        document.getElementById("toc_card").style.display = "none";
+        let tocCard = document.getElementById("toc_card");
+        if (tocCard) tocCard.style.display = "none";
         return;
     }
 
@@ -71,8 +72,11 @@ export function updateToc(options) {
 
     html += "</ul>";
     setUpNavigationLinks(headers);
-    document.getElementById("toc_ul").innerHTML = html;
-    document.getElementById("toc_card").style.display = "block";
+    // Some layouts (eg. 404.html) don't have a TOC card.
+    let tocUl = document.getElementById("toc_ul");
+    if (tocUl) tocUl.innerHTML = html;
+    let tocCard = document.getElementById("toc_card");
+    if (tocCard) tocCard.style.display = "block";
     // console.log(document.getElementById("toc_ul"));
     // resetNavgocoMenu();
     // Finally, set up navgoco options.
@@ -85,7 +89,7 @@ function returnToTopHandler(toc_item_id) {
     // So, the user can follow the trail of highlights menu items and expand the menu items till he reaches the appropriate level.
     var itemToActivate = undefined;
     document.getElementById("toc_header").setAttribute("open", "");
-    // console.debug(toc_item_id, $("#toc_ul").find("li"));
+    // console.debug(toc_item_id, document.querySelectorAll("#toc_ul li"));
     document.querySelectorAll("#toc_ul li").forEach(function(liElement, liIndex) {
         // console.debug(liIndex, liElement, toc_item_id);
         if (liElement.id === toc_item_id) {
@@ -94,9 +98,17 @@ function returnToTopHandler(toc_item_id) {
             liElement.classList.remove("active");
         }
     });
+    if (!itemToActivate) {
+        return;
+    }
 
-    itemToActivate.addClass("active");
-    itemToActivate.parents("li").addClass("active"); // This call is ineffective for some reason.
+    itemToActivate.classList.add("active");
+    // Also mark the ancestor <li> elements as active.
+    for (let ancestor = itemToActivate.parentElement; ancestor; ancestor = ancestor.parentElement) {
+        if (ancestor.tagName === "LI") {
+            ancestor.classList.add("active");
+        }
+    }
 
     // Now scroll up.
     document.documentElement.scrollTop = document.body.scrollTop = document.getElementById(toc_item_id).offsetTop;
@@ -105,14 +117,12 @@ function returnToTopHandler(toc_item_id) {
 
 function setUpNavigationLinks(headers) {
     headers.forEach(function(header, index) {
-        let ancestorIncludedPost = header.closest(".included-post");
         let navDiv = header.nextElementSibling;
-        if (!navDiv || !["h1","h2","h3","h4","h5", "h6" ].includes(navDiv.tagName)) return;
-        if (!navDiv.classList.contains("section-nav")) {
-            navDiv = header.querySelector(".secion-nav:last-child");
-            // console.debug("last child of header", navDiv);
+        if (!navDiv || !navDiv.classList.contains("section-nav")) {
+            let childNavDivs = header.querySelectorAll(":scope > .section-nav");
+            navDiv = childNavDivs.length ? childNavDivs[childNavDivs.length - 1] : null;
         }
-        if (!navDiv.classList.contains("section-nav")) {
+        if (!navDiv) {
             navDiv = document.createElement("div");
             navDiv.className = "section-nav row float-right noPrint";
             navDiv.style.textAlign = "right";
@@ -133,7 +143,7 @@ function setUpNavigationLinks(headers) {
         }
 
         let next_button_id = `toc_next_${header.id}`;
-        if (index !== headers.length - 1) {
+        if (index !== headers.length - 1 && !document.getElementById(next_button_id)) {
             // There is a javascript click listener (defined later in this file) for the below to scroll up.
             let nextHeader = headers[index + 1];
             // console.log(nextHeader);
@@ -147,7 +157,7 @@ function setUpNavigationLinks(headers) {
         }
 
         let prev_button_id = `toc_prev_${header.id}`;
-        if (index !== 0) {
+        if (index !== 0 && !document.getElementById(prev_button_id)) {
             // There is a javascript click listener (defined later in this file) for the below to scroll up.
             let prevHeader = headers[index - 1];
             // console.log(prevHeader);

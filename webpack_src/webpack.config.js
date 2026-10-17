@@ -1,11 +1,12 @@
-var webpack = require("webpack");
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
 
 
-module.exports = {
+// `webpack --env production` builds the smaller, minified bundle that is
+// committed and served by the sites. Plain `webpack` keeps sourcemaps readable
+// for local debugging.
+module.exports = (env) => ({
     entry: {
         // uiLib.css is also produced.
         uiLib: "./js/uiLib.js",
@@ -16,10 +17,7 @@ module.exports = {
         libraryTarget: 'var',
         library: 'module_[name]'
     },
-    mode: "development",
-    optimization: {
-        usedExports: true
-    },
+    mode: env && env.production ? "production" : "development",
     plugins: [
         new MiniCssExtractPlugin(),
     ],
@@ -44,11 +42,12 @@ module.exports = {
         ]
     },
     optimization: {
+        usedExports: true,
         minimizer: [
-            // For webpack@5 you can use the `...` syntax to extend existing minimizers (i.e. `terser-webpack-plugin`), uncomment the next line
-            // `...`,
+            // `...` keeps webpack's default JS minimizers (terser) active.
+            `...`,
             new CssMinimizerPlugin(),
         ],
     },
 
-};
+});

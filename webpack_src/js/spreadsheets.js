@@ -16,7 +16,10 @@ function fillTableFromJsObject(data, sheetEmbedTag) {
             columnWidths.push(20);
         }
     } else {
-        headerStr.split(",")
+        headers = headerStr.split(",");
+        for (let i = 0; i < headers.length; i++) {
+            columnWidths.push(20);
+        }
     }
     // console.debug(headerStr, headers);
     // Because toml parser makes a js object without hasOwnProperty() method as required by handsontable, we do the below.
@@ -28,8 +31,10 @@ function fillTableFromJsObject(data, sheetEmbedTag) {
         for (let key in item) {
             let value = item[key];
             let columnIndex = Object.keys(item).indexOf(key);
-            columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], Math.min(value.toString().length * 20, 200));
-            // console.debug(value, value.toString().length, columnWidths);
+            let valueLength = (value === null || value === undefined) ? 0 : value.toString().length;
+            columnWidths[columnIndex] = columnWidths[columnIndex] || 20;
+            columnWidths[columnIndex] = Math.max(columnWidths[columnIndex], Math.min(valueLength * 20, 200));
+            // console.debug(value, valueLength, columnWidths);
         }
     });
     let height = .8*screen.availHeight;
