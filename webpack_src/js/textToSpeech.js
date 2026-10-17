@@ -57,12 +57,16 @@ async function setupSuvaak() {
 function handleSuvakMessage(event) {
   let message = event.data;
   if (Array.isArray(message) && message[0] === "arbdh") {
+    // Synthesis started: the first samples are about to play.
+    setSpeakerLoading(false);
     console.log("suvak: synthesising " + message[1] + " samples");
   } else if (message === "smaptih") {
     // The utterance was rendered completely.
+    setSpeakerLoading(false);
     setSpeakerState(false);
   } else if (message === "reload") {
     console.error("suvak: the speech engine aborted. Reloading the page may help.");
+    setSpeakerLoading(false);
     setSpeakerState(false);
   } else {
     console.debug("suvak:", message);
@@ -97,15 +101,35 @@ function setSpeakerState(on) {
   if (speakerButton) speakerButton.classList.toggle("red", on);
 }
 
+// Show a spinner in place of the ⏯ glyph while the worklet is loading (the
+// worker download can take a while) and the first samples are synthesised.
+function setSpeakerLoading(loading) {
+  let speakerButton = document.getElementById("speakerButton");
+  if (!speakerButton) return;
+  let label = speakerButton.dataset.speakerLabel;
+  if (loading) {
+    if (label !== undefined) return;
+    speakerButton.dataset.speakerLabel = speakerButton.innerHTML;
+    speakerButton.setAttribute("aria-busy", "true");
+    speakerButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+  } else if (label !== undefined) {
+    speakerButton.innerHTML = label;
+    delete speakerButton.dataset.speakerLabel;
+    speakerButton.removeAttribute("aria-busy");
+  }
+}
+
 export async function handleSpeakToggle() {
   if (!ttsOn) {
     try {
       await startSpeech(TTS_ENGINE);
     } catch (error) {
       console.error("Text-to-speech failed", error);
+      setSpeakerLoading(false);
       setSpeakerState(false);
     }
   } else {
+    setSpeakerLoading(false);
     setSpeakerState(false);
     stopSpeech(TTS_ENGINE);
   }
@@ -145,9 +169,11 @@ export function speakWebSynth(text) {
 
 export async function startSpeech(ttsEngine) {
   setSpeakerState(true);
+  setSpeakerLoading(true);
   await setup(ttsEngine);
   if (!ttsOn) {
     // Playback was cancelled while the engine was still loading.
+    setSpeakerLoading(false);
     return;
   }
   let transliterationSource = pageVars.unicodeScript || "devanagari";
@@ -164,9 +190,12 @@ export async function startSpeech(ttsEngine) {
   console.log("startSpeech", ttsEngine, transliteratedText.length + " chars");
   switch (ttsEngine) {
     case "WebSynth":
+      setSpeakerLoading(false);
       speakWebSynth(transliteratedText);
       break;
     case "suvaak":
+      // The spinner stays until the worker reports that synthesis has started
+      // (the "arbdh" message), which can lag the click on long pages.
       await speakSuvaak(transliteratedText);
       break;
   }
