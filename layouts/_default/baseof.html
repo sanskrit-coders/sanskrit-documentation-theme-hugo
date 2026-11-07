@@ -39,7 +39,7 @@
   </head>
 
   <body class="ma0 {{ $.Param "body_classes"  | default "bg-near-white"}}{{ with getenv "HUGO_ENV" }} {{ . }}{{ end }}">
-    {{ partial "mathjax_tex_commands.html" .}}
+    {{ partialCached "mathjax_tex_commands.html" . (or (in .Params.js_extras "mathjax") (in .Site.Params.js_extras "mathjax")) }}
 
     {{ block "header" . }}{{ partial "site-header.html" .}}{{ end }}
     <!-- Content Row -->
@@ -63,7 +63,7 @@
       <main class="col p-3" role="main" data-pagefind-body>
         {{ block "main" . }}{{ end }}
         {{ partialCached "disqus.html" . }}
-        {{partial "article-params-card" .}}
+        {{ partialCached "article-params-card" . .RelPermalink }}
       </main>
     </div>
     {{ block "footer" . }}{{ partialCached "site-footer.html" . }}{{ end }}

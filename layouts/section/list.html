@@ -19,12 +19,12 @@
 <ul>
     <li><input type="checkbox" id="section-tree-item-{{.Title}}" checked="checked" /><label for="section-tree-item-{{.Title}}">{{.Title}}</label>
         <ul>
-            {{partial "article-params-card" .}}
+            {{ partialCached "article-params-card" . .RelPermalink }}
             <!--This conditional ordering must be done more elegantly. Conditionally (re)assigning $pages within the if condition does not work.-->
             {{if eq .Params.order "reverseDate"}}
             {{ $pages := .Pages.ByLastmod.Reverse }}
             {{ range $pages}}
-            {{partial "article-params-card" .}}
+            {{ partialCached "article-params-card" . .RelPermalink }}
             {{ end }}
             {{ else }}
             {{$pages := .Pages.ByTitle}}
@@ -33,7 +33,7 @@
             2. Check if the directory path does NOT contain "private". */}}
             {{ if and .File (not (strings.Contains .File.Dir "private")) }}
             <li>
-                {{partial "article-params-card" .}}
+                {{ partialCached "article-params-card" . .RelPermalink }}
             </li>
             {{ end }}
             {{ end }}
