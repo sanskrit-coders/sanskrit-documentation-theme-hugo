@@ -61,6 +61,48 @@ function getCollapseStyle(jsInclude) {
   return collapseStyle;
 }
 
+function getDetailsSummaryText(detailsEl) {
+  for (const child of detailsEl.children) {
+    if (child.tagName === "SUMMARY") {
+      return child.textContent.trim();
+    }
+  }
+  const summary = detailsEl.querySelector("summary");
+  return summary ? summary.textContent.trim() : "";
+}
+
+function collectMatchingDetails(parentEl, re, out) {
+  for (const child of parentEl.children) {
+    if (child.tagName === "DETAILS") {
+      if (re.test(getDetailsSummaryText(child))) {
+        out.push(child.outerHTML);
+      } else {
+        collectMatchingDetails(child, re, out);
+      }
+    } else if (child.tagName !== "SUMMARY") {
+      collectMatchingDetails(child, re, out);
+    }
+  }
+}
+
+export function filterDetailsByPattern(html, detailsPattern) {
+  if (!detailsPattern || detailsPattern.trim() === ".*") {
+    return html;
+  }
+  let re;
+  try {
+    re = new RegExp(detailsPattern, "us");
+  } catch (e) {
+    console.error("Invalid detailsPattern regex:", detailsPattern, e);
+    return html;
+  }
+  const tempDoc = document.implementation.createHTMLDocument("virtual");
+  tempDoc.body.innerHTML = html;
+  const matched = [];
+  collectMatchingDetails(tempDoc.body, re, matched);
+  return matched.join("\n\n");
+}
+
 function getIntLevelForH1(newLevelForH1) {
   let intLevelForH1 = parseInt(newLevelForH1);
   if (newLevelForH1 === undefined || !isNaN(intLevelForH1)) {
@@ -225,6 +267,8 @@ async function processAjaxResponseHtml(responseHtml, jsInclude) {
     // We don't want multiple post_content divs, hence we replace with an included-post-content div.
     contentInnerHtml = contentElement.innerHTML;
   }
+  let detailsPattern = jsInclude.getAttribute("detailsPattern") || ".*";
+  contentInnerHtml = filterDetailsByPattern(contentInnerHtml, detailsPattern);
 
   // Setup edit link
   var editLinkElement = virtualDocument.querySelector("#editLink");

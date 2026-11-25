@@ -285,6 +285,34 @@ def run_fixture_functional_tests(playwright, base_url):
     assert "संस्कृतम्" in post_text and "Sample Included Markdown" in post_text
     print("[PASS] HTML and Markdown (.md) js_include chunks rendered")
 
+    # 4b. detailsPattern, fieldNames, and metadataDetailName="false"
+    page.goto(f"{base_url}section_a/details_include_page/", wait_until="networkidle")
+    page.wait_for_function(
+        "() => document.querySelectorAll('.js_include').length === 5 && document.querySelectorAll('.js_include[unfilled]').length === 0"
+    )
+    def_txt = page.locator("#inc_default").text_content()
+    assert "Bare intro paragraph outside details." in def_txt
+    assert "author : Test Author" in def_txt
+    assert "Detail Alpha" in def_txt and "Detail Beta" in def_txt
+    assert page.locator("#inc_default details summary:has-text('Metadata')").count() == 0
+    assert page.locator("#inc_default details summary:has-text('false')").count() == 0
+
+    beta_txt = page.locator("#inc_beta").text_content()
+    assert "Bare intro paragraph" not in beta_txt and "Detail Alpha" not in beta_txt
+    assert page.locator("#inc_beta > details").count() == 1
+    assert "Detail Beta" in beta_txt and "Nested Child" in beta_txt
+
+    nested_txt = page.locator("#inc_nested").text_content()
+    assert "Detail Beta" not in nested_txt
+    assert page.locator("#inc_nested > details").count() == 1
+    assert "Nested Child" in nested_txt and "Inner leaf text." in nested_txt
+
+    meta_txt = page.locator("#inc_meta").text_content()
+    assert "Detail Alpha" not in meta_txt and "Custom Meta" in meta_txt and "Test Author" in meta_txt
+    html_beta_txt = page.locator("#inc_html_beta").text_content()
+    assert "Bare HTML intro" not in html_beta_txt and "Alpha HTML" not in html_beta_txt and "HTML beta body." in html_beta_txt
+    print("[PASS] js_include detailsPattern, fieldNames, and metadataDetailName")
+
     # 5. MathJax page (including custom \set, \union, \seq macros)
     page.goto(f"{base_url}section_a/math_page/", wait_until="networkidle")
     page.wait_for_selector("mjx-container", timeout=15000)

@@ -63,7 +63,7 @@ export function markdownToHtml(markdownCode, jsInclude, includedPageUrl) {
     mdContent = fieldData.join("\n\n") + "\n\n" + mdContent;
   }
   let metadataDetailName = jsInclude.getAttribute("metadataDetailName");
-  if (metadataDetailName != null) {
+  if (metadataDetailName != null && metadataDetailName.trim().toLowerCase() !== "false") {
     if (metadataDetailName == "") {
       metadataDetailName = "Metadata";
     }

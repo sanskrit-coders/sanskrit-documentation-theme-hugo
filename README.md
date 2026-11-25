@@ -71,6 +71,51 @@ npx pagefind --site build_github --output-path build_github/pagefind
 
 The provided /search url path will have a content-esarch UI.
 
+### Dynamic Content Includes & Media Embeds
+
+#### Page / Markdown Includes (`<div class="js_include" ...> </div>`)
+Implemented in `webpack_src/js/handleIncludes.js` and `webpack_src/js/mdInclude.js`.
+
+- **Class**: `js_include` (add `collapsed` to render initially collapsed inside `<details>` and lazy-load only when opened).
+- **Attributes**:
+  - `url` (required): Relative or root-relative URL of an HTML page (trailing `/` or `.html`) or Markdown `.md` file (including raw GitHub `.md` URLs). Relative `src`, nested `js_include` URLs, heading levels, and element/footnote IDs inside included content are automatically relativized.
+  - `newLevelForH1` (optional; default in editor snippets: `"5"`): Target heading level (`"1"`–`"6"`) to shift included `<h1>` elements to (deeper headings shift proportionally, clamped at `<h6>`), or `"b[]"` to convert headings to `<b>[...]</b><br>`.
+  - `includeTitle` (optional; default in editor snippets: `"false"`): Controls displaying the included page title: `"true"` (heading), `"plain"` (`<span>`), or `"false"` (hidden; overrides `title`). If omitted, falls back to `title`.
+  - `title` (optional): Explicit title string (overrides the target page's `<h1>` / frontmatter `title` unless `includeTitle="false"`).
+  - `detailsPattern` (optional; default: `".*"`): Regex matched against `<summary>` text (trimmed) so only matching `<details>` blocks are included. When `".*"` (or omitted), the entire content is included. When set to another pattern, matching outer `<details>` keep their full subtree, and non-matching `<details>` recurse into child `<details>`.
+  - `unfilled` (optional marker): Set/removed automatically during filling (`handleIncludes()` forces `unfilled` before loading).
+  - `.md`-only frontmatter attributes:
+    - `fieldNames` (optional): Comma-separated YAML/TOML frontmatter keys prepended as `key : value` lines.
+    - `metadataDetailName` (optional; default in snippets: `"false"`): When set to anything other than `"false"`, prepends a `<details><summary>...</summary>` block of frontmatter metadata (an empty `""` attribute defaults the summary to `"Metadata"`).
+- **URL query parameters**:
+  - `includeStyle`: Set to anything other than `"on"` (the default) to skip dynamic include loading.
+  - `expandAll`: `"true"` overrides `collapsed` and expands includes eagerly (default: `"false"`).
+
+#### Spreadsheet Includes (`<div class="spreadsheet" ...> </div>`)
+Implemented in `webpack_src/js/spreadsheets.js` and `webpack_src/js/spreadsheetsLazy.js` (Handsontable chunk loaded on demand).
+
+- **Attributes**:
+  - `src` (required): Path/URL to a `.json` (array of rows), `.json5`, `.toml` (expects top-level `data` array), `.tsv`, or `.csv` file.
+  - `headers` (optional): Comma-separated custom column headers (defaults to keys of the first row).
+  - `separator` (optional, for `.tsv`/`.csv`): Column delimiter string (default: `"\t"`; pass `","` for `.csv`).
+  - `fullHeightWithRowsPerScreen` (optional): Rows per screen height (`0.8 * screen.availHeight`) to scale container height (`0.8 * screen.availHeight * ceil(rows / N)`).
+  - `fullHeight` (optional): Checked/logged in debug output (`fullHeightWithRowsPerScreen` controls computed pixel height).
+
+#### Audio Embeds (`<div class="audioEmbed" ...></div>`)
+Implemented in `webpack_src/js/audioEmbed.js`.
+
+- **Attributes**:
+  - `src` (required): `.mp3` path/URL with optional query parameters (`autoplay=1|0`, `loop=1|0`, `controls=0|1`; defaults: `autoplay=0`, `loop=0`, `controls=1`). Unrecognized query parameters or non-`.mp3` URLs are rejected.
+  - `caption` (optional): Caption rendered below the `<audio>` player as `<div class="audioCaption"> (caption)</div>`.
+- **Playback behavior**: Playing one `<audio>` pauses others on the page; when a track finishes, playback advances to and focuses the next `<audio>` (or focuses `#nextPage` after the last track).
+
+#### Video Embeds (`<div class="videoEmbed" ...></div>`)
+Implemented in `webpack_src/js/videoEmbed.js`.
+
+- **Attributes**:
+  - `src` (required): External `http://` or `https://` YouTube (`youtube.com/watch?v=...`, `youtu.be/...`, `youtube.com/embed/...`) or Vimeo (`vimeo.com/...`) URL. Supports query parameters `autoplay=1` and `loop=1` (YouTube loops also pass `playlist=<id>&version=3`).
+  - (`caption` may be included in editor templates for readability, though `videoEmbed.js` only reads `src`.)
+
 ## Code Contributions
 ### JS and CSS
 Javascript and css dependencies are mostly managed with npm and webpack.
