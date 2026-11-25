@@ -1,4 +1,3 @@
-import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tachyons/css/tachyons.min.css';
 
@@ -12,7 +11,6 @@ import "../css/class_styles.css";
 import * as copyButtons from "./copyButtons";
 import * as query from "./query";
 import * as transliteration from "./transliteration";
-import {setInlineComments} from "./comments";
 import * as audioEmbed from "./audioEmbed";
 import * as videoEmbed from "./videoEmbed";
 import * as spreadsheets from "./spreadsheets";
@@ -26,30 +24,156 @@ import {redirectToPage, redirectToRandomPage} from "./redirect";
 import * as comments from "./comments";
 import * as textToSpeech from "./textToSpeech";
 import * as utils from "./utils";
-import {loadDataListFromTSV, loadDropdownFromTSV} from "./indexes";
+
+let bootstrapLiteReady = false;
+let readyTasksStarted = false;
+
+// Backward compatibility for legacy pages (e.g. random.md) referencing module_dir_tree.
+if (typeof window !== "undefined") {
+    window.module_dir_tree = dirTree;
+}
+
+function resolveSelectorTargets(selector) {
+    if (!selector || selector === "#") return [];
+    if (selector.startsWith("#") && !/[ .,:>\[\]+~]/.test(selector.slice(1))) {
+        const el = document.getElementById(selector.slice(1));
+        return el ? [el] : [];
+    }
+    try {
+        return Array.from(document.querySelectorAll(selector));
+    } catch (e) {
+        return [];
+    }
+}
+
+function closeOpenDropdowns(exceptDropdown) {
+    document.querySelectorAll(".dropdown-menu.show").forEach(menu => {
+        const parent = menu.closest(".dropdown");
+        if (exceptDropdown && parent === exceptDropdown) return;
+        menu.classList.remove("show");
+        if (parent) {
+            parent.classList.remove("show");
+            const btn = parent.querySelector('[data-toggle="dropdown"]');
+            if (btn) btn.setAttribute("aria-expanded", "false");
+        }
+    });
+}
+
+// Lightweight delegated replacement for Bootstrap's collapse and dropdown JS
+// (avoids bundling ~520 KB of jQuery + Popper + Bootstrap JS).
+function setupBootstrapLite() {
+    if (bootstrapLiteReady) return;
+    bootstrapLiteReady = true;
+
+    document.addEventListener("click", function (event) {
+        const collapseTrigger = event.target.closest('[data-toggle="collapse"]');
+        if (collapseTrigger) {
+            if (collapseTrigger.tagName === "A") event.preventDefault();
+            const selector = collapseTrigger.getAttribute("data-target") || collapseTrigger.getAttribute("href");
+            const targets = resolveSelectorTargets(selector);
+            let isShown = false;
+            targets.forEach(t => {
+                isShown = t.classList.toggle("show");
+            });
+            collapseTrigger.setAttribute("aria-expanded", String(isShown));
+            collapseTrigger.classList.toggle("collapsed", !isShown);
+            return;
+        }
+
+        const dropdownTrigger = event.target.closest('[data-toggle="dropdown"]');
+        if (dropdownTrigger) {
+            event.preventDefault();
+            const dropdown = dropdownTrigger.closest(".dropdown") || dropdownTrigger.parentElement;
+            const menu = dropdown ? dropdown.querySelector(".dropdown-menu") : null;
+            if (!menu) return;
+            const willOpen = !menu.classList.contains("show");
+            closeOpenDropdowns(dropdown);
+            menu.classList.toggle("show", willOpen);
+            dropdown.classList.toggle("show", willOpen);
+            dropdownTrigger.setAttribute("aria-expanded", String(willOpen));
+            return;
+        }
+
+        if (!event.target.closest(".dropdown-menu.show")) {
+            closeOpenDropdowns(null);
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            closeOpenDropdowns(null);
+        }
+    });
+}
 
 export function relUrlOfCurrentPage() {
     return document.location.href.split("#")[0].replace(baseURL, "/");
 }
 
 // No includes processing - or adding navigation bars.
-export function prepareContentWithoutIncludes(node) {
+export async function prepareContentWithoutIncludes(node) {
+    const isRootCall = !node;
     if (!node) {
         node = document.body;
         transliteration.loadLipi();
     }
-    // setting node.outerHTML will cause later calls to fail!
-    node.innerHTML = setInlineComments(node.innerHTML);
-    transliteration.transliterate(node);
+    // Only rewrite leaf blocks containing `+++` instead of rewriting document.body.innerHTML.
+    comments.applyInlineComments(node);
+    await transliteration.transliterate(node);
     audioEmbed.fillAudioEmbeds(node);
     videoEmbed.fillVideoEmbeds(node);
-    spreadsheets.fillSheets(node);
+    await spreadsheets.fillSheets(node);
 
     // Doing the below before inclusion also -  
     // so that unnecessary include processing can be avoided.
-    expandDetails(document.querySelector("body main"));
-    collectDetails(document.querySelector("body main"));
-    setPrintColsFromQuery(document.body);
+    if (isRootCall) {
+        const mainEl = document.querySelector("body main");
+        if (mainEl) {
+            expandDetails(mainEl);
+            collectDetails(mainEl);
+        }
+        setPrintColsFromQuery(document.body);
+    } else {
+        expandDetails(node);
+        setPrintColsFromQuery(node);
+    }
+}
+
+async function ensureMathjaxLoadedIfNeeded() {
+    if (typeof window === "undefined") return;
+    const mainEl = document.querySelector("main");
+    if (!mainEl) return;
+    const text = mainEl.textContent || "";
+    const hasMath = /@#|\$\$|\\\(|\\\[/.test(text);
+    if (!hasMath) return;
+
+    if (window.MathJax && window.MathJax.typesetPromise) {
+        await window.MathJax.typesetPromise([mainEl]).catch(e => console.warn("MathJax typeset failed:", e));
+        return;
+    }
+
+    if (window.__sdMathjaxUrl && !document.getElementById("MathJax-script")) {
+        const { MATHJAX_TEX_COMMANDS } = await import(/* webpackChunkName: "mathjaxMacros" */ "./mathjaxMacros");
+        const macroSpan = document.createElement("span");
+        macroSpan.style.display = "none";
+        macroSpan.textContent = MATHJAX_TEX_COMMANDS;
+        document.body.prepend(macroSpan);
+
+        window.MathJax = {
+            tex: {
+                inlineMath: [["@#", "#@"], ["\\(", "\\)"]],
+                displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+                processEscapes: true,
+            },
+            svg: { fontCache: 'global' },
+            options: { ignoreHtmlClass: "tex2jax_ignore|dno" }
+        };
+        const script = document.createElement("script");
+        script.id = "MathJax-script";
+        script.async = true;
+        script.src = window.__sdMathjaxUrl;
+        document.head.appendChild(script);
+    }
 }
 
 export function finalizePagePostInclusion() {
@@ -59,19 +183,40 @@ export function finalizePagePostInclusion() {
     updateToc();
     collapsibleSections();
     copyButtons.copyablePres();
+    ensureMathjaxLoadedIfNeeded();
     const sdThemeDoneEvent = new CustomEvent('sdThemeDone', {detail: {someData: 'example'}});
     console.log("Dispatching sdThemeDoneEvent", sdThemeDoneEvent);
     document.dispatchEvent(sdThemeDoneEvent);
 }
 
+function initCurrentPageVarsFromHugo() {
+    if (!pageVars.pageParams || Object.keys(pageVars.pageParams).length === 0) {
+        pageVars.pageParams = dirTree.getPageParams(pageVars.pageUrlMinusBasePath);
+    }
+    const defaults = (typeof pageDefaults !== "undefined" && pageDefaults) ? pageDefaults : {};
+    pageVars.sidebarId = pageVars.pageParams.sidebar || defaults.sidebar;
+    pageVars.topnavId = pageVars.pageParams.topnav || defaults.topnav;
+    pageVars.footernavId = pageVars.pageParams.footernav || defaults.footernav;
+    pageVars.unicodeScript = pageVars.pageParams.unicode_script || defaults.unicode_script;
+}
+
 export async function preLoadTasks() {
     console.log("preLoadTasks");
     await dirTree.populateTree();
-    pageVars.pageParams = dirTree.getPageParams(pageVars.pageUrlMinusBasePath);
-    pageVars.sidebarId = pageVars.pageParams.sidebar || pageDefaults.sidebar;
-    pageVars.topnavId = pageVars.pageParams.topnav || pageDefaults.topnav;
-    pageVars.footernavId = pageVars.pageParams.footernav || pageDefaults.footernav;
-    pageVars.unicodeScript = pageVars.pageParams.unicode_script || pageDefaults.unicode_script;
+    if (!pageVars.pageParams || Object.keys(pageVars.pageParams).length === 0) {
+        pageVars.pageParams = dirTree.getPageParams(pageVars.pageUrlMinusBasePath);
+    }
+    initCurrentPageVarsFromHugo();
+}
+
+function needsDirTreeForNav(items) {
+    if (!items || typeof items[Symbol.iterator] !== "function") return false;
+    for (let item of items) {
+        if (!item.title && !item.contents) return true;
+        if (item.url && (item.url.startsWith("dir://") || item.url.startsWith("recdir://"))) return true;
+        if (item.contents && needsDirTreeForNav(item.contents)) return true;
+    }
+    return false;
 }
 
 function setPageNavigation() {
@@ -93,13 +238,13 @@ function setPageNavigation() {
     }
 
     document.addEventListener("keydown", function (event) {
-        // Next: Right Arrow or Alt+N
+        // Next: Ctrl + Right Arrow
         if ((event.ctrlKey && event.key === "ArrowRight")) {
             event.preventDefault();
             goNext();
         }
 
-        // Previous: Left Arrow or Alt+P
+        // Previous: Ctrl + Left Arrow
         if ((event.ctrlKey && event.key === "ArrowLeft")) {
             event.preventDefault();
             goPrevious();
@@ -108,17 +253,22 @@ function setPageNavigation() {
 }
 
 export async function onDocumentReadyTasks() {
-    await preLoadTasks();
-    sidebar.insertSidebarItems();
-    sidebar.setupSidebarToggle();
-    search.setupTitleSearch();
-    setPageNavigation();
+    if (readyTasksStarted) {
+        return;
+    }
+    readyTasksStarted = true;
+    setupBootstrapLite();
+    initCurrentPageVarsFromHugo();
     textToSpeech.setupAudioControls();
+    search.setupTitleSearch();
 
-    if (pageVars.topnavId && sidebarsData[pageVars.topnavId]) {
+    const deferTopnav = pageVars.topnavId && sidebarsData[pageVars.topnavId] && needsDirTreeForNav(sidebarsData[pageVars.topnavId]);
+    const deferFooternav = pageVars.footernavId && sidebarsData[pageVars.footernavId] && needsDirTreeForNav(sidebarsData[pageVars.footernavId]);
+
+    if (!deferTopnav && pageVars.topnavId && sidebarsData[pageVars.topnavId]) {
         sidebar.insertNavItems("top-bar-right-custom", sidebarsData[pageVars.topnavId]);
     }
-    if (pageVars.footernavId && sidebarsData[pageVars.footernavId]) {
+    if (!deferFooternav && pageVars.footernavId && sidebarsData[pageVars.footernavId]) {
         sidebar.insertNavItems("footer-bar-right-custom", sidebarsData[pageVars.footernavId]);
     }
     if (pageVars.unicodeScript) {
@@ -126,10 +276,34 @@ export async function onDocumentReadyTasks() {
         let postContent = document.querySelector("#post_content");
         if (postContent) postContent.setAttribute("unicode_script", pageVars.unicodeScript);
     }
-    prepareContentWithoutIncludes();
+
+    // Load site index concurrently so page content, TOC, includes and sdThemeDone
+    // don't block on fetching/building the site-wide directory tree.
+    const treeReadyPromise = dirTree.populateTree().then(() => {
+        if (deferTopnav) {
+            sidebar.insertNavItems("top-bar-right-custom", sidebarsData[pageVars.topnavId]);
+        }
+        if (deferFooternav) {
+            sidebar.insertNavItems("footer-bar-right-custom", sidebarsData[pageVars.footernavId]);
+        }
+        sidebar.insertSidebarItems();
+        sidebar.setupSidebarToggle();
+        setPageNavigation();
+    });
+
+    await prepareContentWithoutIncludes();
     if (!handleIncludes()) {
         // handleIncludes spawns threads which independently call the below.
         finalizePagePostInclusion();
+    }
+    await treeReadyPromise;
+}
+
+if (typeof document !== "undefined") {
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => { onDocumentReadyTasks(); });
+    } else {
+        onDocumentReadyTasks();
     }
 }
 
@@ -137,12 +311,9 @@ export function replaceWithQueryParam(queryFieldName, regexPattern) {
     let value = query.getParam(queryFieldName);
     if (value) {
         document.body.innerHTML = document.body.innerHTML.replace(regexPattern, value);
-        // WARNING: Because of the above replacement(?), the below does not work as of 202202. Employ some other idea.
         let inputField = document.getElementById(`input_${queryFieldName}`);
-        console.log("replaceWithQueryParam", queryFieldName, value, inputField, Boolean(inputField), document.getElementById(`input_${queryFieldName}`).value);
         if (inputField) {
             inputField.value = value;
-            // document.getElementById(`input_${queryFieldName}`).value = value;
         }
     }
 }
@@ -152,8 +323,9 @@ export function collapsibleSections() {
     if (printCols != "notPrintView") {
         return;
     }
+    const root = document.querySelector("main") || document;
     for (let level = 2; level < 7; level++) {
-        let levelHs = Array.from(document.querySelectorAll(`h${level}`));
+        let levelHs = Array.from(root.querySelectorAll(`h${level}`));
         levelHs = levelHs.filter(h2 => !h2.closest('summary'));
 
         for (let i = 0; i < levelHs.length - 1; i++) {
@@ -167,15 +339,10 @@ export function collapsibleSections() {
             details.setAttribute("open", "true");
             details.classList.add("headingDetail");
             const summary = document.createElement('summary');
-            // summary.textContent = currentH.textContent;
             summary.textContent = "🦅🦍…🐒🐍";
             details.appendChild(summary);
 
-            // The below leads to non-functional details.
-            // summary.appendChild(currentH);
-
-
-            // Collect all nodes between startH2 and endH2
+            // Collect all nodes between startH and next higher/equal heading
             let currentNode = currentH.nextSibling;
 
             function isHigherHeading(node) {
@@ -197,7 +364,6 @@ export function collapsibleSections() {
                 parent.appendChild(details);
             }
             currentH.setAttribute("hasDetail", "true");
-
         }
     }
 }
@@ -211,7 +377,7 @@ export function updatePrintStyle() {
 }
 
 export function setPrintColsFromQuery(node) {
-    // console.log("Entering setprintColsFromQuery", node);
+    if (!node) return;
     let printCols = query.getParam("printCols") || "notPrintView";
     if (printCols == "notPrintView") {
         return;
@@ -223,9 +389,9 @@ export function setPrintColsFromQuery(node) {
     if (!infoTag) {
         infoTag = document.createElement("small");
         infoTag.setAttribute("id", "infoTag");
-        infoTag.innerHTML = `<a href='${document.location}'>Web</a>`
+        infoTag.innerHTML = `<a href='${document.location}'>Web</a>`;
         if (includeStyle != "true") {
-            infoTag.innerHTML += "\n(noInc)"
+            infoTag.innerHTML += "\n(noInc)";
         }
         let titleTag = document.querySelector("h1");
         if (titleTag) {
@@ -265,14 +431,6 @@ export function setPrintColsFromQuery(node) {
                     e.firstChild.textContent = e.firstChild.textContent.replace("...{Loading}...", "").trim();
                 }
             }
-
-
-            // Hide select headers?
-            // var headers = e.querySelectorAll("h1, h2, h3");
-            // // console.debug(e, headers);
-            // if(headers.length == 0)  {
-            //   e.hidden = true;
-            // }
         }
     });
     [...node.getElementsByClassName("fa-external-link-square-alt")].forEach(function (e) {
@@ -281,6 +439,7 @@ export function setPrintColsFromQuery(node) {
 }
 
 export function expandDetails(node) {
+    if (!node) return;
     let detailsPattern = query.getParam("expandDetails") || "false";
     let highlightPattern = query.getParam("highlightDetails") || "विश्वास-टिप्पनी.*";
     if (detailsPattern == "false") {
@@ -292,7 +451,6 @@ export function expandDetails(node) {
         } else {
             let summary = e.querySelector("summary");
             let titleMatch = summary && summary.textContent.trim().match(detailsPattern);
-            // console.debug(titleMatch, e.querySelector("summary").textContent, expandDetails);
             if (titleMatch) {
                 e.setAttribute("open", "true");
             }
@@ -305,7 +463,7 @@ export function expandDetails(node) {
             details.classList.add('highlight');
         }
     });
-    if (node.tagName.toLocaleLowerCase() == "body") {
+    if (node.tagName && node.tagName.toLowerCase() == "body") {
         document.querySelector("#expandAllButton").onclick = function () {
             query.deleteParamsAndGo(["expandDetails"]);
         };
@@ -313,6 +471,7 @@ export function expandDetails(node) {
 }
 
 export function collectDetails(node) {
+    if (!node) return;
     let collectPattern = query.getParam("collectDetails") || null;
     if (!collectPattern) {
         return;
@@ -339,15 +498,12 @@ export function collectDetails(node) {
         const summary = details.querySelector('summary');
         let titleMatch = summary && summary.textContent.trim().match(collectPattern) && summary.textContent.trim() != collectedSummary.textContent;
         if (titleMatch) {
-            // Clone the content inside the details except summary
             const cloneContent = Array.from(details.childNodes)
-                .filter(node => node !== summary)
-                .map(node => node.cloneNode(true));
+                .filter(n => n !== summary)
+                .map(n => n.cloneNode(true));
 
-            // Append all cloned nodes to container
-            cloneContent.forEach(node => container.appendChild(node));
+            cloneContent.forEach(n => container.appendChild(n));
         }
-        // Append container to the new details and then add to body
         if (container.childNodes.length > 0) {
             collectedDetails.appendChild(container);
             let detailContainer = document.querySelector(`div.AutoCollection[target="${collectPattern}"]`) || document.querySelector("#post_content");
@@ -355,13 +511,12 @@ export function collectDetails(node) {
                 detailContainer.prepend(collectedDetails);
             }
         }
-
     });
 }
 
 export function getFontSize(element) {
     let size = parseFloat(window.getComputedStyle(element, null).getPropertyValue('font-size'));
-    return size
+    return size;
 }
 
 
@@ -371,9 +526,6 @@ export function changeTextSize(diff) {
     let size = getFontSize(mainTag);
     console.debug(size);
     size = size + diff;
-    // if (size <= 10) {
-    //   size = 10;
-    // }
     mainTag.style.fontSize = size + "px";
 }
 

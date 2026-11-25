@@ -1,53 +1,83 @@
-import urljoin from 'url-join';
+import * as utils from './utils';
 
 export let pageRelUrlTreeMETAkey = "__meta";
+const SORTED_KEYS_SYM = Symbol("sortedKeys");
+const titleCollator = new Intl.Collator();
+let populatePromise = null;
+
+function getNormalizedBaseUrl() {
+    return baseURL.endsWith("/") ? baseURL : `${baseURL}/`;
+}
 
 export function addRelUrlToTree(item, pageParams) {
-    // console.debug(item, pageParams);
     var parts = item.split("/").filter(x => x.length > 0);
     // Navigate with the prefix into the tree. 
     var cursor = pageRelUrlTree;
-    parts.forEach(function(part){
-        if(!cursor[part]) cursor[part] = {};
+    for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        if (!cursor[part]) cursor[part] = {};
         cursor = cursor[part];
-    });
+    }
     cursor[pageRelUrlTreeMETAkey] = pageParams;
+}
+
+async function fetchIndexJsonData() {
+    if (typeof window !== "undefined" && window.__sdIndexPromise) {
+        try {
+            return await window.__sdIndexPromise;
+        } catch (err) {
+            // Fall through to direct fetch/XHR below if prefetch failed.
+            console.debug("Prefetched index failed, retrying:", err);
+        }
+    }
+    const indexUrl = `${getNormalizedBaseUrl()}index.json`;
+    if (typeof location !== "undefined" && location.protocol === "file:") {
+        const text = await utils.getAjaxResponsePromise(indexUrl);
+        return JSON.parse(text);
+    }
+    const response = await fetch(indexUrl);
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return await response.json();
 }
 
 export async function populateTree() {
     if (Object.keys(pageRelUrlTree).length > 0) {
         return;
     }
-    try {
-        const response = await fetch(urljoin(baseURL, "index.json"));
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-
-        for (let pageParams of data) {
-            // console.debug(pageParams);
-            pageParams["absUrl"] = baseURL + pageParams["relUrl"];
-            addRelUrlToTree(pageParams["relUrl"], pageParams);
-            // if (pageParams["relUrl"].includes("piba-somam-mahAvairAjam")) {
-            //     console.debug(getChildTree(pageParams["relUrl"]));
-            // }
-        }
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
+    if (populatePromise) {
+        return populatePromise;
     }
+    populatePromise = (async () => {
+        try {
+            const data = await fetchIndexJsonData();
+            const normBase = getNormalizedBaseUrl();
 
+            for (let i = 0; i < data.length; i++) {
+                const pageParams = data[i];
+                const relUrl = pageParams["relUrl"] || "";
+                pageParams["absUrl"] = normBase + relUrl.replace(/^\//, "");
+                addRelUrlToTree(relUrl, pageParams);
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+            populatePromise = null;
+        }
+    })();
+    return populatePromise;
 }
 
 export function getChildTree(relativeUrl) {
     var parts = relativeUrl.split("/").filter(x => x.length > 0);
     var cursor = pageRelUrlTree;
-    parts.forEach(function(part){
-        if(!cursor[part]) {
-            cursor[part] = {};
+    for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        if (!cursor[part]) {
+            return {};
         }
         cursor = cursor[part];
-    });
+    }
     return cursor;
 }
 
@@ -72,18 +102,18 @@ function alphabeticalTitle(tree, a) {
 
 
 export function getPageKeys(tree) {
+    if (tree[SORTED_KEYS_SYM]) {
+        return tree[SORTED_KEYS_SYM];
+    }
     function titleSorter(a, b) {
         let titleA = alphabeticalTitle(tree, a);
         let titleB = alphabeticalTitle(tree, b);
-        // console.debug(titleA, titleB, titleA.localeCompare(titleB));
-        return titleA.localeCompare(titleB);
+        return titleCollator.compare(titleA, titleB);
     }
     let keys = getNonMetaNodeKeys(tree);
-    // console.debug(keys);
     keys = keys.filter(x => pageRelUrlTreeMETAkey in tree[x]);
-    // console.debug(keys);
-    keys = keys.sort(titleSorter)
-    // console.debug(keys);
+    keys.sort(titleSorter);
+    tree[SORTED_KEYS_SYM] = keys;
     return keys;
 }
 
@@ -100,16 +130,18 @@ export function getChildDirKeys(tree) {
 }
 
 export function getAllPaths(tree, prefix_in) {
-    var prefix = prefix_in  || "/";
+    var prefix = prefix_in || "/";
     console.assert(prefix.endsWith("/"));
     let nonDirPageKeys = getNonDirPageKeys(tree);
-    // console.debug(nonDirPageKeys);
     let paths = nonDirPageKeys.map(x => `${prefix}${x}/`);
     let childDirKeys = getChildDirKeys(tree);
-    childDirKeys.forEach(childDirKey => {
-        paths = paths.concat(getAllPaths(tree[childDirKey], `${prefix}${childDirKey}/`));
-    });
-    // console.debug("paths - ", paths, tree);
+    for (let i = 0; i < childDirKeys.length; i++) {
+        const childDirKey = childDirKeys[i];
+        const subPaths = getAllPaths(tree[childDirKey], `${prefix}${childDirKey}/`);
+        for (let j = 0; j < subPaths.length; j++) {
+            paths.push(subPaths[j]);
+        }
+    }
     return paths;
 }
 
@@ -123,7 +155,6 @@ export function getItemNameNoPath(relUrl) {
 
 function getNextPageFromTreePosition(tree, relUrl) {
     const pageKeys = getPageKeys(tree);
-    // console.debug(pageKeys);
     const currentItemPosition = pageKeys.indexOf(getItemNameNoPath(relUrl));
     if (currentItemPosition == pageKeys.length - 1) {
         console.debug("Moving a directory up.");
@@ -142,7 +173,9 @@ function getParentTree(relUrl) {
     let tree = getChildTree(parentDirPath);
     // The below is possible in case of test pages in directories without _index.md
     while(tree[pageRelUrlTreeMETAkey] == undefined) {
-        parentDirPath = getParentDirPath(parentDirPath);
+        const nextParent = getParentDirPath(parentDirPath);
+        if (nextParent === parentDirPath) break;
+        parentDirPath = nextParent;
         tree = getChildTree(parentDirPath);
     }
     return tree;
@@ -150,7 +183,6 @@ function getParentTree(relUrl) {
 
 export function getNextPage(relUrl, startUrl) {
     var tree = getChildTree(relUrl);
-    // console.debug(relUrl, startUrl, tree);
     if (getPageKeys(tree).length == 0) {
         let parentPath = getParentDirPath(relUrl);
         if (parentPath == relUrl) {
@@ -174,20 +206,17 @@ export function getLastPage(tree) {
     if (pageKeys.length == 0) {
         return tree;
     } else {
-        const lastKey = pageKeys.slice(-1)[0];
+        const lastKey = pageKeys[pageKeys.length - 1];
         return getLastPage(tree[lastKey]);
     }
 }
 
 export function getPreviousPage(relUrl) {
     let tree = getParentTree(relUrl);
-    // console.debug(relUrl, getParentDirPath(relUrl), tree);
     if (relUrl == "/") {
         return tree;
     }
-    // console.debug(relUrl, tree);
     const pageKeys = getPageKeys(tree);
-    // console.debug(pageKeys, getItemNameNoPath(relUrl));
     const currentItemPosition = pageKeys.indexOf(getItemNameNoPath(relUrl));
     if (currentItemPosition == 0) {
         console.debug("Moving a directory up.");
@@ -203,7 +232,7 @@ export function getPreviousPage(relUrl) {
 }
 
 export function setAnchor(element, tree, textPrefix="", maxLength = 10) {
-    if (tree == "") {
+    if (!element || tree == "" || !tree) {
         return;
     }
     if (tree[pageRelUrlTreeMETAkey] == undefined) {

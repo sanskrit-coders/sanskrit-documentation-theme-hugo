@@ -31,12 +31,3 @@
 .css-treeview label::before { content: ""; width: 16px; margin: 0 22px 0 0; vertical-align: middle; background-position: 0 -32px; }
 .css-treeview input:checked + label::before { background-position: 0 -16px; }
 
-/* webkit adjacent element selector bugfix */
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-    .css-treeview { -webkit-animation: webkit-adjacent-element-selector-bugfix infinite 1s; }
-    @-webkit-keyframes webkit-adjacent-element-selector-bugfix {
-        from { padding: 0; }
-        to { padding: 0; }
-    }
-}
-

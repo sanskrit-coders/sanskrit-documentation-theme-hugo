@@ -3,6 +3,22 @@ function getTocItemId(header_id) {
     return "toc_item_" + header_id;
 }
 
+// Read heading text without forcing synchronous layout (`innerText`) and
+// without picking up text inside `.section-nav` buttons if already attached.
+function getHeaderText(header) {
+    if (!header.querySelector(":scope > .section-nav")) {
+        return header.textContent;
+    }
+    let text = "";
+    for (let child = header.firstChild; child; child = child.nextSibling) {
+        if (child.nodeType === 1 && child.classList.contains("section-nav")) {
+            continue;
+        }
+        text += child.textContent;
+    }
+    return text;
+}
+
 export function updateToc(options) {
     console.info("Setting up TOC for " + document.location);
     var defaults = {
@@ -14,7 +30,6 @@ export function updateToc(options) {
     var settings = Object.assign({}, defaults, options);
 
     console.log(`Table of contents for ${document.location}`);
-    // console.debug(settings);
     var headers = document.querySelectorAll(settings.headers);
     console.debug("headers.length", headers.length);
     if (headers.length < settings.minimumHeaders) {
@@ -25,9 +40,11 @@ export function updateToc(options) {
     }
 
     var get_level = function(ele) { return parseInt(ele.nodeName.replace("H", ""), 10); };
-    var highest_level = Array.from(headers)
-        .map(function(ele) { return get_level(ele); })
-        .sort()[0];
+    var highest_level = 6;
+    for (let i = 0; i < headers.length; i++) {
+        const lvl = get_level(headers[i]);
+        if (lvl < highest_level) highest_level = lvl;
+    }
     let liClass = "list-group-item-primary"; // list-group-item-primary is a bootstrap class.
     let ulClass = "list pl2";
     var level = get_level(headers[0]);
@@ -35,11 +52,14 @@ export function updateToc(options) {
     var html = settings.title + `<ul class='${ulClass}'>`;
 
     headers.forEach(header => {
-        header.addEventListener('click', function() {
-            if (!settings.noBackToTopLinks) {
-                window.location.hash = this.id;
-            }
-        });
+        if (!header.dataset.tocClickBound) {
+            header.dataset.tocClickBound = "1";
+            header.addEventListener('click', function() {
+                if (!settings.noBackToTopLinks) {
+                    window.location.hash = this.id;
+                }
+            });
+        }
 
         header.classList.add('clickable-header');
 
@@ -48,13 +68,14 @@ export function updateToc(options) {
             header.classList.add('top-level-header');
         }
         var toc_item_id = getTocItemId(header.id);
+        const headerText = getHeaderText(header);
         if (this_level === level) { // same level as before; same indenting
-            html += `<li id='${toc_item_id}' class="${liClass}"><a href='#${header.id}'>${header.innerText}</a>`;
+            html += `<li id='${toc_item_id}' class="${liClass}"><a href='#${header.id}'>${headerText}</a>`;
         } else if (this_level <= level) { // higher level than before; end parent ul
             for(let i = this_level; i < level; i++) {
                 html += `</li></ul>`;
             }
-            html += `<li id='${toc_item_id}' class="${liClass}"><a href='#${header.id}'>${header.innerText}</a>`;
+            html += `<li id='${toc_item_id}' class="${liClass}"><a href='#${header.id}'>${headerText}</a>`;
         } else if (this_level > level) { // lower level than before; expand the previous to contain an ul
             for(let i = this_level; i > level; i--) {
                 html += `<ul class='${ulClass}'>`;
@@ -64,8 +85,7 @@ export function updateToc(options) {
                     html += `<li class="${liClass}">`;
                 }
             }
-            // console.debug("header is ", header);
-            html += `<a href='#${header.id}'>${header.innerText}</a>`;
+            html += `<a href='#${header.id}'>${headerText}</a>`;
         }
         level = this_level; // update for the next one
     });
@@ -77,9 +97,6 @@ export function updateToc(options) {
     if (tocUl) tocUl.innerHTML = html;
     let tocCard = document.getElementById("toc_card");
     if (tocCard) tocCard.style.display = "block";
-    // console.log(document.getElementById("toc_ul"));
-    // resetNavgocoMenu();
-    // Finally, set up navgoco options.
 }
 
 
@@ -89,9 +106,7 @@ function returnToTopHandler(toc_item_id) {
     // So, the user can follow the trail of highlights menu items and expand the menu items till he reaches the appropriate level.
     var itemToActivate = undefined;
     document.getElementById("toc_header").setAttribute("open", "");
-    // console.debug(toc_item_id, document.querySelectorAll("#toc_ul li"));
-    document.querySelectorAll("#toc_ul li").forEach(function(liElement, liIndex) {
-        // console.debug(liIndex, liElement, toc_item_id);
+    document.querySelectorAll("#toc_ul li").forEach(function(liElement) {
         if (liElement.id === toc_item_id) {
             itemToActivate = liElement;
         } else {
@@ -130,9 +145,7 @@ function setUpNavigationLinks(headers) {
         }
 
         let up_button_id = `toc_up_${header.id}`;
-        // console.debug(document.getElementById(up_button_id), navDiv);
-        if (!document.getElementById(up_button_id)) {
-            // There is a javascript click listener (defined later in this file) for the below to scroll up.
+        if (!navDiv.querySelector(`#${CSS.escape(up_button_id)}`)) {
             let returnToTopLink = document.createElement("div");
             returnToTopLink.id = up_button_id;
             returnToTopLink.className = "header-nav back-to-top btn btn-secondary";
@@ -143,30 +156,24 @@ function setUpNavigationLinks(headers) {
         }
 
         let next_button_id = `toc_next_${header.id}`;
-        if (index !== headers.length - 1 && !document.getElementById(next_button_id)) {
-            // There is a javascript click listener (defined later in this file) for the below to scroll up.
+        if (index !== headers.length - 1 && !navDiv.querySelector(`#${CSS.escape(next_button_id)}`)) {
             let nextHeader = headers[index + 1];
-            // console.log(nextHeader);
             let nextHeading_id = nextHeader.id;
             let goNextLink = document.createElement("div");
             goNextLink.id = next_button_id;
             goNextLink.className = "header-nav btn btn-secondary";
             goNextLink.innerHTML = `<a href="#${nextHeading_id}">⤵️</a>`;
-            // goNextLink.addEventListener('click', function() { returnToTopHandler(toc_item_id); });
             navDiv.prepend(goNextLink);
         }
 
         let prev_button_id = `toc_prev_${header.id}`;
-        if (index !== 0 && !document.getElementById(prev_button_id)) {
-            // There is a javascript click listener (defined later in this file) for the below to scroll up.
+        if (index !== 0 && !navDiv.querySelector(`#${CSS.escape(prev_button_id)}`)) {
             let prevHeader = headers[index - 1];
-            // console.log(prevHeader);
             let prevHeading_id = prevHeader.id;
             let goPrevLink = document.createElement("div");
             goPrevLink.id = prev_button_id;
             goPrevLink.className = "header-nav btn btn-secondary";
             goPrevLink.innerHTML = `<a href="#${prevHeading_id}">⤴️</a>`;
-            // goNextLink.addEventListener('click', function() { returnToTopHandler(toc_item_id); });
             navDiv.prepend(goPrevLink);
         }
     });

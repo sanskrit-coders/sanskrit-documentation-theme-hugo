@@ -8,11 +8,23 @@ export async function replaceAsync(str, regex, asyncFn) {
   return str.replace(regex, () => data.shift());
 }
 
+const SKIP_TEXT_TAGS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA", "TEMPLATE"]);
+
 export function textNodesUnder(node) {
-  var all = [];
-  for (node = node.firstChild; node; node = node.nextSibling) {
-    if (node.nodeType == 3) all.push(node);
-    else all = all.concat(textNodesUnder(node));
+  if (!node) return [];
+  const all = [];
+  const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, {
+    acceptNode(textNode) {
+      const parent = textNode.parentNode;
+      if (parent && SKIP_TEXT_TAGS.has(parent.nodeName)) {
+        return NodeFilter.FILTER_REJECT;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  let current;
+  while ((current = walker.nextNode())) {
+    all.push(current);
   }
   return all;
 }
@@ -26,7 +38,7 @@ export function getAncestors(child) {
     node = node.parentNode;
   }
   return ancestors;
-};
+}
 
 // Check if `child` is a descendant of `parent`
 export function isDescendant(parent, child) {
@@ -41,12 +53,11 @@ export function isDescendant(parent, child) {
 
   // Go up until the root but couldn't find the `parent`
   return false;
-};
+}
 
 export function getDescendentsByCss(parent, css, documentElement) {
-  var descendents = [].slice.call(documentElement.querySelectorAll(css));
-  descendents = descendents.filter(x => isDescendant(parent, x));
-  return descendents;
+  const root = parent || documentElement;
+  return Array.from(root.querySelectorAll(css));
 }
 
 export function createDetailElement(documentElement, heading) {
@@ -79,7 +90,8 @@ export function getAjaxResponsePromise(url) {
     xhr.open('GET', url, true);
 
     xhr.onload = function() {
-      if (xhr.status >= 200 && xhr.status < 300) {
+      // Android WebView / file:// returns status 0 for successful local reads.
+      if ((xhr.status >= 200 && xhr.status < 300) || (xhr.status === 0 && xhr.responseText !== "")) {
         resolve(xhr.responseText);
       } else {
         reject(new Error(`Request failed with status ${xhr.status}`));
@@ -92,4 +104,26 @@ export function getAjaxResponsePromise(url) {
 
     xhr.send();
   });
+}
+
+export async function fetchText(url) {
+  if (typeof location !== "undefined" && location.protocol === "file:") {
+    return getAjaxResponsePromise(url);
+  }
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.text();
+}
+
+export async function fetchJson(url) {
+  if (typeof location !== "undefined" && location.protocol === "file:") {
+    return JSON.parse(await getAjaxResponsePromise(url));
+  }
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
 }

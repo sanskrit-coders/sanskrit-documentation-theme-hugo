@@ -1,0 +1,7 @@
+[[data]]
+ColA = "alpha"
+ColB = "beta"
+
+[[data]]
+ColA = "gamma"
+ColB = "delta"

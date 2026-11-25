@@ -1,5 +1,4 @@
 import * as utils from "./utils";
-import Sanscript from "@indic-transliteration/sanscript";
 
 // Svaras (pitch accents) emitted by the suvaak engine, in Hz.
 var ekashrutiSvarah = 106.67, udaattaSvarah = 150;
@@ -278,7 +277,11 @@ function isReadableTextNode(textNode) {
 export async function startSpeech(ttsEngine) {
   setSpeakerState(true);
   setSpeakerLoading(true);
-  await setup(ttsEngine);
+  const [, sanscriptMod] = await Promise.all([
+    setup(ttsEngine),
+    import(/* webpackChunkName: "sanscript" */ "@indic-transliteration/sanscript"),
+  ]);
+  const Sanscript = sanscriptMod.default || sanscriptMod;
   if (!ttsOn) {
     // Playback was cancelled while the engine was still loading.
     setSpeakerLoading(false);

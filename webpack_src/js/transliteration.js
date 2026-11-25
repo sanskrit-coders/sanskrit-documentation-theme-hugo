@@ -1,4 +1,3 @@
-import Sanscript from "@indic-transliteration/sanscript";
 import * as utils from "./utils";
 import * as query from "./query";
 
@@ -10,23 +9,32 @@ let LIPI_COOKIE = "transliterationTarget";
 let LIPI_COOKIE_ALT = "transliterationTargetAlt";
 let LIPI_EXPIRY = 7 * 24 * 3600 * 1000;  // 7 days
 
+let sanscriptPromise = null;
+async function getSanscript() {
+  if (!sanscriptPromise) {
+    sanscriptPromise = import(/* webpackChunkName: "sanscript" */ "@indic-transliteration/sanscript").then(m => m.default || m);
+  }
+  return sanscriptPromise;
+}
+
 export function loadLipi() {
-  let previousTransliterationTarget = transliterationTarget;
   transliterationTarget = query.getParam("transliterationTarget");
   if (!transliterationTarget) {
     transliterationTarget = utils.getCookie(LIPI_COOKIE) || LIPI_DEFAULT;
   }
   var translitrationTargetDropdown = document.getElementById("transliterationDropdown");
-  translitrationTargetDropdown.value = transliterationTarget;
+  if (translitrationTargetDropdown) {
+    translitrationTargetDropdown.value = transliterationTarget;
+  }
 
   transliterationTargetAlt = query.getParam("transliterationTargetAlt");
   if (!transliterationTargetAlt) {
     transliterationTargetAlt = utils.getCookie(LIPI_COOKIE_ALT) || LIPI_DEFAULT;
   }
   var translitrationTargetDropdownAlt = document.getElementById("transliterationDropdownAlt");
-  translitrationTargetDropdownAlt.value = transliterationTargetAlt;
-
-  // console.log(transliterationTarget, transliterationTargetAlt);
+  if (translitrationTargetDropdownAlt) {
+    translitrationTargetDropdownAlt.value = transliterationTargetAlt;
+  }
 }
 
 export function saveLipi(lipi, lipiAlt) {
@@ -49,14 +57,14 @@ function wordPairsToText(wordPairs) {
   }).join(" ");
 }
 
-export function transliterate(node) {
+export async function transliterate(node) {
   loadLipi();
-  // console.debug(transliterationTarget, transliterationTargetAlt);
 
   if ((!transliterationTarget || transliterationTarget == LIPI_DEFAULT) && (!transliterationTargetAlt || transliterationTargetAlt == LIPI_DEFAULT)) {
     return;
   }
-  
+
+  const Sanscript = await getSanscript();
   let transliterationSource = pageVars.unicodeScript || "devanagari";
   
   if (!(transliterationSource in Sanscript.schemes)) {
@@ -64,11 +72,8 @@ export function transliterate(node) {
   }
   
   var textNodes = utils.textNodesUnder(node);
-  // console.debug(transliterationSource, transliterationTarget, transliterationTargetAlt, node, textNodes);
   textNodes.forEach(function (textNode) {
-    if (textNode.parentNode.nodeName.toLowerCase() != "option") {
-      // console.debug(textNode.textContent, transliterationSource, transliterationTarget);
-      // console.debug(Sanscript.schemes)
+    if (textNode.parentNode && textNode.parentNode.nodeName.toLowerCase() != "option") {
       if (transliterationTarget in Sanscript.schemes) {
         if (transliterationTargetAlt == LIPI_DEFAULT) {
           textNode.textContent = Sanscript.t(textNode.textContent, transliterationSource, transliterationTarget);
@@ -87,9 +92,8 @@ export function transliterate(node) {
       else {
         console.error("Some unsupported scheme! Not transliterating! Check!", transliterationTarget, transliterationTargetAlt);
       }
-      // console.log("textNode", textNode, utils.getAncestors(textNode));
     }
-  })
+  });
 }
 
 export function updateTransliteration() {
@@ -100,4 +104,3 @@ export function updateTransliteration() {
   saveLipi(translitrationTarget, translitrationTargetAlt);
   query.setParamsAndGo({"transliterationTarget": translitrationTarget, "transliterationTargetAlt": translitrationTargetAlt});
 }
-

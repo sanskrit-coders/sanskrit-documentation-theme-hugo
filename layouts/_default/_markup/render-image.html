@@ -1,7 +1,7 @@
 <figure class="{{ .Attributes.class | default "" }}">
 
     <a href="{{ .Attributes.link | default .Destination }}" target="_blank" rel="noopener">
-        <img src="{{ .Destination }}" alt="{{ .Text }}" title="{{ .Title }}">
+        <img src="{{ .Destination }}" alt="{{ .Text }}" title="{{ .Title }}" loading="lazy">
     </a>
 
     {{ if or .Title .Attributes.caption }}

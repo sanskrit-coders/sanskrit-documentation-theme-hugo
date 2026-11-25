@@ -1,3 +1,5 @@
+import * as utils from "./utils";
+
 // `change` does not fire on <datalist> elements, only on the associated
 // <input>. Listen on `document` (delegated) because the theme re-renders the
 // body while processing includes, which replaces input elements and would
@@ -26,11 +28,7 @@ function ensureDelegatedChangeHandler() {
 export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x), initValue = null, ignoreHeader = true) {
     console.log("Entering loadDataListFromTSV", dataListId);
     try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.text();
+        const data = await utils.fetchText(url);
         let lines = data.split('\n');
         if (ignoreHeader) {
             lines = lines.slice(1);
@@ -79,11 +77,7 @@ export async function loadDataListFromTSV(url, dataListId, textMaker = (x) => x,
 export async function loadDropdownFromTSV(url, dropdownId, textMaker = (x) => x, valueMaker = (x) => x, handler = (x) => console.log(x), initValue = null, ignoreHeader = true) {
     console.log("Entering loadDropdownFromTSV");
     try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.text();
+        const data = await utils.fetchText(url);
         let lines = data.split('\n');
         if (ignoreHeader) {
             lines = lines.slice(1);

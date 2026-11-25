@@ -1,13 +1,16 @@
+{{- $logicalName := "" -}}
+{{- with .File -}}{{- $logicalName = .LogicalName -}}{{- end -}}
+{{- $currentParams := merge .Params (dict "title" .Title "logicalName" $logicalName) -}}
 <script type="text/javascript">
   let pageVars = {};
-  pageVars.pageUrlMinusBasePath = "{{.RelPermalink}}".replace(basePath, "/");
-  pageVars.pageParams = {};
+  pageVars.pageUrlMinusBasePath = ("{{.RelPermalink}}".replace(basePath, "/")).replace(/\/+/g, "/");
+  pageVars.pageParams = JSON.parse("{{ $currentParams | jsonify }}");
   pageVars.pageSource = "{{ with .File }}{{.Path}}{{ end }}";
   console.log(pageVars.pageSource);
-  var pageDefaults;
+  var pageDefaults = {};
   for (let possiblePageDefaults of pageDefaultsList) {
     if (pageVars.pageSource.startsWith(possiblePageDefaults.scope.pathPrefix)) {
-      pageDefaults = possiblePageDefaults.values
+      pageDefaults = possiblePageDefaults.values;
     }
   }
     // console.debug(pageParams);

@@ -5,6 +5,44 @@
     let siteParams = JSON.parse("{{.Site.Params | jsonify}}");
     let pageDefaultsList = JSON.parse("{{.Site.Data.page_defaults | jsonify}}");
     let sidebarsData = JSON.parse("{{$.Site.Data.sidebars | jsonify}}");
+    let siteBuildTs = "{{ now.Unix }}";
     // For directory listing:
     var pageRelUrlTree = {};
+    // Start fetching the site index immediately in parallel with HTML/CSS/JS.
+    var __sdIndexPromise = (function () {
+        if (typeof location !== "undefined" && location.protocol === "file:") return null;
+        var normBase = baseURL.endsWith("/") ? baseURL : (baseURL + "/");
+        var idxUrl = normBase + "index.json?v=" + siteBuildTs;
+        if (typeof caches !== "undefined" && typeof fetch !== "undefined") {
+            return caches.open("sd-theme-index-v1").then(function (cache) {
+                return cache.match(idxUrl).then(function (cached) {
+                    if (cached) return cached.json();
+                    return fetch(idxUrl).then(function (resp) {
+                        if (!resp.ok) throw new Error("Network response was not ok");
+                        var clone = resp.clone();
+                        cache.keys().then(function (keys) {
+                            var prefix = normBase + "index.json";
+                            keys.forEach(function (k) {
+                                if (k.url.indexOf(prefix) === 0 && k.url !== idxUrl) cache.delete(k);
+                            });
+                        }).catch(function () {});
+                        cache.put(idxUrl, clone).catch(function () {});
+                        return resp.json();
+                    });
+                });
+            }).catch(function () {
+                return fetch(idxUrl).then(function (r) {
+                    if (!r.ok) throw new Error("Network response was not ok");
+                    return r.json();
+                });
+            });
+        }
+        if (typeof fetch !== "undefined") {
+            return fetch(idxUrl).then(function (r) {
+                if (!r.ok) throw new Error("Network response was not ok");
+                return r.json();
+            });
+        }
+        return null;
+    })();
 </script>

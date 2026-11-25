@@ -13,13 +13,19 @@ module.exports = (env) => ({
     },
     output: {
         filename: "[name]-bundle.js",
+        chunkFilename: "[name]-chunk.js",
         path: path.resolve(__dirname, '../static/webpack_dist'),
         libraryTarget: 'var',
-        library: 'module_[name]'
+        library: 'module_[name]',
+        publicPath: 'auto',
+        clean: true,
     },
     mode: env && env.production ? "production" : "development",
     plugins: [
-        new MiniCssExtractPlugin(),
+        new MiniCssExtractPlugin({
+            filename: "[name].css",
+            chunkFilename: "[name].css",
+        }),
     ],
     module: {
         rules: [

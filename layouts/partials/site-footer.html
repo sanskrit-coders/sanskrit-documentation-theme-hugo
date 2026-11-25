@@ -14,10 +14,10 @@
     <a class="btn btn-secondary" href="{{$contactUrl}}" >
       ✉️Contact
     </a>
-    <a class="btn btn-secondary" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
+    <a class="btn btn-secondary" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" loading="lazy" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
     <div class="btn small border">
       {{ $deducedBuildUrl := replace $contactUrl "issues/new" "actions"}}
-      <a href="{{ .Site.Params.build_url| default $deducedBuildUrl }}"><img src="{{ .Site.Params.build_img| default ""}}"> Built </a> on {{ now.Format "2006 Jan 2 15:04:05 MST" }}. (<a href="http://google.com/search?q={{ now.Format "15:04:05 MST" }} to IST">IST</a>)
+      <a href="{{ .Site.Params.build_url| default $deducedBuildUrl }}">{{ with .Site.Params.build_img }}<img loading="lazy" src="{{ . }}"> {{ end }}Built </a> on {{ now.Format "2006 Jan 2 15:04:05 MST" }}. (<a href="http://google.com/search?q={{ now.Format "15:04:05 MST" }} to IST">IST</a>)
     </div>
   </div>
 </footer>

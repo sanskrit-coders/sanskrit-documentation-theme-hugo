@@ -1,15 +1,21 @@
-{{- $.Scratch.Add "index" slice -}}
+{{- $index := slice -}}
 {{- range .Site.Pages -}}
 {{- $FileLogicalName := "" -}}
 {{- with .File -}}
 {{- $FileLogicalName = .LogicalName -}}
 {{- end -}}
 {{- if not (in .Path "/private/") -}}
-{{- $params := merge .Params (dict
-"title" .Title
-"relUrl" (replace .Permalink .Site.BaseURL "")
-"logicalName" $FileLogicalName) -}}
-{{- $.Scratch.Add "index" $params -}}
+{{- $params := dict "title" .Title "relUrl" (replace .Permalink .Site.BaseURL "") -}}
+{{- if eq $FileLogicalName "_index.md" -}}
+{{- $params = merge $params (dict "logicalName" "_index.md") -}}
+{{- end -}}
+{{- with .Params.lastmod -}}
+{{- $params = merge $params (dict "lastmod" .) -}}
+{{- end -}}
+{{- with .Params.practice_weight -}}
+{{- $params = merge $params (dict "practice_weight" .) -}}
+{{- end -}}
+{{- $index = $index | append $params -}}
 {{- end -}}
 {{- end -}}
-{{- $.Scratch.Get "index" | jsonify -}}
+{{- $index | jsonify -}}

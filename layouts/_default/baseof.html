@@ -33,13 +33,17 @@
     <!--      // Note that we define page-specific variables below and not in a partial like hugo-site-vars-to-js-general.html. Reason: Hugo builds partial-cached html just once and includes it everywhere. -->
     {{ partial "hugo-page-vars-to-js.html" .}}
 
-    {{ partialCached "head_js.html" . .Params.js_extras}}
+    {{ $hasScript := strings.Contains .RawContent "<script" }}
+    {{ $jsExtras := .Params.js_extras | default .Site.Params.js_extras }}
+    {{ $hasMathExtra := and $jsExtras (in $jsExtras "mathjax") }}
+    {{ $needMathjax := and $hasMathExtra (or (in .Params.js_extras "mathjax") (strings.Contains .RawContent "@#") (strings.Contains .RawContent "$$") (strings.Contains .RawContent `\(`) (strings.Contains .RawContent `\[`)) }}
+    {{ partialCached "head_js.html" (dict "Page" . "Defer" (not $hasScript) "NeedMathjax" $needMathjax) .Params.js_extras $hasScript $needMathjax }}
 
     {{ partial "head_links.html" .}}
   </head>
 
   <body class="ma0 {{ $.Param "body_classes"  | default "bg-near-white"}}{{ with getenv "HUGO_ENV" }} {{ . }}{{ end }}">
-    {{ partialCached "mathjax_tex_commands.html" . (or (in .Params.js_extras "mathjax") (in .Site.Params.js_extras "mathjax")) }}
+    {{ if $needMathjax }}{{ partialCached "mathjax_tex_commands.html" . }}{{ end }}
 
     {{ block "header" . }}{{ partial "site-header.html" .}}{{ end }}
     <!-- Content Row -->
@@ -69,10 +73,10 @@
     {{ block "footer" . }}{{ partialCached "site-footer.html" . }}{{ end }}
   </body>
   <script type='text/javascript'>
-    // Reasons for not invoking the below using $(document).ready():
-    //  - Android webview faced handleInclude invocation problems.
-    //  - Somehow $(document).ready() and $(window).on(load, ..) did not seem to get all the headers in case of updateToc!
-    module_uiLib.onDocumentReadyTasks();
+    // Guarded because non-blocking deferred uiLib-bundle.js also invokes onDocumentReadyTasks() on DOMContentLoaded.
+    if (window.module_uiLib && module_uiLib.onDocumentReadyTasks) {
+      module_uiLib.onDocumentReadyTasks();
+    }
   </script>
   {{ block "final_js" . }}{{ end }}
 </html>
