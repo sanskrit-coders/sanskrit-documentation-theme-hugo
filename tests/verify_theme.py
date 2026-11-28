@@ -285,10 +285,10 @@ def run_fixture_functional_tests(playwright, base_url):
     assert "संस्कृतम्" in post_text and "Sample Included Markdown" in post_text
     print("[PASS] HTML and Markdown (.md) js_include chunks rendered")
 
-    # 4b. detailsPattern, fieldNames, and metadataDetailName="false"
+    # 4b. detailsPattern, detailContentPattern, fieldNames, metadataDetailName="false", and 2nd-order include ordering
     page.goto(f"{base_url}section_a/details_include_page/", wait_until="networkidle")
     page.wait_for_function(
-        "() => document.querySelectorAll('.js_include').length === 5 && document.querySelectorAll('.js_include[unfilled]').length === 0"
+        "() => document.querySelectorAll('.js_include').length === 15 && document.querySelectorAll('.js_include[unfilled]').length === 0"
     )
     def_txt = page.locator("#inc_default").text_content()
     assert "Bare intro paragraph outside details." in def_txt
@@ -311,7 +311,47 @@ def run_fixture_functional_tests(playwright, base_url):
     assert "Detail Alpha" not in meta_txt and "Custom Meta" in meta_txt and "Test Author" in meta_txt
     html_beta_txt = page.locator("#inc_html_beta").text_content()
     assert "Bare HTML intro" not in html_beta_txt and "Alpha HTML" not in html_beta_txt and "HTML beta body." in html_beta_txt
-    print("[PASS] js_include detailsPattern, fieldNames, and metadataDetailName")
+
+    content_only_txt = page.locator("#inc_content_only").text_content()
+    assert "Detail Alpha" in content_only_txt and "Alpha body content." in content_only_txt
+    assert "Detail Beta" not in content_only_txt and "Bare intro paragraph" not in content_only_txt
+
+    both_txt = page.locator("#inc_both").text_content()
+    assert "Detail Beta" in both_txt and "Inner leaf text." in both_txt
+    assert page.locator("#inc_both > details").count() == 1
+
+    assert page.locator("#inc_both_miss details").count() == 0
+    assert "Detail Beta" not in page.locator("#inc_both_miss").text_content()
+
+    anchored_txt = page.locator("#inc_anchored_child").text_content()
+    assert "Detail Beta" not in anchored_txt
+    assert page.locator("#inc_anchored_child > details").count() == 1
+    assert "Nested Child" in anchored_txt and "Inner leaf text." in anchored_txt
+
+    nested_order_txt = page.locator("#inc_nested_filter_order").text_content()
+    assert "Alpha" not in nested_order_txt and "hidden inside second-order alpha" not in nested_order_txt
+    assert "Beta bold body with TARGET_MARKER" in nested_order_txt
+    assert "Second Order Child" in nested_order_txt and "Second order content without target." in nested_order_txt
+    fetched_urls = page.evaluate("() => performance.getEntriesByType('resource').map(r => r.name)")
+    assert any("details_nested_inc_beta.md" in u for u in fetched_urls)
+    assert not any("details_nested_inc_alpha.md" in u for u in fetched_urls), (
+        "2nd-order include inside filtered-out <details> should not be fetched"
+    )
+
+    path_match_txt = page.locator("#inc_path_match").text_content()
+    assert page.locator("#inc_path_match > details").count() == 1
+    assert "गङ्गानथ-मूलानुवादः" in path_match_txt
+    assert "Defiling a maiden, selling a tank." in path_match_txt
+    assert "सर्वाष् टीकाः" not in path_match_txt
+    assert "मेधातिथिः" not in path_match_txt
+    assert "Other block that must NOT match!" not in path_match_txt
+
+    assert page.locator("#inc_quote_0 blockquote").count() == 0
+    assert page.locator("#inc_quote_2 > blockquote > blockquote").count() == 1
+    assert "Alpha body content." in page.locator("#inc_quote_2 > blockquote > blockquote").text_content()
+    assert page.locator("#inc_quote_collapsed > blockquote > details").count() == 1
+    assert "Quoted Collapsed" in page.locator("#inc_quote_collapsed > blockquote > details").text_content()
+    print("[PASS] js_include detailsPattern, detailContentPattern, quote, fieldNames, metadataDetailName, and pre-2nd-order filtering")
 
     # 5. MathJax page (including custom \set, \union, \seq macros)
     page.goto(f"{base_url}section_a/math_page/", wait_until="networkidle")

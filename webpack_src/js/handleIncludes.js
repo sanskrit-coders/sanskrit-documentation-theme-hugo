@@ -46,6 +46,23 @@ function absoluteUrl(baseUrl, relative) {
 }
 
 
+function parseQuoteLevel(jsInclude) {
+  const raw = jsInclude.getAttribute("quote");
+  if (raw === null || raw.trim() === "") {
+    return 0;
+  }
+  const n = parseInt(raw.trim(), 10);
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+function wrapBlockquoteHtml(html, quoteLevel) {
+  let out = html;
+  for (let i = 0; i < quoteLevel; i++) {
+    out = `<blockquote>\n${out}\n</blockquote>`;
+  }
+  return out;
+}
+
 function getCollapseStyle(jsInclude) {
   var collapseStyle = "open";
   if (isDetailOpen(jsInclude)) {
@@ -71,35 +88,71 @@ function getDetailsSummaryText(detailsEl) {
   return summary ? summary.textContent.trim() : "";
 }
 
-function collectMatchingDetails(parentEl, re, out) {
+function getDetailsContentText(detailsEl) {
+  let summaryEl = null;
+  for (const child of detailsEl.children) {
+    if (child.tagName === "SUMMARY") {
+      summaryEl = child;
+      break;
+    }
+  }
+  const parts = [];
+  for (const node of detailsEl.childNodes) {
+    if (node !== summaryEl) {
+      parts.push(node.textContent || "");
+    }
+  }
+  return parts.join("").trim();
+}
+
+function compileOptionalPattern(pattern, attrName) {
+  if (!pattern || pattern.trim() === ".*") {
+    return null;
+  }
+  try {
+    return new RegExp(pattern, "us");
+  } catch (e) {
+    console.error(`Invalid ${attrName} regex:`, pattern, e);
+    throw e;
+  }
+}
+
+function collectMatchingDetails(parentEl, detailsRe, useSummaryPath, contentRe, summaryPrefix, out) {
   for (const child of parentEl.children) {
     if (child.tagName === "DETAILS") {
-      if (re.test(getDetailsSummaryText(child))) {
+      const summaryText = getDetailsSummaryText(child);
+      const summaryPath = summaryPrefix
+        ? (summaryText ? `${summaryPrefix}/${summaryText}` : summaryPrefix)
+        : summaryText;
+      const summaryMatches = !detailsRe || detailsRe.test(summaryText) || (useSummaryPath && detailsRe.test(summaryPath));
+      const contentMatches = !contentRe || contentRe.test(getDetailsContentText(child));
+      if (summaryMatches && contentMatches) {
         out.push(child.outerHTML);
       } else {
-        collectMatchingDetails(child, re, out);
+        collectMatchingDetails(child, detailsRe, useSummaryPath, contentRe, summaryPath, out);
       }
     } else if (child.tagName !== "SUMMARY") {
-      collectMatchingDetails(child, re, out);
+      collectMatchingDetails(child, detailsRe, useSummaryPath, contentRe, summaryPrefix, out);
     }
   }
 }
 
-export function filterDetailsByPattern(html, detailsPattern) {
-  if (!detailsPattern || detailsPattern.trim() === ".*") {
-    return html;
-  }
-  let re;
+export function filterDetailsByPattern(html, detailsPattern, detailContentPattern = ".*") {
+  let detailsRe, contentRe;
   try {
-    re = new RegExp(detailsPattern, "us");
+    detailsRe = compileOptionalPattern(detailsPattern, "detailsPattern");
+    contentRe = compileOptionalPattern(detailContentPattern, "detailContentPattern");
   } catch (e) {
-    console.error("Invalid detailsPattern regex:", detailsPattern, e);
     return html;
   }
+  if (!detailsRe && !contentRe) {
+    return html;
+  }
+  const useSummaryPath = Boolean(detailsPattern && detailsPattern.includes("/"));
   const tempDoc = document.implementation.createHTMLDocument("virtual");
   tempDoc.body.innerHTML = html;
   const matched = [];
-  collectMatchingDetails(tempDoc.body, re, matched);
+  collectMatchingDetails(tempDoc.body, detailsRe, useSummaryPath, contentRe, "", matched);
   return matched.join("\n\n");
 }
 
@@ -268,7 +321,8 @@ async function processAjaxResponseHtml(responseHtml, jsInclude) {
     contentInnerHtml = contentElement.innerHTML;
   }
   let detailsPattern = jsInclude.getAttribute("detailsPattern") || ".*";
-  contentInnerHtml = filterDetailsByPattern(contentInnerHtml, detailsPattern);
+  let detailContentPattern = jsInclude.getAttribute("detailContentPattern") || ".*";
+  contentInnerHtml = filterDetailsByPattern(contentInnerHtml, detailsPattern, detailContentPattern);
 
   // Setup edit link
   var editLinkElement = virtualDocument.querySelector("#editLink");
@@ -292,6 +346,10 @@ async function processAjaxResponseHtml(responseHtml, jsInclude) {
     contentHtml = `<details ${collapseStyle} class='included-post-content' id="${content_div_id}"><summary>${titleRowHtml}</summary>\n\n${contentInnerHtml}</details>`;
   } else {
     contentHtml = `${titleRowHtml}\n\n${contentInnerHtml}`;
+  }
+  const quoteLevel = parseQuoteLevel(jsInclude);
+  if (quoteLevel > 0) {
+    contentHtml = wrapBlockquoteHtml(contentHtml, quoteLevel);
   }
 
   return relativizeHtml(includedPageRelativeUrl, contentHtml, includedPageNewLevelForH1);
@@ -345,7 +403,8 @@ async function fillJsInclude(jsInclude) {
     jsInclude.innerHTML = contentElement;
     await uiLib.prepareContentWithoutIncludes(jsInclude);
     // Second level includes will be handled by another handleIncludes() call. So, we don't worry about them here, beyond marking them unfilled.
-    let secondLevelIncludes = [...jsInclude.getElementsByClassName('js_include')];
+    let secondLevelIncludes = [...jsInclude.getElementsByClassName('js_include')]
+      .filter(x => x.parentElement && x.parentElement.closest('.js_include') === jsInclude);
     secondLevelIncludes.forEach(function (x) { x.setAttribute("unfilled", ""); });
     const event = new CustomEvent('jsFill', { detail: "Success" });
     jsInclude.dispatchEvent(event);
@@ -427,7 +486,8 @@ export default function handleIncludes(jsIncludesIn) {
   }
   let jsIncludes = jsIncludesIn;
   if (!jsIncludes) {
-    jsIncludes = Array.from(document.getElementsByClassName("js_include"));
+    jsIncludes = Array.from(document.getElementsByClassName("js_include"))
+      .filter(x => !x.parentElement || !x.parentElement.closest(".js_include"));
   }
   console.log("Got includes", jsIncludes);
   let progressBar = document.getElementById("progressLoading");
@@ -446,7 +506,9 @@ export default function handleIncludes(jsIncludesIn) {
   function postIncludeTasks() {
     if (progressBarDiv) progressBarDiv.hidden = true;
     // Some included pages may have resulted in new jsInclude elements!
-    let newJsIncludes = Array.from(document.getElementsByClassName("js_include")).filter(x => x.hasAttribute("unfilled"));
+    let newJsIncludes = Array.from(document.getElementsByClassName("js_include")).filter(
+      x => x.hasAttribute("unfilled") && (!x.parentElement || !x.parentElement.closest(".js_include[unfilled]"))
+    );
     console.log("Checking subincludes", newJsIncludes.length);
     if (newJsIncludes.length) {
       console.warn("Got jsIncludes within the included pages!", newJsIncludes);
